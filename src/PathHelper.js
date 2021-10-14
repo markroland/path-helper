@@ -4,16 +4,16 @@ class PathHelper {
     let results = {
       "min": this.getMin(path),
       "max": this.getMax(path)
-    }
+    };
     results.range = [
       results.max[0] - results.min[0],
       results.max[1] - results.min[1]
-    ]
+    ];
     results.center = [
       results.min[0] + results.range[0]/2,
       results.min[1] + results.range[1]/2
-    ]
-    return results
+    ];
+    return results;
   }
 
   /**
@@ -33,7 +33,7 @@ class PathHelper {
     return [
       this.arrayMin(x_coordinates),
       this.arrayMin(y_coordinates),
-    ]
+    ];
   }
 
   /**
@@ -53,7 +53,7 @@ class PathHelper {
     return [
       this.arrayMax(x_coordinates),
       this.arrayMax(y_coordinates),
-    ]
+    ];
   }
 
   /**
@@ -65,7 +65,7 @@ class PathHelper {
     return [
       [mins[0], maxs[0]],
       [mins[1], maxs[1]]
-    ]
+    ];
   }
 
   arrayMin(a) {
@@ -114,7 +114,7 @@ class PathHelper {
   }
 
   getRandom(min, max) {
-    return Math.random() * (max - min) + min
+    return Math.random() * (max - min) + min;
   }
 
   /**
@@ -131,11 +131,11 @@ class PathHelper {
   map (value, in_min, in_max, out_min, out_max) {
     // Shift negative values up into positive range
     if (in_min < 0 || in_max < 0) {
-      in_max = in_max + -in_min
-      value = value + -in_min
-      in_min = in_min + -in_min
+      in_max = in_max + -in_min;
+      value = value + -in_min;
+      in_min = in_min + -in_min;
     }
-    return out_min + (out_max - out_min) * ((value - in_min) / (in_max - in_min))
+    return out_min + (out_max - out_min) * ((value - in_min) / (in_max - in_min));
   }
 
   /**
@@ -147,14 +147,14 @@ class PathHelper {
 
   polygon(sides, length, rotation = 0)
   {
-    let polygon = new Array();
+    let polygon = [];
     let polygon_theta = 0.0;
     for (let a = 0; a <= sides; a++) {
       polygon_theta = (a/sides) * (2 * Math.PI);
       polygon.push([
         length * Math.cos(polygon_theta + rotation),
         length * Math.sin(polygon_theta + rotation)
-      ])
+      ]);
     }
     return polygon;
   }
@@ -184,7 +184,7 @@ class PathHelper {
     const x = p1[0] + ua * (p2[0] - p1[0]);
     const y = p1[1] + ua * (p2[1] - p1[1]);
 
-    return [x, y]
+    return [x, y];
   }
 
   /**
@@ -209,7 +209,7 @@ class PathHelper {
 
     var denom = s10_x * s32_y - s32_x * s10_y;
 
-    if(denom == 0) {
+    if(denom === 0) {
         return false;
     }
 
@@ -241,40 +241,40 @@ class PathHelper {
   }
 
   distance(p1, p2) {
-    return Math.sqrt(Math.pow(p2[0] - p1[0], 2) + Math.pow(p2[1] - p1[1], 2))
+    return Math.sqrt(Math.pow(p2[0] - p1[0], 2) + Math.pow(p2[1] - p1[1], 2));
   }
 
   perpendicularPath(p1, p2) {
 
     // Slope "m"
-    let m = (p2[1] - p1[1]) / (p2[0] - p1[0])
+    let m = (p2[1] - p1[1]) / (p2[0] - p1[0]);
 
     // Y-intercept "b"
-    let b = p1[1] - m * p1[0]
+    // let b = p1[1] - m * p1[0];
 
     // let distance = this.distance(p1, p2);
 
     // Calculate slope and intercept of perpendicular line
     let m_perp = -1/m;
-    let b_perp = p1[1] - m_perp * p1[0]
+    let b_perp = p1[1] - m_perp * p1[0];
 
     // Calculate the coordinates of the pependicular
-    let x3 = p1[0] - (p2[1] - p1[1])
+    let x3 = p1[0] - (p2[1] - p1[1]);
     let p3 = [
       x3,
       m_perp * x3 + b_perp
-    ]
+    ];
 
     // Return 2-point path for perpendicular line
-    return [p1, p3]
+    return [p1, p3];
   }
 
   parallelPath(p1, p2, offset_amount) {
 
     // Calculate the slope of the line AB as an angle
-    let delta_y = p2[1] - p1[1]
-    let delta_x = p2[0] - p1[0]
-    let theta = Math.atan2(delta_y, delta_x)
+    let delta_y = p2[1] - p1[1];
+    let delta_x = p2[0] - p1[0];
+    let theta = Math.atan2(delta_y, delta_x);
 
     // Line A is a line perpendicular to the line AB, starting
     // at point A
@@ -284,7 +284,7 @@ class PathHelper {
         p1[0] + offset_amount * Math.cos(theta + Math.PI/2),
         p1[1] + offset_amount * Math.sin(theta + Math.PI/2)
       ]
-    ]
+    ];
 
     // Line B is a line perpendicular to the line BA, starting
     // at point B
@@ -294,11 +294,11 @@ class PathHelper {
         p2[0] + offset_amount * Math.cos(theta + Math.PI/2),
         p2[1] + offset_amount * Math.sin(theta + Math.PI/2)
       ]
-    ]
+    ];
 
     // Use the endpoints from Lines A and B to construct
     // a new line that is parallel to AB
-    return [line_A[1], line_B[1]]
+    return [line_A[1], line_B[1]];
   }
 
   /**
@@ -312,50 +312,50 @@ class PathHelper {
    **/
   expandPath(path, offset_start, offset_end, capStyle = 'open') {
 
-    let parallels = new Array();
-    let parallel = new Array();
+    let parallels = [];
+    let parallel = [];
     let parallel_segment;
-    let offset = offset_start
-    let i_max = path.length-1
+    let offset = offset_start;
+    let i_max = path.length-1;
 
     // Outer
     parallel = [];
     for (let i = 0; i < i_max; i++) {
-      offset = offset_start + (offset_end - offset_start) * (i/i_max)
-      parallel_segment = this.parallelPath(path[i], path[i+1], offset)
-      parallel.push(parallel_segment[0])
+      offset = offset_start + (offset_end - offset_start) * (i/i_max);
+      parallel_segment = this.parallelPath(path[i], path[i+1], offset);
+      parallel.push(parallel_segment[0]);
     }
 
     // Push the last point
-    parallel_segment = this.parallelPath(path[path.length-2], path[path.length-1], offset_end)
-    parallel.push(parallel_segment[1])
+    parallel_segment = this.parallelPath(path[path.length-2], path[path.length-1], offset_end);
+    parallel.push(parallel_segment[1]);
 
-    parallels.push(parallel)
+    parallels.push(parallel);
 
     // Inner
     parallel = [];
     for (let i = 0; i < i_max; i++) {
-      offset = offset_start + (offset_end - offset_start) * (i/i_max)
-      parallel_segment = this.parallelPath(path[i], path[i+1], -offset)
-      parallel.push(parallel_segment[0])
+      offset = offset_start + (offset_end - offset_start) * (i/i_max);
+      parallel_segment = this.parallelPath(path[i], path[i+1], -offset);
+      parallel.push(parallel_segment[0]);
     }
 
     // Push the last point
-    parallel_segment = this.parallelPath(path[path.length-2], path[path.length-1], -offset_end)
-    parallel.push(parallel_segment[1])
+    parallel_segment = this.parallelPath(path[path.length-2], path[path.length-1], -offset_end);
+    parallel.push(parallel_segment[1]);
 
-    parallels.push(parallel)
+    parallels.push(parallel);
 
-    let output
+    let output;
     switch (capStyle) {
       case 'flat':
-        output = parallels[0].concat(parallels[1].reverse())
-        output.push(parallels[0][0])
-        return [output]
+        output = parallels[0].concat(parallels[1].reverse());
+        output.push(parallels[0][0]);
+        return [output];
       case 'round':
-        parallels[1].reverse()
+        parallels[1].reverse();
 
-        output = parallels[0]
+        output = parallels[0];
 
         // Cap
         output = output.concat(this.arcPointToPoint(
@@ -366,9 +366,9 @@ class PathHelper {
             -Math.PI,
             6
           )
-        )
+        );
 
-        output = output.concat(parallels[1])
+        output = output.concat(parallels[1]);
 
         // Cap
         output = output.concat(this.arcPointToPoint(
@@ -379,14 +379,14 @@ class PathHelper {
             -Math.PI,
             6
           )
-        )
+        );
 
         // Last point
-        output.push(parallels[0][0])
+        output.push(parallels[0][0]);
 
-        return [output]
+        return [output];
       default:
-        return parallels
+        return parallels;
     }
   }
 
@@ -403,7 +403,7 @@ class PathHelper {
 
     // Create a copy so that elements can be removed without
     // effecting source array
-    let source_path = JSON.parse(JSON.stringify(path))
+    let source_path = JSON.parse(JSON.stringify(path));
 
     if (this.distance(source_path[0], source_path[source_path.length-1]) < 0.0001) {
 
@@ -490,23 +490,22 @@ class PathHelper {
     let corner_offset = offset * Math.tan(Math.PI/2 - 0.5 * gamma);
 
     // Calculate the parallel offset path from point 1 to 2 (Side AC)
-    let AC_offset = this.parallelPath(p1, p2, offset)
+    let AC_offset = this.parallelPath(p1, p2, offset);
 
     // Extend/Reduce the line by the Corner Offset distance
     AC_offset = this.extendLine(AC_offset[0], AC_offset[1], 0, -corner_offset);
 
     // Calculate the parallel offset path from point 2 to 3 (Side CB)
-    let CB_offset = this.parallelPath(p2, p3, offset)
+    let CB_offset = this.parallelPath(p2, p3, offset);
 
     // Combine the 2 offset sides to get the new path
-    let expanded_path = AC_offset
+    let expanded_path = AC_offset;
     expanded_path.push(CB_offset[1]);
 
     return expanded_path;
   }
 
   extendLine(A, B, deltaA, deltaB) {
-    let path = [];
 
     // let lineSlope = this.lineSlopeIntercept(A, B);
 
@@ -539,17 +538,16 @@ class PathHelper {
    * @return Array A Path array of points
    **/
   arcPointToPoint(x1, y1, x2, y2, theta, segments = 12) {
-    let path = new Array()
-    let PathHelp = new PathHelper
-    let theta_0 = Math.atan2(y2 - y1, x2 - x1)
-    let distance = PathHelp.distance([x1, y1], [x2, y2])
+    let path = [];
+    let theta_0 = Math.atan2(y2 - y1, x2 - x1);
+    let distance = this.distance([x1, y1], [x2, y2]);
     for (let c = 1; c < segments; c++) {
       path.push([
         x1 + (x2 - x1)/2 + distance/2 * Math.cos(theta_0 + Math.PI + c/segments * theta),
         y1 + (y2 - y1)/2 + distance/2 * Math.sin(theta_0 + Math.PI + c/segments * theta)
-      ])
+      ]);
     }
-    return path
+    return path;
   }
 
   /**
@@ -563,12 +561,12 @@ class PathHelper {
    * @return Array A Path array of points
    **/
   arc(position, radius, theta, theta_offset, segments) {
-    let path = new Array();
+    let path = [];
     for (let s = 0; s <= segments; s++) {
       path.push([
         position[0] + radius * Math.cos(theta_offset + s/segments * theta),
         position[0] + radius * Math.sin(theta_offset + s/segments * theta)
-      ])
+      ]);
     }
     return path;
   }
@@ -579,9 +577,9 @@ class PathHelper {
    * b = Y intercept
    **/
   lineSlopeIntercept(p1, p2) {
-    let m = (p2[1] - p1[1]) / (p2[0] - p1[0])
-    let b = p1[1] - m * p1[0]
-    return { "m": m, "b": b}
+    let m = (p2[1] - p1[1]) / (p2[0] - p1[0]);
+    let b = p1[1] - m * p1[0];
+    return { "m": m, "b": b};
   }
 
   // const arrayColumn = (arr, n) => arr.map(a => a[n]);
@@ -609,12 +607,12 @@ class PathHelper {
 
       x = Math.min(...x_coordinates);
       if (x < x_min) {
-        x_min = x
+        x_min = x;
       }
 
       x_max = Math.max(...x_coordinates);
       if (x > x_max) {
-        x_max = x
+        x_max = x;
       }
 
       // Get Y coordinates as an 1-dimensional array
@@ -622,29 +620,29 @@ class PathHelper {
 
       y = Math.min(...y_coordinates);
       if (y < y_min) {
-        y_min = y
+        y_min = y;
       }
 
       y = Math.max(...y_coordinates);
       if (y > y_max) {
-        y_max = y
+        y_max = y;
       }
     }
 
     // Determine offset of X direction
     let x_range = x_max - x_min;
-    let x_center_offset = x_min + x_range/2
+    let x_center_offset = x_min + x_range/2;
 
     // Determine offset of Y direction
     let y_range = y_max - y_min;
-    let y_center_offset = y_min + y_range/2
+    let y_center_offset = y_min + y_range/2;
 
     // Translate each path
     for (let i = 0; i < paths.length; i++) {
-      paths[i] = this.translatePath(paths[i], [-x_center_offset, -y_center_offset])
+      paths[i] = this.translatePath(paths[i], [-x_center_offset, -y_center_offset]);
     }
 
-    return paths
+    return paths;
   }
 
   /*
@@ -675,13 +673,13 @@ class PathHelper {
    * scale A value from 0 to 1
    **/
   scalePath(path, scale) {
-    let scale_x = scale
+    let scale_x = scale;
     let scale_y = scale;
     let scale_z = scale;
     if (scale.length !== undefined) {
-      scale_x = scale[0]
-      scale_y = scale[1]
-      scale_z = scale[2] !== undefined ? scale[2] : 1
+      scale_x = scale[0];
+      scale_y = scale[1];
+      scale_z = scale[2] !== undefined ? scale[2] : 1;
     }
     return path.map(function(a){
       let scaled = [
@@ -689,9 +687,9 @@ class PathHelper {
         a[1] * scale_y
       ];
       if (a.length == 3) {
-        scaled.push(a[2] * scale_z)
+        scaled.push(a[2] * scale_z);
       }
-      return scaled
+      return scaled;
     });
   }
 
@@ -716,7 +714,7 @@ class PathHelper {
       return [
         a[0] * Math.cos(theta) - a[1] * Math.sin(theta),
         a[0] * Math.sin(theta) + a[1] * Math.cos(theta)
-      ]
+      ];
     });
   }
 
@@ -726,15 +724,15 @@ class PathHelper {
    */
   shiftPath(path, k) {
     if (path.length > k) {
-        path.unshift( ...path.splice(-k))
+        path.unshift( ...path.splice(-k));
     } else {
-      let i = 0
+      let i = 0;
       while(i < k){
-        path.unshift(path.splice(-1))
-        i++
+        path.unshift(path.splice(-1));
+        i++;
       }
     }
-    return path
+    return path;
   }
 
   /**
@@ -742,7 +740,7 @@ class PathHelper {
    **/
   subdividePath(path) {
 
-    let divided_path = new Array();
+    let divided_path = [];
 
     for (let i = 0; i < path.length-1; i++) {
 
@@ -772,7 +770,7 @@ class PathHelper {
    **/
   dividePath(path, segments) {
 
-    let divided_path = new Array();
+    let divided_path = [];
 
     for (let i = 0; i <= segments; i++) {
       divided_path.push(
@@ -780,7 +778,7 @@ class PathHelper {
           this.lerp(path[0][0], path[1][0], i/segments),
           this.lerp(path[0][1], path[1][1], i/segments)
         ]
-      )
+      );
     }
 
     return divided_path;
@@ -798,50 +796,48 @@ class PathHelper {
    **/
   joinPaths(paths, threshold = 0.01, active_path_index = 0, iteration = 0) {
 
-    let PathHelp = new PathHelper();
-
     // Set border parameters
-    let min_x = -5/3
-    let max_x = 5/3
-    let min_y = -1
-    let max_y = 1
+    let min_x = -5/3;
+    let max_x = 5/3;
+    let min_y = -1;
+    let max_y = 1;
 
-    let debug = false
+    let debug = false;
 
     // Bail if iterations exceeded
-    iteration++
-    if (debug) { console.log('---------------------') }
-    if (debug) { console.log('Iteration:', iteration) }
+    iteration++;
+    if (debug) { console.log('---------------------'); }
+    if (debug) { console.log('Iteration:', iteration); }
 
-    let path_index = active_path_index
-    let distance
+    let path_index = active_path_index;
+    let distance;
 
     // Check for completion of multiple closed loops
     for (let i = path_index; i < paths.length; i++) {
-      let path_closed = false
-      if (debug) { console.log('path_index:', path_index) }
+      let path_closed = false;
+      if (debug) { console.log('path_index:', path_index); }
 
       // Calculate distance between first and last point of target path
-      distance = PathHelp.distance(paths[path_index][0], paths[path_index][paths[path_index].length-1])
+      distance = this.distance(paths[path_index][0], paths[path_index][paths[path_index].length-1]);
 
       // If distance is below threshold, then the path should be considered a closed loop
       if (distance < threshold) {
-        path_closed = true
+        path_closed = true;
       }
 
       // If the path is a closed loop, then increment the index to look at the next path
       // as the target path
       if (path_closed) {
-        if (debug) { console.log('Path ' + path_index + ' closed.') }
-        path_index++
-        if (debug) { console.log('New Path Index: ' + path_index) }
-        continue
+        if (debug) { console.log('Path ' + path_index + ' closed.'); }
+        path_index++;
+        if (debug) { console.log('New Path Index: ' + path_index); }
+        continue;
       }
-      break
+      break;
     }
 
-    if (debug) { console.log('selected path_index:', path_index) }
-    if (debug) { console.log('paths.length:', paths.length) }
+    if (debug) { console.log('selected path_index:', path_index); }
+    if (debug) { console.log('paths.length:', paths.length); }
 
     // Exit function if the last path is closed
     if (path_index == paths.length) {
@@ -853,7 +849,7 @@ class PathHelper {
 
     // Check remaining paths
     // console.log('paths.length', paths.length)
-    let overlap_count = 0
+    let overlap_count = 0;
     for (let i = 0; i < paths.length; i++) {
 
       // Skip self
@@ -862,53 +858,53 @@ class PathHelper {
       }
 
       // Check last point of target path against first point of other paths
-      distance = PathHelp.distance(last_point, paths[i][0])
+      distance = this.distance(last_point, paths[i][0]);
 
       if (distance < threshold) {
         // console.log(last_point, paths[i][0], distance, paths[i]);
-        overlap_count++
+        overlap_count++;
         // console.log('before:', paths[0])
-        paths[path_index] = paths[path_index].concat(paths[i].slice(1))
+        paths[path_index] = paths[path_index].concat(paths[i].slice(1));
         // console.log('after:', paths[0])
 
         // remove from paths
         paths.splice(i, 1);
-        break
+        break;
       }
 
       // Check last point of target path against last point of other paths
-      distance = PathHelp.distance(last_point, paths[i][paths[i].length-1])
+      distance = this.distance(last_point, paths[i][paths[i].length-1]);
       if (distance < threshold) {
         // console.log(last_point, paths[i][0], distance);
-        overlap_count++
-        paths[path_index] = paths[path_index].concat(paths[i].reverse().slice(1))
+        overlap_count++;
+        paths[path_index] = paths[path_index].concat(paths[i].reverse().slice(1));
 
         // remove from paths
         paths.splice(i, 1);
-        break
+        break;
       }
 
       // Check first point of target path against first point of other paths
-      distance = PathHelp.distance(paths[path_index][0], paths[i][0])
+      distance = this.distance(paths[path_index][0], paths[i][0]);
       if (distance < threshold) {
-        overlap_count++
-        paths[path_index] = paths[i].reverse().concat(paths[path_index])
+        overlap_count++;
+        paths[path_index] = paths[i].reverse().concat(paths[path_index]);
         paths.splice(i, 1);
-        break
+        break;
       }
 
       // Check first point of target path against last point of other paths
-      distance = PathHelp.distance(paths[path_index][0], paths[i][paths[i].length-1])
+      distance = this.distance(paths[path_index][0], paths[i][paths[i].length-1]);
       if (distance < threshold) {
-        overlap_count++
-        paths[path_index] = paths[i].concat(paths[path_index])
+        overlap_count++;
+        paths[path_index] = paths[i].concat(paths[path_index]);
         paths.splice(i, 1);
-        break
+        break;
       }
 
     }
 
-    if (debug) { console.log("Overlap Count", overlap_count) }
+    if (debug) { console.log("Overlap Count", overlap_count); }
 
     // Exit function if the last path is closed
     if (path_index == paths.length) {
@@ -921,68 +917,68 @@ class PathHelper {
     last_point = paths[path_index][paths[path_index].length - 1];
     let on_border = false;
     if (!on_border) {
-      distance = PathHelp.distance(last_point, [min_x, last_point[1]])
+      distance = this.distance(last_point, [min_x, last_point[1]]);
       if (distance < threshold) {
-        on_border = true
+        on_border = true;
       }
     }
     if (!on_border) {
-      distance = PathHelp.distance(last_point, [max_x, last_point[1]])
+      distance = this.distance(last_point, [max_x, last_point[1]]);
       if (distance < threshold) {
-        on_border = true
+        on_border = true;
       }
     }
     if (!on_border) {
-      distance = PathHelp.distance(last_point, [last_point[0], min_y])
+      distance = this.distance(last_point, [last_point[0], min_y]);
       if (distance < threshold) {
-        on_border = true
+        on_border = true;
       }
     }
     if (!on_border) {
-      distance = PathHelp.distance(last_point, [last_point[0], max_y])
+      distance = this.distance(last_point, [last_point[0], max_y]);
       if (distance < threshold) {
-        on_border = true
+        on_border = true;
       }
     }
 
     // Check the beginning of the path only if the end of the path is
     // on the border
     if (on_border) {
-      distance = PathHelp.distance(first_point, [min_x, first_point[1]])
+      distance = this.distance(first_point, [min_x, first_point[1]]);
       if (distance > threshold) {
-        on_border = false
+        on_border = false;
       }
     }
     if (on_border) {
-      distance = PathHelp.distance(first_point, [max_x, first_point[1]])
+      distance = this.distance(first_point, [max_x, first_point[1]]);
       if (distance > threshold) {
-        on_border = false
+        on_border = false;
       }
     }
     if (on_border) {
-      distance = PathHelp.distance(first_point, [first_point[0], min_y])
+      distance = this.distance(first_point, [first_point[0], min_y]);
       if (distance > threshold) {
-        on_border = false
+        on_border = false;
       }
     }
     if (on_border) {
-      distance = PathHelp.distance(first_point, [first_point[0], max_y])
+      distance = this.distance(first_point, [first_point[0], max_y]);
       if (distance > threshold) {
-        on_border = false
+        on_border = false;
       }
     }
 
     // If the target path is closed or on the border go to next path
-    if (overlap_count == 0 || on_border) {
-      active_path_index++
+    if (overlap_count === 0 || on_border) {
+      active_path_index++;
     }
 
-    paths = this.joinPaths(paths, threshold, active_path_index, iteration)
+    paths = this.joinPaths(paths, threshold, active_path_index, iteration);
 
     // Remove consecutive duplicate points (within a threshold of distance)
     paths[0] = this.cleanPath(paths[0], 0.0001);
 
-    return paths
+    return paths;
   }
 
   /**
@@ -1011,7 +1007,6 @@ class PathHelper {
 
     // Subsequent positions must greater than the minimum distance to be added
     path.forEach(function(point, index) {
-      let PathHelp = new PathHelper();
       var last_point = cleanedPath[cleanedPath.length - 1];
       var step_distance = Math.sqrt(Math.pow(point[0] - last_point[0], 2) + Math.pow(point[1] - last_point[1], 2));
       if (step_distance > threshold) {
@@ -1029,32 +1024,32 @@ class PathHelper {
     while (points.length > 1) {
 
       // New paths starts with next unprocessed point
-      if (new_path.length == 0) {
+      if (new_path.length === 0) {
         new_path.push(points.shift());
       }
 
       // Loop through all points and identify candidate points within
       // the distance threshold
       let distance;
-      let candidates = new Array();
+      let candidates = [];
       for (let p = 0; p < points.length; p++) {
 
-        let active_path_last_point_index = new_path.length - 1
+        let active_path_last_point_index = new_path.length - 1;
         distance = this.distance(
           new_path[active_path_last_point_index],
           points[p]
-        )
+        );
 
         if (distance < threshold) {
           candidates.push({
             "point" : p,
             "distance" : distance
-          })
+          });
         }
       }
 
       // No points near enough? We got us a path; move on.
-      if (candidates.length == 0) {
+      if (candidates.length === 0) {
 
         paths.push(new_path);
         new_path = [];
@@ -1066,12 +1061,12 @@ class PathHelper {
       // Sort points by distance, favor by index if distances are equal
       candidates.sort(
         (a, b) => (a.distance > b.distance) ? 1 : (a.distance === b.distance) ? ((a.point > b.point) ? 1 : -1) : -1
-      )
+      );
 
       // Add the nearest point as the next point in the path
-      let nearest_point_index = candidates[0].point
-      let nearest_point = points[nearest_point_index]
-      new_path.push(nearest_point)
+      let nearest_point_index = candidates[0].point;
+      let nearest_point = points[nearest_point_index];
+      new_path.push(nearest_point);
 
       // Remove the point from available points
       points.splice(nearest_point_index, 1);
@@ -1086,31 +1081,31 @@ class PathHelper {
   /**
    * Join points together when endpoints within threshold distance of each other
    **/
-  pointsToPaths(paths, points, active_path_index = 0, threshold) {
+  pointsToPaths(paths, points, active_path_index = 0, threshold = 0.001) {
 
     // Escape recursion (Chrome is having a "Maximum call stack size exceeded" error)
     // here where Safari and Firefox are not
-    if (points.length == 0) {
-      return paths
+    if (points.length === 0) {
+      return paths;
     }
 
     // Loop through all points and identify candidate points within
     // the distance threshold
     let distance;
-    let candidates = new Array();
+    let candidates = [];
     for (let p = 0; p < points.length; p++) {
 
-      let active_path_last_point_index = paths[active_path_index].length - 1
+      let active_path_last_point_index = paths[active_path_index].length - 1;
       distance = this.distance(
         paths[active_path_index][active_path_last_point_index],
         points[p]
-      )
+      );
 
       if (distance < threshold) {
         candidates.push({
           "point" : p,
           "distance" : distance
-        })
+        });
       }
     }
 
@@ -1120,12 +1115,12 @@ class PathHelper {
       // https://flaviocopes.com/how-to-sort-array-of-objects-by-property-javascript/
       candidates.sort(
         (a, b) => (a.distance > b.distance) ? 1 : (a.distance === b.distance) ? ((a.point > b.point) ? 1 : -1) : -1
-      )
+      );
 
       // Add the nearest point as the next point in the path
-      let nearest_point_index = candidates[0].point
-      let nearest_point = points[nearest_point_index]
-      paths[active_path_index].push(nearest_point)
+      let nearest_point_index = candidates[0].point;
+      let nearest_point = points[nearest_point_index];
+      paths[active_path_index].push(nearest_point);
 
       // Remove the point from available points
       points.splice(nearest_point_index, 1);
@@ -1135,57 +1130,57 @@ class PathHelper {
       // If no points are within the threshold then start a new path
       paths.push([
         points.shift()
-      ])
-      active_path_index++
+      ]);
+      active_path_index++;
     }
 
-    paths = this.pointsToPaths(paths, points, active_path_index, threshold)
+    paths = this.pointsToPaths(paths, points, active_path_index, threshold);
 
     return paths;
   }
 
   smoothPath(path, size = 3) {
-    let newData = new Array();
-    newData.push(path[0])
+    let newData = [];
+    newData.push(path[0]);
     if (path.length < size) {
-      return path
+      return path;
     }
-    let range = (size - 1)/2
-    let v = 1 / size
-    const kernel = new Array(size).fill(v)
+    let range = (size - 1)/2;
+    let v = 1 / size;
+    const kernel = new Array(size).fill(v);
     for (let p = range; p < path.length-range; p++) {
       let sum = [0,0];
       for (let k = -range; k <= range; k++) {
         // Sum X and Y components
-        sum[0] += path[p+k][0] * kernel[k+range]
-        sum[1] += path[p+k][1] * kernel[k+range]
+        sum[0] += path[p+k][0] * kernel[k+range];
+        sum[1] += path[p+k][1] * kernel[k+range];
       }
-      newData.push(sum)
+      newData.push(sum);
     }
-    newData.push(path[path.length-1])
-    return newData
+    newData.push(path[path.length-1]);
+    return newData;
   }
 
   quadraticBezierPath(p1, p2, p3, segments) {
-    let path = new Array();
+    let path = [];
     for (let i = 0; i < segments; i++) {
       let t = i/segments;
       path.push([
         Math.pow(1-t, 2) * p1[0] + 2 * (1-t) * t * p2[0] + Math.pow(t, 2) * p3[0],
         Math.pow(1-t, 2) * p1[1] + 2 * (1-t) * t * p2[1] + Math.pow(t, 2) * p3[1]
-      ])
+      ]);
     }
     return path;
   }
 
   quadraticBezierPathAlgorithm(p1, p2, p3, segments) {
 
-    let path = new Array();
+    let path = [];
 
-    path.push(p1)
+    path.push(p1);
 
-    let a = p1
-    let b = p2
+    let a = p1;
+    let b = p2;
     let c;
     let d;
     for (let i = 1; i < segments; i++) {
@@ -1197,12 +1192,12 @@ class PathHelper {
         p2[0] - (p2[0] - p3[0]) * (i/(segments-1)),
         p2[1] - (p2[1] - p3[1]) * (i/(segments-1))
       ];
-      path.push(this.intersect_point(a,b,c,d))
+      path.push(this.intersect_point(a,b,c,d));
       a = c;
-      b = d
+      b = d;
     }
 
-    path.push(p3)
+    path.push(p3);
 
     return path;
   }
@@ -1212,13 +1207,13 @@ class PathHelper {
    * Equations from https://javascript.info/bezier-curve
    */
   cubicBezierPath(p1, p2, p3, p4, segments) {
-    let path = new Array();
+    let path = [];
     for (let i = 0; i <= segments; i++) {
       let t = i/segments;
       path.push([
         Math.pow(1-t, 3) * p1[0] + 3 * Math.pow(1-t, 2) * t * p2[0] + 3 * (1-t) * Math.pow(t,2) * p3[0] + Math.pow(t,3) * p4[0],
         Math.pow(1-t, 3) * p1[1] + 3 * Math.pow(1-t, 2) * t * p2[1] + 3 * (1-t) * Math.pow(t,2) * p3[1] + Math.pow(t,3) * p4[1]
-      ])
+      ]);
     }
     return path;
   }
@@ -1226,27 +1221,27 @@ class PathHelper {
   sortPaths(paths) {
     paths = paths.sort(function(a, b){
       // Compare the X-position of the first point in the path
-      return a[0][0] - b[0][0]
+      return a[0][0] - b[0][0];
     });
-    return paths
+    return paths;
   }
 
   polarToRect(radius, theta) {
     return [
       radius * Math.cos(theta),
       radius * Math.sin(theta)
-    ]
+    ];
   }
 
   // From http://www.jeffreythompson.org/collision-detection/line-circle.php
   pointOnLineSegment(p, line, buffer = 0.01) {
 
     // get distance from the point to the two ends of the line
-    let d1 = this.distance(p, line[0])
-    let d2 = this.distance(p, line[1])
+    let d1 = this.distance(p, line[0]);
+    let d2 = this.distance(p, line[1]);
 
     // get the length of the line
-    let lineLen = this.distance(line[0], line[1])
+    let lineLen = this.distance(line[0], line[1]);
 
     // if the two distances are equal to the line's
     // length, the point is on the line!
@@ -1269,7 +1264,7 @@ class PathHelper {
     // Get line.m and line.b
     let line = this.lineSlopeIntercept(p1, p2);
 
-    let r = circle[1]
+    let r = circle[1];
 
     // Note: This is for circle at origin only right now
     let a = Math.pow(line.m, 2) + 1;
@@ -1278,7 +1273,7 @@ class PathHelper {
 
     let x_values = this.solveQuadratic(a, b, c);
 
-    if (x_values.length == 0) {
+    if (x_values.length === 0) {
       return intersections;
     }
 
@@ -1287,7 +1282,7 @@ class PathHelper {
       let intersect = [
         x_value,
         line.m * x_value + line.b
-      ]
+      ];
 
       // Determine if coordinate is on the line p1->p2
       if (this.pointOnLineSegment(intersect, [p1, p2])) {
@@ -1295,7 +1290,7 @@ class PathHelper {
       }
     }
 
-    return intersections
+    return intersections;
   }
 
   /**
@@ -1306,16 +1301,16 @@ class PathHelper {
     let discriminant = Math.pow(b, 2) - 4 * a * c;
 
     // One real and equal answer
-    if (discriminant == 0) {
+    if (discriminant === 0) {
       let x = -b / (2 * a);
-      return [x]
+      return [x];
     }
 
     // Two real and different answers
     if (discriminant > 0) {
       let x1 = (-b + Math.sqrt(discriminant)) / (2 * a);
       let x2 = (-b - Math.sqrt(discriminant)) / (2 * a);
-      return [x1, x2]
+      return [x1, x2];
     }
 
     return [];
@@ -1335,7 +1330,7 @@ class PathHelper {
   circleInterceptPoints(p1, r1, p2, r2, sign) {
 
     // Distance between centers of the circles
-    let d = this.distance(p1, p2)
+    let d = this.distance(p1, p2);
 
     let x = (1/2) * (p1[0] + p2[0])
       + ((Math.pow(r1, 2) - Math.pow(r2, 2)) / (2 * Math.pow(d, 2))) * (p2[0] - p1[0])
@@ -1343,7 +1338,7 @@ class PathHelper {
           2 * ((Math.pow(r1, 2) + Math.pow(r2, 2))/(Math.pow(d, 2)))
           - Math.pow((Math.pow(r1, 2) - Math.pow(r2, 2)), 2) / Math.pow(d, 4)
           - 1
-        ) * (p2[1] - p1[1])
+        ) * (p2[1] - p1[1]);
 
     let y = (1/2) * (p1[1] + p2[1])
       + ((Math.pow(r1, 2) - Math.pow(r2, 2)) / (2 * Math.pow(d, 2))) * (p2[1] - p1[1])
@@ -1351,9 +1346,9 @@ class PathHelper {
           2 * ((Math.pow(r1, 2) + Math.pow(r2, 2))/(Math.pow(d, 2)))
           - Math.pow((Math.pow(r1, 2) - Math.pow(r2, 2)), 2) / Math.pow(d, 4)
           - 1
-        ) * (p1[0] - p2[0])
+        ) * (p1[0] - p2[0]);
 
-    return [x,y]
+    return [x,y];
   }
 
   /**
@@ -1362,9 +1357,9 @@ class PathHelper {
    */
   cropToCircle(candidate_paths, center = [0,0], crop_radius = 1) {
 
-    let paths = new Array();
+    let paths = [];
 
-    let path = new Array();
+    let path = [];
 
     for (let i = 0; i < candidate_paths.length; i++) {
 
@@ -1372,12 +1367,12 @@ class PathHelper {
       for (let p = 0; p < candidate_paths[i].length; p++) {
 
         // Calculate distance of point from center
-        let d1 = this.distance([0,0], candidate_paths[i][p])
+        let d1 = this.distance([0,0], candidate_paths[i][p]);
 
         // Calculate distance from next point (if it exists) to the center
-        let d2 = null
+        let d2 = null;
         if (p+1 < candidate_paths[i].length) {
-          d2 = this.distance([0,0], candidate_paths[i][p+1])
+          d2 = this.distance([0,0], candidate_paths[i][p+1]);
         }
 
         if (d1 < crop_radius) {
@@ -1392,7 +1387,7 @@ class PathHelper {
               candidate_paths[i][p],
               candidate_paths[i][p+1],
               [[0,0], crop_radius]
-            )
+            );
 
             // Assuming these are short line segments
             // there should only be one point of intersection.
@@ -1403,17 +1398,17 @@ class PathHelper {
 
             // End active path and re-initialize
             paths.push(path);
-            path = new Array();
+            path = [];
 
           } else {
 
             // The next point is also inside the circle so no need to calculate an intersection
-            path.push(candidate_paths[i][p])
+            path.push(candidate_paths[i][p]);
 
             // End active path and start a new one if it's the last point
-            if (d2 == null) {
+            if (d2 === null) {
               paths.push(path);
-              path = new Array();
+              path = [];
             }
 
           }
@@ -1425,7 +1420,7 @@ class PathHelper {
             candidate_paths[i][p],
             candidate_paths[i][p+1],
             [[0,0], crop_radius]
-          )
+          );
 
           // Assuming these are short line segments
           // there should only be one point of intersection.
@@ -1437,7 +1432,7 @@ class PathHelper {
           // End active path and start a new one if there are at least 2 points to define a line
           // if (path.length >= 2) {
           //   paths.push(path);
-          //   path = new Array();
+          //   path = [];
           // }
         }
       }
@@ -1467,9 +1462,9 @@ class PathHelper {
    */
   cropToRectangle(candidate_paths, x_min, x_max, y_min, y_max) {
 
-    let paths = new Array();
+    let paths = [];
 
-    let path = new Array();
+    let path = [];
 
     // Define the crop shape using the function input
     let cropShape = [
@@ -1477,12 +1472,12 @@ class PathHelper {
       [x_max, y_min],
       [x_max, y_max],
       [x_min, y_max]
-    ]
+    ];
 
     // Loop through all paths
     for (let i = 0; i < candidate_paths.length; i++) {
 
-      path = new Array();
+      path = [];
 
       // Loop through points/segments of path
       for (let p = 0; p < candidate_paths[i].length; p++) {
@@ -1503,7 +1498,7 @@ class PathHelper {
           if (next_point_in_bounds) {
 
             // The next point is also inside the bounds so no need to calculate an intersection
-            path.push(candidate_paths[i][p])
+            path.push(candidate_paths[i][p]);
 
           } else {
 
@@ -1512,14 +1507,13 @@ class PathHelper {
 
             // Determine which side the next point intersects with. Stop testing after the first
             // is found.
-            let intersection_point;
             for (let pt = 0; pt < cropShape.length; pt++) {
               let intersection_point = this.getLineLineCollision(
                 {"x": candidate_paths[i][p][0], "y": candidate_paths[i][p][1]},
                 {"x": candidate_paths[i][p+1][0], "y": candidate_paths[i][p+1][1]},
                 {"x": cropShape[pt][0], "y": cropShape[pt][1]},
                 {"x": cropShape[(pt+1) % cropShape.length][0], "y": cropShape[(pt+1) % cropShape.length][1]}
-              )
+              );
 
               // Add the intersection point to the path if one is found
               if (intersection_point !== false) {
@@ -1531,7 +1525,7 @@ class PathHelper {
                 }
 
                 // Reset the path since the path hit the border
-                path = new Array();
+                path = [];
 
                 // Break the for-loop. No need to calculate any other intersections
                 break;
@@ -1549,14 +1543,13 @@ class PathHelper {
 
             // Determine which side the next point intersects with. Stop testing after the first
             // is found.
-            let intersection_point;
             for (let pt = 0; pt < cropShape.length; pt++) {
               let intersection_point = this.getLineLineCollision(
                 {"x": candidate_paths[i][p][0], "y": candidate_paths[i][p][1]},
                 {"x": candidate_paths[i][p+1][0], "y": candidate_paths[i][p+1][1]},
                 {"x": cropShape[pt][0], "y": cropShape[pt][1]},
                 {"x": cropShape[(pt+1) % cropShape.length][0], "y": cropShape[(pt+1) % cropShape.length][1]}
-              )
+              );
 
               if (intersection_point !== false) {
                 path.push([intersection_point.x, intersection_point.y]);
