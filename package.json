@@ -1,0 +1,25 @@
+{
+  "name": "@markroland/path-helper",
+  "version": "1.0.0",
+  "description": "Utility functions for working with points, paths and geometry.",
+  "main": "src/PathHelper.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/markroland/path-helper.git"
+  },
+  "keywords": [
+    "points",
+    "paths",
+    "geometry",
+    "polyline"
+  ],
+  "author": "Mark Roland",
+  "license": "SEE LICENSE IN README.md",
+  "bugs": {
+    "url": "https://github.com/markroland/path-helper/issues"
+  },
+  "homepage": "https://github.com/markroland/path-helper#readme"
+}
