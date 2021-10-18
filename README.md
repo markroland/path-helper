@@ -55,6 +55,7 @@ on multi-point paths (polylines).
  - cropToCircle
  - cropToRectangle
  - pointInPolygon
+ - fill
 
 ## License
 

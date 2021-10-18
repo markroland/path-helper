@@ -1602,6 +1602,127 @@ class PathHelper {
     return collision;
   }
 
+  /**
+   * Fill a convex shape (polygon) with straight lines
+   * @param array The shape to be filled
+   * @param float The space between the fill lines
+   * @param float The angle (in radians) of the fill lines (0.0 is horizontal)
+   * @param boolean Set whether the lines should alternate directions (optimal for plotting)
+   * @param boolean Set to true to connect the lines. Default is false
+   * @return Array A multidimensional array of paths
+   */
+  fill(shape, spacing, angle = 0.0, alternate = true, connect = false) {
+
+    // Calculate the tight bounding box of the shape
+    let bbox = this.boundingBox(shape);
+
+    // Calculate the center of that bounding box
+    let bbox_center = [
+      bbox[0][0] + (bbox[0][1] - bbox[0][0])/2,
+      bbox[1][0] + (bbox[1][1] - bbox[1][0])/2,
+    ];
+
+    // Calculate the diagonal/radius distance of the bounding box
+    // in order to know the maximum radius of the shape so that it
+    // can be covered by any angle of lines
+    let radius = this.distance(
+      [bbox[0][0], bbox[1][0]],
+      [bbox[0][1], bbox[1][1]]
+    );
+
+    // Construct the fill lines
+    let num_lines = radius / spacing;
+    let lines = [];
+    for (let j = 0; j < num_lines; j++) {
+
+      // Define a horizontal line oriented to the origin
+      let line = [
+        [-radius, -radius/2 + radius * (j/num_lines)],
+        [ radius, -radius/2 + radius * (j/num_lines)]
+      ];
+
+      // Rotate the line to match the requested fill angle
+      if (angle !== 0) {
+        line = this.rotatePath(line, angle);
+      }
+
+      // Move from the origin to the shape's position
+      line = this.translatePath(line, bbox_center);
+
+      lines.push(line);
+    }
+
+    // Apply the fill lines to the shape
+    let fill = [];
+    for (let i = 0; i < lines.length; i++) {
+
+      // Start point of fill line
+      let p1 = lines[i][0];
+
+      // End point of fill line
+      let p2 = lines[i][1];
+
+      // Calculate intersection with shape
+      let intersections = [];
+      for (let a = 0; a < shape.length; a++) {
+
+        // Define side of shape - points a and b
+        let b = a + 1;
+        if (b >= shape.length) {
+          b = b % shape.length;
+        }
+
+        // Calculate intersection
+        let intersection = this.getLineLineCollision(
+          {"x": p1[0], "y": p1[1]},
+          {"x": p2[0], "y": p2[1]},
+          {"x": shape[a][0], "y": shape[a][1]},
+          {"x": shape[b][0], "y": shape[b][1]}
+        );
+
+        // Add to array of intersection points
+        if (intersection !== false) {
+          intersections.push(intersection);
+        }
+      }
+
+      // Process intersections
+      if (intersections.length > 0) {
+
+        // Sort by X-position to determine order of intersection
+        intersections.sort(
+          (a, b) => (a.x > b.x) ? 1 : -1
+        );
+
+        // Alternate line direction
+        if (alternate && i % 2) {
+          intersections = intersections.reverse();
+        }
+
+        // Add line to results
+        if (connect) {
+          fill = fill.concat([
+            [intersections[0].x, intersections[0].y],
+            [intersections[1].x, intersections[1].y]
+          ]);
+        } else {
+          fill.push([
+            [intersections[0].x, intersections[0].y],
+            [intersections[1].x, intersections[1].y]
+          ]);
+        }
+      }
+    }
+
+    // Force multi-dimensional array for connected lines
+    // so that the return data types match
+    if (connect) {
+      fill = [fill];
+    }
+
+    return fill;
+ }
+
 }
 
 // Add module support for CommonJS format in Node (via `require`)
