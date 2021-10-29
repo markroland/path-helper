@@ -76,6 +76,16 @@ class PathHelper {
     return Math.max(...a);
   }
 
+  degreesToRadians(degrees)
+  {
+    return degrees * (Math.PI/180);
+  }
+
+  radiansToDegrees(radians)
+  {
+    return radians * (180/Math.PI);
+  }
+
   /**
    * Determine if two lines are equivalent
    * @param Array A line array containing two points
