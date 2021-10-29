@@ -87,6 +87,19 @@ class PathHelper {
   }
 
   /**
+   * Calculate the Greatest Common Divisor (or Highest Common Factor) of 2 numbers
+   *
+   * https://en.wikipedia.org/wiki/Greatest_common_divisor
+   * https://www.geeksforgeeks.org/c-program-find-gcd-hcf-two-numbers/
+   */
+  greatestCommonDivisor(a, b) {
+    if (b == 0) {
+      return a;
+    }
+    return this.greatestCommonDivisor(b, a % b);
+  }
+
+  /**
    * Determine if two lines are equivalent
    * @param Array A line array containing two points
    * @param Array line array containing two points
