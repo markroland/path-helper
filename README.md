@@ -10,6 +10,10 @@ on multi-point paths (polylines).
  - arrayMin
  - arrayMax
  - lineEquals
+ - degreesToRadians
+ - radiansToDegrees
+ - greatestCommonDivisor
+ - lineEquals
  - pointEquals
  - getRndInteger
  - getRandom
