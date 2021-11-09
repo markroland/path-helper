@@ -1778,7 +1778,247 @@ class PathHelper {
     }
 
     return fill;
- }
+  }
+
+  // Calculate the stacking intersections
+  layeredPaths(paths, join = false, offset = 0) {
+
+    // Final paths for plotting
+    let final_paths = [];
+
+    // Loop through shapes
+    for (let i = 0; i < paths.length; i++) {
+
+      // Initialize arrays used to store the whole
+      // or segmented version of paths[i]
+      let paths_of_i = [];
+
+      // The last shape doesn't need to be evaluated since
+      // it is on "top" of all other shapes
+      if (i == paths.length-1) {
+        final_paths.push(paths[i])
+        break;
+      }
+
+      // Get all shapes on "layers" above the current shape
+      let comparison_shapes = JSON.parse(JSON.stringify(paths))
+      comparison_shapes.splice(0, i+1)
+
+      // Expand Shape
+      if (offset > 0) {
+        let offset_paths = [];
+        for (let c = 0; c < comparison_shapes.length; c++) {
+          comparison_shapes[c] = this.offsetPath(comparison_shapes[c], offset);
+        }
+      }
+
+      // Loop through sides of shape under evaluation
+      for (let point = 0; point < paths[i].length-1; point++) {
+
+        // Initialize the segment as the full side of the path
+        let new_segments = [
+          [paths[i][point], paths[i][point+1]]
+        ];
+
+        // Split the path using any shapes that overlap it
+        new_segments = this.linePathsSplit(
+          [paths[i][point], paths[i][point+1]],
+          comparison_shapes
+        )
+
+        // Add the side's segments to an array for the whole shape
+        // This could be concatenated to final_paths directly, but
+        // I like the idea of having one array for the whole shape
+        if (new_segments.length > 0) {
+          paths_of_i = paths_of_i.concat(new_segments);
+        }
+
+        if (join) {
+          paths_of_i = this.joinPaths(paths_of_i)
+        }
+
+      }
+
+      // Add the paths of the shape onto the final output paths
+      final_paths = final_paths.concat(paths_of_i)
+    }
+
+    return final_paths;
+  }
+
+  /**
+   * Take a line segment and a path of a closed shape and return the portion of that
+   * line that is not intersected by the shape
+   *
+   * INTENDED TO BE PRIVATE METHOD OF CLASS
+   *
+   * @param Array An array containing 2 point Arrays that define the x/y position of the
+   * line's start and end points
+   * @param Array An array containing 2 or more point Arrays defining a path.
+   * @returns An array of zero, one or two line arrays
+   **/
+  linePathSplit(line, path) {
+
+    // Start and End points for line
+    let a = line[0];
+    let b = line[1];
+
+    // Test if endpoints are inside the shape being tested against
+    let vertices = [];
+    for (let v = 0; v < path.length-1; v++) {
+      vertices.push({x: path[v][0], y: path[v][1]});
+    }
+    let point_a_inside = this.pointInPolygon(vertices, a[0], a[1]);
+    let point_b_inside = this.pointInPolygon(vertices, b[0], b[1]);
+
+    // If both points are inside shape then there is no line left
+    if (point_a_inside && point_b_inside) {
+      return [];
+    }
+
+    // Check all points of path
+    let intersections = [];
+    for (let i = 0; i < path.length-1; i++) {
+
+      // Start and end points for path
+      let c = path[i];
+      let d = path[i+1];
+
+      // Detect if line segment a->b intersects with segment c->d
+      let intersect = this.getLineLineCollision(
+        {x: a[0], y: a[1]},
+        {x: b[0], y: b[1]},
+        {x: c[0], y: c[1]},
+        {x: d[0], y: d[1]}
+      )
+
+      // Save found intersections to an array of intersections
+      // to be further evaluated
+      if (intersect != false) {
+        intersections.push([intersect.x, intersect.y]);
+      }
+    }
+
+    // Evaluate intersection(s)
+    // A convex polygon can only intersect 0, 1 or 2 times
+    if (intersections.length == 0) {
+
+      // If no intersections were found return the originl input line
+      return [
+        [a, b]
+      ];
+    } else if (intersections.length == 1 && point_a_inside) {
+
+      // Point A is inside the target shape
+      return [
+        [intersections[0], b]
+      ];
+    } else if (intersections.length == 1 && point_b_inside) {
+
+      // Point B is inside the target shape
+      return [
+        [a, intersections[0]]
+      ];
+    } else if (intersections.length == 1) {
+
+      // This situation arises if the point is very near a line
+      // on the path, most likely due to a previous evaluation of
+      // the line and path where the line was previously split
+      // into two segments.
+
+      // Find greatest distance from an endpoint to the intersection
+      let dist1 = this.distance(a, intersections[0])
+      let dist2 = this.distance(intersections[0], b)
+
+      if (dist1 > dist2) {
+        return [
+          [a, intersections[0]]
+        ];
+      } else {
+        return [
+          [intersections[0], b]
+        ];
+      }
+
+    } else if (intersections.length == 2) {
+
+      // Determine which intersection matches with which intersection to
+      // split the line into two non-overlapping segments
+      let dist1 = this.distance(a, intersections[0])
+      let dist2 = this.distance(a, intersections[1])
+      if (dist1 < dist2) {
+        return [
+          [a, intersections[0]],
+          [intersections[1], b]
+        ];
+      } else {
+        return [
+          [a, intersections[1]],
+          [intersections[0], b]
+        ];
+      }
+    }
+  }
+
+  /**
+   * Take a line segment and multiple paths representing a closed convex polygon
+   * and return the portion of that line that is not intersected by any of the shapes (paths)
+   *
+   * INTENDED TO BE PRIVATE METHOD OF CLASS
+   *
+   * @param Array An array containing 2 point Arrays that define the x/y position of the
+   * line's start and end points
+   * @param Array An array of paths. Each path should represent a closed convex
+   * shape.
+   * @returns An array of zero, one or two lines that represent the portion of the
+   * input line that do not intersect with or are not covered by any of the input paths
+   **/
+  linePathsSplit(line, paths) {
+
+    let segments = [];
+
+    // Loop through all of the paths
+    for (let i = 0; i < paths.length; i++) {
+
+      // Calculate the intersection(s) between the line
+      // and the current path. This will produce 0, 1 or 2
+      // intersections for convex polygons
+      segments = this.linePathSplit(line, paths[i])
+
+      // Initialize an empty array to store subsegments of the
+      // segments.
+      let sub_segments = [];
+
+      if (segments.length > 1) {
+
+        // If there are two segments (max for a convex polygon "path")
+        // then they should each be evaluated against the other paths.
+        // This is where the recursive magic happens.
+        for (let j = 0; j < segments.length; j++) {
+          sub_segments = sub_segments.concat(
+            this.linePathsSplit(segments[j], paths)
+          );
+        }
+
+        return sub_segments;
+
+      } else if (segments.length == 1) {
+
+        // If there was one intersection, creating a truncated line,
+        // which should become the new line to be evaluated against
+        // the rest of the "paths"
+        line = segments[0];
+
+      } else {
+
+        // If segments is empty then the endpoints were completely
+        // contained within a shape (overlapped and hidden from view)
+        return segments
+      }
+    }
+
+    return segments;
+  }
 
 }
 

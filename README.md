@@ -56,6 +56,9 @@ on multi-point paths (polylines).
  - cropToRectangle
  - pointInPolygon
  - fill
+ - layeredPaths
+ - linePathSplit (for layeredPaths)
+ - linePathsSplit (for layeredPaths)
 
 ## License
 
