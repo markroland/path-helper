@@ -2050,6 +2050,11 @@ class PathHelper {
       // segments.
       let sub_segments = [];
 
+      if (typeof segments === "undefined") {
+        console.log("segments is undefined");
+        continue;
+      }
+
       if (segments.length > 1) {
 
         // If there are two segments (max for a convex polygon "path")
