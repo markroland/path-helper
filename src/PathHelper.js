@@ -185,6 +185,33 @@ class PathHelper {
     return polygon;
   }
 
+  star(star_points = 5, outer_radius = 1.0, inner_radius = 0.5) {
+
+    let shape = [];
+
+    let i_max = star_points * 2;
+    for (let i = 0; i < i_max; i++) {
+
+      let radius = outer_radius;
+      let theta = (i / i_max) * 2 * Math.PI;
+
+      // Inner point
+      if (i % 2 == 1) {
+        radius = inner_radius;
+      }
+
+      shape.push([
+        radius * Math.cos(theta),
+        radius * Math.sin(theta)
+      ]);
+    }
+
+    // Close shape
+    shape.push(shape[0]);
+
+    return shape;
+  }
+
   parabola(focus, width, segments) {
     let path = [];
     for (let a = 0; a <= segments; a++) {
