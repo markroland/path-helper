@@ -21,6 +21,7 @@ on multi-point paths (polylines).
  - map
  - lerp
  - polygon
+ - star
  - parabola
  - intersect_point
  - getLineLineCollision
@@ -42,6 +43,7 @@ on multi-point paths (polylines).
  - shiftPath
  - subdividePath
  - dividePath
+ - dividePathComplete
  - joinPaths
  - cleanPath
  - pointsToPaths2

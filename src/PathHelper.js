@@ -821,18 +821,41 @@ class PathHelper {
   /**
    * Split each segment of the source path into multiple segments
    **/
-  dividePath(path, segments) {
+  dividePath(line, segments) {
 
     let divided_path = [];
 
+    const start_point = line[0];
+    const end_point   = line[1];
     for (let i = 0; i <= segments; i++) {
-      divided_path.push(
-        [
-          this.lerp(path[0][0], path[1][0], i/segments),
-          this.lerp(path[0][1], path[1][1], i/segments)
-        ]
-      );
+      divided_path.push([
+        this.lerp(start_point[0], end_point[0], i/segments),
+        this.lerp(start_point[1], end_point[1], i/segments)
+      ]);
     }
+
+    return divided_path;
+  }
+
+  /**
+   * Break down a multi-point path into segments that don't
+   * exceed a maximum segment length
+   **/
+  dividePathComplete(path, max_segment_length) {
+    let divided_path = [];
+    for (let i = 0; i < path.length-1; i++) {
+      let segment = [path[i], path[i+1]];
+      let length = this.distance(segment[0], segment[1]);
+      if (length > max_segment_length) {
+        let subdivisions = Math.ceil(length / max_segment_length);
+        let subdivided_segment = this.dividePath(segment, subdivisions);
+        subdivided_segment.pop();
+        divided_path = divided_path.concat(subdivided_segment);
+      } else {
+        divided_path.push(segment[0]);
+      }
+    }
+    divided_path.push(path[path.length-1]);
 
     return divided_path;
   }
