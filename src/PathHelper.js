@@ -1809,18 +1809,26 @@ class PathHelper {
           intersections = intersections.reverse();
         }
 
-        // Add line to results
-        if (connect) {
-          fill = fill.concat([
-            [intersections[0].x, intersections[0].y],
-            [intersections[1].x, intersections[1].y]
-          ]);
-        } else {
-          fill.push([
-            [intersections[0].x, intersections[0].y],
-            [intersections[1].x, intersections[1].y]
-          ]);
+        for (let j = 0; j < intersections.length - 1; j++) {
+
+          if (j % 2 === 1) {
+            continue;
+          }
+
+          // Add line to results
+          if (connect) {
+            fill = fill.concat([
+              [intersections[j].x, intersections[j].y],
+              [intersections[j+1].x, intersections[j+1].y]
+            ]);
+          } else {
+            fill.push([
+              [intersections[j].x, intersections[j].y],
+              [intersections[j+1].x, intersections[j+1].y]
+            ]);
+          }
         }
+
       }
     }
 
