@@ -142,13 +142,16 @@ class PathHelper {
 
   /**
    * Get a Random number within a Gaussian Distribution probability
-   * From Stack Overflow - https://stackoverflow.com/a/36481059
+   * From Stack Overflow - https://stackoverflow.com/a/49434653
    * Currently unverified
    */
   getGaussianRandom(u = 0, v = 0) {
     while(u === 0) u = Math.random(); // Converting [0,1) to (0,1)
     while(v === 0) v = Math.random();
-    return Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
+    let num = Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
+    num = num / 10.0 + 0.5; // Translate to 0 -> 1
+    if (num > 1 || num < 0) return this.getGaussianRandom() // resample between 0 and 1
+    return num
   }
 
   map (value, in_min, in_max, out_min, out_max) {
