@@ -66,6 +66,7 @@ on multi-point paths (polylines).
  - linePathSplit (for layeredPaths)
  - linePathsSplit (for layeredPaths)
  - noisify
+ - simplify
 
 ## License
 

@@ -2139,6 +2139,40 @@ class PathHelper {
     return newpath;
   }
 
+  /**
+   * Remove unnecessary points
+   */
+  simplify(path, distance_threshold = 1.0, direction_threshold = Math.PI / 4) {
+
+    var simplified = [];
+
+    // Copy first position of "path" to the filtered path
+    simplified.push(path[0], path[1]);
+
+    let last_direction = Math.atan2(path[1][1] - path[0][1], path[1][0] - path[0][0]);
+
+    // Subsequent positions must greater than the minimum distance to be added
+    for (let i = 1; i < path.length-1; i++) {
+      var magnitude = this.distance(simplified[simplified.length - 1], path[i+1]);
+
+      let direction = Math.atan2(path[i+1][1] - path[i][1], path[i+1][0] - path[i][0]);
+      let direction_delta = last_direction - direction;
+
+      // console.log(magnitude, Math.abs(direction_delta));
+
+      if (Math.abs(direction_delta) > direction_threshold) {
+        // console.log(Math.abs(direction_delta), direction_threshold);
+        last_direction = direction;
+        simplified.push(path[i+1]);
+      } else if (magnitude > distance_threshold) {
+        // console.log("magnitude exceeded");
+        last_direction = direction;
+        simplified.push(path[i+1]);
+      }
+    }
+
+    return simplified;
+  }
 }
 
 // Add module support for CommonJS format in Node (via `require`)
