@@ -9,7 +9,6 @@ on multi-point paths (polylines).
  - boundingBox
  - arrayMin
  - arrayMax
- - lineEquals
  - degreesToRadians
  - radiansToDegrees
  - greatestCommonDivisor
@@ -37,7 +36,7 @@ on multi-point paths (polylines).
  - lineSlopeIntercept
  - arrayColumn
  - centerPaths
- - scapePath
+ - scalePath
  - translatePath
  - rotatePath
  - shiftPath
