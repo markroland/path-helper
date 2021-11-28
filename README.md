@@ -24,7 +24,8 @@ on multi-point paths (polylines).
  - parabola
  - intersect_point
  - getLineLineCollision
- - distance
+ - distance (point-to-point)
+ - pathLength
  - perpendicularPath
  - parallelPath
  - expandPath

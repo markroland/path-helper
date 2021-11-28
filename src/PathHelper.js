@@ -297,6 +297,14 @@ class PathHelper {
     return Math.sqrt(Math.pow(p2[0] - p1[0], 2) + Math.pow(p2[1] - p1[1], 2));
   }
 
+  pathLength(path) {
+    let distance = 0.0;
+    for (let i = 0; i < path.length-1; i++) {
+      distance += this.distance(path[i], path[i+1]);
+    }
+    return distance;
+  }
+
   perpendicularPath(p1, p2) {
 
     // Slope "m"
