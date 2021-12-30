@@ -4,6 +4,7 @@ The PathHelper class contains a variety of methods to assist with performing ope
 on multi-point paths (polylines).
 
  - info
+ - deepCopy
  - getMin
  - getMax
  - boundingBox

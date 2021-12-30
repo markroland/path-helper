@@ -17,6 +17,13 @@ class PathHelper {
   }
 
   /**
+   * Create a deep copy of a JavaScript array/object
+   **/
+  deepCopy(a) {
+    return JSON.parse(JSON.stringify(a))
+  }
+
+  /**
    *
    **/
   getMin(path) {
