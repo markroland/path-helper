@@ -671,7 +671,7 @@ class PathHelper {
         x_min = x;
       }
 
-      x_max = Math.max(...x_coordinates);
+      x = Math.max(...x_coordinates);
       if (x > x_max) {
         x_max = x;
       }
