@@ -32,6 +32,8 @@ on multi-point paths (polylines).
  - offsetPath
  - offsetAngle
  - extendLine
+ - smoothCorners
+ - radiusCorners
  - arcPointToPoint
  - arc
  - lineSlopeIntercept
@@ -53,6 +55,7 @@ on multi-point paths (polylines).
  - quadraticBezierPathAlgorithm
  - cubicBezierPath
  - sortPaths
+ - shufflePaths
  - polarToRect
  - pointOnLineSegment
  - lineCircleIntersect

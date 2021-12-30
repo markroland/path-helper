@@ -588,6 +588,131 @@ class PathHelper {
   }
 
   /**
+   * Smooth the corners on a Path based on percentages
+   * @param Array An array of points representing the path to be modified
+   * @param Float A value from 0 to 1. A sharpness of 0 represents the maximum amount of curvature
+   * possible between adjacent points. A sharpness of 1 represents no change
+   */
+  smoothCorners(path, sharpness) {
+
+    // This is somewhat arbitrary. A larger value is needed for larger paths
+    const bezier_segments = 20;
+
+    // Don't exceed limits
+    if (sharpness >= 1) {
+      return path;
+    }
+
+    if (sharpness < 0) {
+      sharpness = 0;
+    }
+
+    // Map Sharpness to bend
+    // Bend should range from >= 0.5 to < 1 so that
+    // the path can be C2 continuous
+    // Where 0.5 is the broadest bend and 1 is no bend
+    let bend = this.map(sharpness, 0, 1, 0.5, 1);
+
+    // Loop through all points
+    // First point won't have a bend
+    let new_path = [];
+    new_path.push(path[0]);
+    for (let i = 1; i < path.length - 1; i++) {
+
+      // Create variables that are easier to read
+      let op_p1 = path[i-1];
+      let op_p2 = path[i];
+      let op_p3 = path[i+1];
+
+      // Calculate points at which the bezier should start/end
+      let p1_bend = [
+        this.lerp(op_p1[0], op_p2[0], bend),
+        this.lerp(op_p1[1], op_p2[1], bend),
+      ];
+      let p2_bend = [
+        this.lerp(op_p3[0], op_p2[0], bend),
+        this.lerp(op_p3[1], op_p2[1], bend),
+      ];
+
+      // Add curve
+      let bezier = this.cubicBezierPath(
+        p1_bend,
+        op_p2,
+        op_p2,
+        p2_bend,
+        bezier_segments
+      );
+
+      // Remove last point if bend is 0.5
+      // In this case the end point of the current curve
+      // matches the beginning point of the next curve
+      if (bend === 0.5) {
+        bezier.pop();
+      }
+
+      new_path = new_path.concat(bezier);
+    }
+
+    // Last point won't have a bend
+    new_path.push(path[path.length - 1]);
+
+    return new_path;
+  }
+
+  /**
+   * Smooth the corners on a Path based on a radius distance
+   * @param Array An array of points representing the path to be modified
+   * @param Float A numeric radius to apply to the corner
+   */
+  radiusCorners(path, radius) {
+
+    let PathHelp = new PathHelper;
+
+    const bezier_segments = 20;
+
+    // Loop through all points
+    // First point won't have a bend
+    let new_path = [];
+    new_path.push(path[0]);
+    for (let i = 1; i < path.length - 1; i++) {
+
+      // Create variables that are easier to read
+      let p1 = path[i-1];
+      let p2 = path[i];
+      let p3 = path[i+1];
+
+      // Calculate points at which the bezier should start/end
+      let distance_p1_p2 = PathHelp.distance(p1, p2);
+      let p1_bend = [
+        PathHelp.lerp(p1[0], p2[0], (distance_p1_p2 - radius) / distance_p1_p2),
+        PathHelp.lerp(p1[1], p2[1], (distance_p1_p2 - radius) / distance_p1_p2),
+      ];
+
+      let distance_p3_p2 = PathHelp.distance(p3, p2);
+      let p2_bend = [
+        PathHelp.lerp(p3[0], p2[0], (distance_p3_p2 - radius) / distance_p3_p2),
+        PathHelp.lerp(p3[1], p2[1], (distance_p3_p2 - radius) / distance_p3_p2),
+      ];
+
+      // Add curve
+      let bezier = PathHelp.cubicBezierPath(
+        p1_bend,
+        p2,
+        p2,
+        p2_bend,
+        bezier_segments
+      );
+
+      new_path = new_path.concat(bezier);
+    }
+
+    // Last point won't have a bend
+    new_path.push(path[path.length - 1]);
+
+    return new_path;
+  }
+
+  /**
    * Compose an arc between 2 points
    * Description incomplete
    * @param x1 X-position of starting point
@@ -1307,6 +1432,24 @@ class PathHelper {
       // Compare the X-position of the first point in the path
       return a[0][0] - b[0][0];
     });
+    return paths;
+  }
+
+  /**
+   * Shuffle Paths using the Fisher-Yates algorithm
+   * From https://dev.to/codebubb/how-to-shuffle-an-array-in-javascript-2ikj
+   *
+   * @param paths An array of paths
+   *
+   * @return An array of paths now in a random order
+   */
+  shufflePaths(paths) {
+    for (let i = paths.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const temp = paths[i];
+      paths[i] = paths[j];
+      paths[j] = temp;
+    }
     return paths;
   }
 
