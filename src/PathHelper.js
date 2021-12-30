@@ -912,6 +912,27 @@ class PathHelper {
   }
 
   /**
+   * Reflect a Path (array of points) about an axis (X or Y)
+   *
+   * @param Array The path to be reflected
+   * @param String The axis over which to reflect "x" or "Y")
+   * @param Float An optional Axis offset value. The origin is the default
+   *
+   * @return Array The reflected path
+   */
+  reflectPath(path, axis, offset = 0.0) {
+    return path.map(function(point){
+      if (axis == "x") {
+        return [point[0] * -1, point[1]];
+      } else if (axis == "y") {
+        return [point[0], point[1] * -1];
+      } else {
+        return point;
+      }
+    });
+  }
+
+  /**
    * Shift and wrap the elements in the array
    * https://javascript.plainenglish.io/algorithms-101-rotate-array-in-javascript-three-solutions-260fbc923b64
    */

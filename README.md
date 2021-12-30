@@ -44,6 +44,7 @@ on multi-point paths (polylines).
  - translatePath
  - rotatePath
  - shiftPath
+ - reflectPath
  - subdividePath
  - dividePath
  - dividePathComplete
