@@ -2382,6 +2382,140 @@ class PathHelper {
 
     return simplified;
   }
+
+  /**
+   * Perform a Boolean add of two closed paths
+   * @param Array An array of points defining a closed shape
+   * @param Array An array of points defining a closed shape
+   *
+   * @return Array An array of points representing Shape B added to Shape A.
+   * If Shape B does not overlap Shape A, then Shape A will be returned.
+   **/
+  booleanAdd(shapeA, shapeB) {
+
+    // Ensure that shapes are closed (e.g. Last point matches first point)
+    if (!this.pointEquals(shapeA[shapeA.length-1], shapeA[0], 0.0001)) {
+      shapeA.push(shapeA[0]);
+    }
+    if (!this.pointEquals(shapeB[shapeB.length-1], shapeB[0], 0.0001)) {
+      shapeB.push(shapeB[0]);
+    }
+
+    // Get intersections
+    let newA = this.shapeIntersections(shapeA, shapeB);
+    let newB = this.shapeIntersections(shapeB, shapeA);
+
+    // Build a new shape from the two shapes using the segments
+    // that are outside of the other shape
+    let newShape = [];
+    newShape = newShape.concat(this.booleanAddComparison(newA, shapeB));
+    newShape = newShape.concat(this.booleanAddComparison(newB, shapeA));
+
+    // Join all of the path segments into a continuous path
+    newShape = this.joinPaths(newShape);
+
+    return newShape;
+  }
+
+  /**
+   * Remove segments of Shape A that are inside of Shape B
+   *
+   * @param Array An array of points defining a closed shape
+   * @param Array An array of points defining a closed shape
+   *
+   * @return Array A multidimensional array of paths from Shape A
+   * that are outside of Shape B
+   **/
+  booleanAddComparison(shapeA, shapeB) {
+    let paths = [];
+
+    let shapeB_vertices = [];
+    for (let v = 0; v < shapeB.length-1; v++) {
+      shapeB_vertices.push({x: shapeB[v][0], y: shapeB[v][1]});
+    }
+
+    let path = [];
+    let i_max = shapeA.length-1;
+    for (let i = 0; i < i_max; i++) {
+      let mid_point = [
+        this.lerp(shapeA[i][0], shapeA[i+1][0], 0.5),
+        this.lerp(shapeA[i][1], shapeA[i+1][1], 0.5),
+      ];
+      if (this.pointInPolygon(shapeB_vertices, mid_point[0], mid_point[1])) {
+        path.push(shapeA[i]);
+        if (path.length > 1) {
+          paths.push(path);
+        }
+        path = [];
+      } else {
+        path.push(shapeA[i]);
+      }
+      // Add last point if end of loop... I'm not convinced this is correct
+      if (i == i_max - 1) {
+        path.push(shapeA[i+1]);
+      }
+    }
+    if (path.length > 1) {
+      paths.push(path);
+    }
+
+    return paths;
+  }
+
+  /**
+   * Calculate the intersection points of Shape A with Shape B,
+   * and insert these intersection points in Shape A (in order)
+   *
+   * @param Array An array of points defining a closed shape
+   * @param Array An array of points defining a closed shape
+   *
+   * @return Array An array of points representing Shape A with
+   * the intersection points of Shape B added
+   **/
+  shapeIntersections(shapeA, shapeB) {
+
+    let newA = [];
+
+    // Loop through points of Shape A
+    for (let i = 0; i < shapeA.length - 1; i++) {
+
+      // Add the starting point
+      newA.push(shapeA[i]);
+
+      // Analyze current line segment of Shape A for intersections
+      // with all segments of Shape B
+      let segment_intersections = [];
+      for (let j = 0; j < shapeB.length-1; j++) {
+        let intersect = this.getLineLineCollision(
+          {x: shapeA[i][0], y: shapeA[i][1]},
+          {x: shapeA[i+1][0], y: shapeA[i+1][1]},
+          {x: shapeB[j][0], y: shapeB[j][1]},
+          {x: shapeB[j+1][0], y: shapeB[j+1][1]}
+        );
+        if (intersect) {
+          segment_intersections.push([
+            intersect.x,
+            intersect.y
+          ]);
+        }
+      }
+
+      // Sort segment_intersections and insert in Shape A
+      if (segment_intersections.length > 0) {
+        let self = this;
+        segment_intersections.sort(function(a, b) {
+          return (self.distance(shapeA[i], a) > self.distance(shapeA[i], b) ? 1 : -1)
+        });
+        newA = newA.concat(segment_intersections);
+      }
+    }
+
+    // Close shape
+    newA.push(shapeA[shapeA.length - 1]);
+
+    return newA;
+  }
+
 }
 
 // Add module support for CommonJS format in Node (via `require`)

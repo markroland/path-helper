@@ -72,6 +72,9 @@ on multi-point paths (polylines).
  - linePathsSplit (for layeredPaths)
  - noisify
  - simplify
+ - booleanAdd
+ - booleanAddComparison
+ - shapeIntersections
 
 ## License
 
