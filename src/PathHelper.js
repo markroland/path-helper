@@ -1859,8 +1859,17 @@ class PathHelper {
 
   /**
    * PolyPoint from http://www.jeffreythompson.org/collision-detection/poly-point.php
+   * Threshold has been added so that points very close to the border of the
+   * polygon can be selecteive counted as in or out
+   * @param Array Vertices of Polygon
+   * @param Float X Position of Point
+   * @param Float Y Position of Point
+   * @param Float The Threshold at which to consider a point near the border as either
+   * inside or outside.
+   *
+   * @return Boolean True if the point is inside the Polygon, false otherwise
    **/
-  pointInPolygon(vertices, px, py) {
+  pointInPolygon(vertices, px, py, threshold = -0.00001) {
 
     let collision = false;
 
@@ -1878,16 +1887,32 @@ class PathHelper {
 
       // get the PVectors at our current position
       // this makes our if statement a little cleaner
-      let vc = vertices[current];    // c for "current"
-      let vn = vertices[next];       // n for "next"
+      let vc = vertices[current];
+      let vn = vertices[next];
 
-      // compare position, flip 'collision' variable
-      // back and forth
-      if (((vc.y >= py && vn.y < py) || (vc.y < py && vn.y >= py)) &&
-           (px < (vn.x-vc.x)*(py-vc.y) / (vn.y-vc.y)+vc.x)) {
-              collision = !collision;
+      // compare position, flip 'collision' variable back and forth
+      let within_vertical_band = (vc.y >= py && vn.y < py) || (vc.y < py && vn.y >= py)
+      let jordan_curve_theorem = (vn.x-vc.x) * (py-vc.y) / (vn.y-vc.y) + vc.x;
+      if (within_vertical_band && px < jordan_curve_theorem) {
+        collision = !collision;
       }
+
+      // If the point is within the threshold of a border, then
+      // return right away. If the threshold is positive, then be
+      // more permissive for counting the point as inside the polyon.
+      // If the threshold is negative, then be less permissive with
+      // including the point in the polygon
+      let on_line = this.pointOnLineSegment([px, py], [[vc.x, vc.y], [vn.x, vn.y]], Math.abs(threshold));
+      if (on_line) {
+        if (threshold > 0) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+
     }
+
     return collision;
   }
 
