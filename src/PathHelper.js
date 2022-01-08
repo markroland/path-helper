@@ -775,7 +775,6 @@ class PathHelper {
     return { "m": m, "b": b};
   }
 
-  // const arrayColumn = (arr, n) => arr.map(a => a[n]);
   arrayColumn(arr, n){
     return arr.map(a => a[n]);
   }
@@ -837,27 +836,6 @@ class PathHelper {
 
     return paths;
   }
-
-  /*
-  center(path) {
-
-    // Define function to extract column from multidimensional array
-    // const arrayColumn = (arr, n) => arr.map(a => a[n]);
-
-    // Get X and Y coordinates as an 1-dimensional array
-    let x_coordinates = this.arrayColumn(path, 0);
-    let x_min = Math.min(...x_coordinates);
-    let x_max = Math.max(...x_coordinates);
-    let x_range = x_max - x_min;
-
-    let y_coordinates = this.arrayColumn(path, 1);
-    let y_min = Math.min(...y_coordinates);
-    let y_max = Math.max(...y_coordinates);
-    let y_range = y_max - y_min;
-
-    return [x_min + x_range/2, y_min + y_range/2]
-  }
-  //*/
 
   /**
    * Scale Path
