@@ -2362,12 +2362,13 @@ class PathHelper {
   }
 
   /**
-   * Perform a Boolean add of two closed paths
+   * Perform a Boolean addition (union) of two closed paths
+   *
    * @param Array An array of points defining a closed shape
    * @param Array An array of points defining a closed shape
    *
    * @return Array An array of points representing Shape B added to Shape A.
-   * If Shape B does not overlap Shape A, then Shape A will be returned.
+   * If Shape B does not overlap Shape A, then Shape A will be returned unchanged.
    **/
   booleanAdd(shapeA, shapeB) {
 
@@ -2432,6 +2433,199 @@ class PathHelper {
       if (i == i_max - 1) {
         path.push(shapeA[i+1]);
       }
+    }
+    if (path.length > 1) {
+      paths.push(path);
+    }
+
+    return paths;
+  }
+
+  /**
+   * Perform a Boolean subtraction (difference) of two closed paths
+   *
+   * @param Array An array of points defining a closed shape
+   * @param Array An array of points defining a closed shape
+   *
+   * @return Array An array of points representing Shape B removed from Shape A.
+   * If Shape B does not overlap Shape A, then Shape A will be returned unchanged.
+   **/
+  booleanSubtract(shapeA, shapeB) {
+
+    // Ensure that shapes are closed (e.g. Last point matches first point)
+    if (!this.pointEquals(shapeA[shapeA.length-1], shapeA[0], 0.0001)) {
+      shapeA.push(shapeA[0]);
+    }
+    if (!this.pointEquals(shapeB[shapeB.length-1], shapeB[0], 0.0001)) {
+      shapeB.push(shapeB[0]);
+    }
+
+    // Get intersections
+    let newA = this.shapeIntersections(shapeA, shapeB);
+    let newB = this.shapeIntersections(shapeB, shapeA);
+
+    // Build a new shape from the two shapes using the segments
+    // that are outside of the other shape
+    let newShape = [];
+    newShape = newShape.concat(this.booleanSubtractComparison(newA, shapeB));
+    newShape = newShape.concat(this.booleanSubtractComparison(newB, shapeA, true));
+
+    // Join all of the path segments into a continuous path
+    newShape = this.joinPaths(newShape);
+
+    return newShape;
+  }
+
+  /**
+   * Remove segments of Shape B that are outside of Shape A
+   *
+   * @param Array An array of points defining a closed shape
+   * @param Array An array of points defining a closed shape
+   *
+   * @return Array A multidimensional array of paths from Shape A
+   * that are outside of Shape B
+   **/
+  booleanSubtractComparison(shapeA, shapeB, invert = false) {
+    let paths = [];
+
+    // Extract and reformat vertices from shapeB for use with this.pointInPolygon
+    let shapeB_vertices = [];
+    for (let v = 0; v < shapeB.length-1; v++) {
+      shapeB_vertices.push({x: shapeB[v][0], y: shapeB[v][1]});
+    }
+
+    // Loop through all segments of Shape A and determine if they are inside
+    // or outside of Shape B
+    let path = [];
+    let i_max = shapeA.length-1;
+    for (let i = 0; i < i_max; i++) {
+
+      // Get the midpoint of the segment as the point to compare
+      let mid_point = [
+        this.lerp(shapeA[i][0], shapeA[i+1][0], 0.5),
+        this.lerp(shapeA[i][1], shapeA[i+1][1], 0.5),
+      ];
+
+      if (!invert) {
+
+        if (this.pointInPolygon(shapeB_vertices, mid_point[0], mid_point[1])) {
+          path.push(shapeA[i]);
+          if (path.length > 1) {
+            paths.push(path);
+          }
+          path = [];
+        } else {
+          path.push(shapeA[i]);
+        }
+        // Add last point if end of loop... I'm not convinced this is correct
+        if (i == i_max - 1) {
+          path.push(shapeA[i+1]);
+        }
+
+      } else {
+
+        if (!this.pointInPolygon(shapeB_vertices, mid_point[0], mid_point[1])) {
+          path.push(shapeA[i]);
+          if (path.length > 1) {
+            paths.push(path);
+          }
+          path = [];
+        } else {
+          path.push(shapeA[i]);
+        }
+        // Add last point if end of loop... I'm not convinced this is correct
+        if (i == i_max - 1) {
+          path.push(shapeA[i+1]);
+        }
+
+      }
+    }
+    if (path.length > 1) {
+      paths.push(path);
+    }
+
+    return paths;
+  }
+
+  /**
+   * Perform a Boolean intersection of two closed paths
+   *
+   * @param Array An array of points defining a closed shape
+   * @param Array An array of points defining a closed shape
+   *
+   * @return Array An array of points representing the overlapping region(s) of Shape A and Shape B.
+   * If there is no overlap an empty shape should be returned
+   **/
+  booleanIntersect(shapeA, shapeB) {
+
+    // Ensure that shapes are closed (e.g. Last point matches first point)
+    if (!this.pointEquals(shapeA[shapeA.length-1], shapeA[0], 0.0001)) {
+      shapeA.push(shapeA[0]);
+    }
+    if (!this.pointEquals(shapeB[shapeB.length-1], shapeB[0], 0.0001)) {
+      shapeB.push(shapeB[0]);
+    }
+
+    // Get intersections
+    let newA = this.shapeIntersections(shapeA, shapeB);
+    let newB = this.shapeIntersections(shapeB, shapeA);
+
+    // Build a new shape from the two shapes using the segments
+    // that are outside of the other shape
+    let newShape = [];
+    newShape = newShape.concat(this.booleanIntersectionComparison(newA, shapeB));
+    newShape = newShape.concat(this.booleanIntersectionComparison(newB, shapeA, true));
+
+    // Join all of the path segments into a continuous path
+    newShape = this.joinPaths(newShape);
+
+    return newShape;
+  }
+
+  /**
+   * Remove segments of Shape B that are outside of Shape A
+   *
+   * @param Array An array of points defining a closed shape
+   * @param Array An array of points defining a closed shape
+   *
+   * @return Array A multidimensional array of paths from Shape A
+   * that are outside of Shape B
+   **/
+  booleanIntersectionComparison(shapeA, shapeB) {
+    let paths = [];
+
+    // Extract and reformat vertices from shapeB for use with this.pointInPolygon
+    let shapeB_vertices = [];
+    for (let v = 0; v < shapeB.length-1; v++) {
+      shapeB_vertices.push({x: shapeB[v][0], y: shapeB[v][1]});
+    }
+
+    // Loop through all segments of Shape A and determine if they are inside
+    // or outside of Shape B
+    let path = [];
+    let i_max = shapeA.length-1;
+    for (let i = 0; i < i_max; i++) {
+
+      // Get the midpoint of the segment as the point to compare
+      let mid_point = [
+        this.lerp(shapeA[i][0], shapeA[i+1][0], 0.5),
+        this.lerp(shapeA[i][1], shapeA[i+1][1], 0.5),
+      ];
+
+      if (!this.pointInPolygon(shapeB_vertices, mid_point[0], mid_point[1])) {
+        path.push(shapeA[i]);
+        if (path.length > 1) {
+          paths.push(path);
+        }
+        path = [];
+      } else {
+        path.push(shapeA[i]);
+      }
+      // Add last point if end of loop... I'm not convinced this is correct
+      if (i == i_max - 1) {
+        path.push(shapeA[i+1]);
+      }
+
     }
     if (path.length > 1) {
       paths.push(path);
