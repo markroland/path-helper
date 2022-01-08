@@ -1896,14 +1896,17 @@ class PathHelper {
 
   /**
    * Fill a convex shape (polygon) with straight lines
+   *
    * @param array The shape to be filled
    * @param float The space between the fill lines
    * @param float The angle (in radians) of the fill lines (0.0 is horizontal)
    * @param boolean Set whether the lines should alternate directions (optimal for plotting)
    * @param boolean Set to true to connect the lines. Default is false
+   * @param function An optional function to describe how to space fill lines
+   *
    * @return Array A multidimensional array of paths
    */
-  fill(shape, spacing, angle = 0.0, alternate = true, connect = false) {
+  fill(shape, spacing, angle = 0.0, alternate = true, connect = false, fillFunc = null) {
 
     // Calculate the tight bounding box of the shape
     let bbox = this.boundingBox(shape);
@@ -1927,10 +1930,18 @@ class PathHelper {
     let lines = [];
     for (let j = 0; j < num_lines; j++) {
 
-      // Define a horizontal line oriented to the origin
+      // Calculate the vertical position of the fill line
+      // The default uses even spacing. A fill function
+      // can be passed in to define the line spacing
+      let y = -radius/2 + radius * (j/num_lines);
+      if (typeof fillFunc !== "undefined") {
+        y = fillFunc(j/num_lines);
+      }
+
+      // Create a fill line
       let line = [
-        [-radius, -radius/2 + radius * (j/num_lines)],
-        [ radius, -radius/2 + radius * (j/num_lines)]
+        [-radius, y],
+        [ radius, y]
       ];
 
       // Rotate the line to match the requested fill angle
