@@ -74,6 +74,10 @@ on multi-point paths (polylines).
  - simplify
  - booleanAdd
  - booleanAddComparison
+ - booleanSubtract
+ - booleanSubtractComparison
+ - booleanIntersection
+ - booleanIntersectionComparison
  - shapeIntersections
 
 ## License
