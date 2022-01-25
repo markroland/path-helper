@@ -1696,6 +1696,7 @@ class PathHelper {
   /**
    * Take a path and crop it to a circle
    * This works, but hasn't been rigorously tested on edge cases
+   * @deprecated Try cropToShape() instead
    */
   cropToCircle(candidate_paths, center = [0,0], crop_radius = 1) {
 
@@ -1795,6 +1796,7 @@ class PathHelper {
    * outside of the crop area, but cut across the region, the segment
    * of the path that cuts across will not be determined or used.
    * Note: This has not been performance optimized.
+   * @deprecated Try cropToShape() instead
    * @param The candidate paths to be cropped
    * @param The minimum X value to be included (inclusive)
    * @param The maximum X value to be included (inclusive)
@@ -1941,6 +1943,210 @@ class PathHelper {
         paths.push(path);
       }
     }
+    return paths;
+  }
+
+  /**
+   * Crop multiple paths to a bounding shape
+   *
+   * @param Array The candidate paths to be cropped
+   * @param Array The bounding shape to be applied to the candidate paths
+   * @param Array The threshold at which to consider a path as intersecting
+   * with another.
+   *
+   * @returns Array A multidimensional array of paths
+   */
+  cropToShape(candidate_paths, cropShape, threshold = 0.0001) {
+
+    let paths = [];
+    let path = [];
+
+    // Reformat vertices of cropShape for use with pointInPolygon()
+    let vertices = [];
+    for (let v = 0; v < cropShape.length-1; v++) {
+      vertices.push({x: cropShape[v][0], y: cropShape[v][1]});
+    }
+
+    // Loop through all paths
+    for (let i = 0; i < candidate_paths.length; i++) {
+
+      path = [];
+
+      // Loop through points/segments of path
+      for (let p = 0; p < candidate_paths[i].length-1; p++) {
+
+        // Check if point is within bounds
+        let point_in_bounds = this.pointInPolygon(
+          vertices,
+          candidate_paths[i][p][0],
+          candidate_paths[i][p][1],
+          threshold
+        );
+
+        // Check if next point is within bounds (if not the last point)
+        let next_point_in_bounds = null;
+        if (p+1 < candidate_paths[i].length) {
+          next_point_in_bounds = this.pointInPolygon(
+            vertices,
+            candidate_paths[i][p+1][0],
+            candidate_paths[i][p+1][1],
+            threshold
+          );
+        }
+
+        // Determine if the next point is the end of the candiate path
+        let next_point_is_last = false;
+        if (p === candidate_paths[i].length-2) {
+          next_point_is_last = true;
+        }
+
+        if (point_in_bounds) {
+
+          if (next_point_in_bounds) {
+
+            // The next point is also inside the bounds so no need to calculate an intersection
+            path.push(candidate_paths[i][p]);
+
+            if (next_point_is_last) {
+              path.push(candidate_paths[i][p+1]);
+            }
+
+          } else {
+
+            // The next point is not inside the bounds so the point at which the segment crosses the border
+            // must be calculated
+
+            // Determine which side the next point intersects with. Stop testing after the first
+            // is found.
+            for (let pt = 0; pt < cropShape.length; pt++) {
+
+              let intersection_point = this.getLineLineCollision(
+                {"x": candidate_paths[i][p][0], "y": candidate_paths[i][p][1]},
+                {"x": candidate_paths[i][p+1][0], "y": candidate_paths[i][p+1][1]},
+                {"x": cropShape[pt][0], "y": cropShape[pt][1]},
+                {"x": cropShape[(pt+1) % cropShape.length][0], "y": cropShape[(pt+1) % cropShape.length][1]}
+              );
+
+              // Note: Could/Should this use this.pointEquals() instead?
+              let on_line = this.pointOnLineSegment(
+                candidate_paths[i][p],
+                [cropShape[pt], cropShape[(pt+1) % cropShape.length]],
+                0.011 // Math.abs(threshold)
+              );
+
+              if (on_line && intersection_point == false) {
+                intersection_point = {
+                  "x": candidate_paths[i][p][0],
+                  "y": candidate_paths[i][p][1]
+                };
+              }
+
+              // Add the intersection point to the path if one is found
+              if (intersection_point !== false) {
+                path.push(
+                  candidate_paths[i][p],
+                  [intersection_point.x, intersection_point.y]
+                );
+
+                // Save path if it contains at least one line segment (2 points)
+                if (path.length >= 2) {
+                  paths.push(path);
+                }
+
+                // Reset the path since the path hit the border
+                path = [];
+
+                // Break the for-loop. No need to calculate any other intersections
+                break;
+              }
+            }
+          }
+        } else {
+
+          // The current point is out of bounds
+
+          if (next_point_in_bounds) {
+
+            // The next point is inside the bounds so the point at which the segment crosses the border
+            // must be calculated
+
+            // Determine which side the next point intersects with. Stop testing after the first
+            // is found.
+            for (let pt = 0; pt < cropShape.length; pt++) {
+
+              let intersection_point = this.getLineLineCollision(
+                {"x": candidate_paths[i][p][0], "y": candidate_paths[i][p][1]},
+                {"x": candidate_paths[i][p+1][0], "y": candidate_paths[i][p+1][1]},
+                {"x": cropShape[pt][0], "y": cropShape[pt][1]},
+                {"x": cropShape[(pt+1) % cropShape.length][0], "y": cropShape[(pt+1) % cropShape.length][1]}
+              );
+
+              // Note: Could/Should this use this.pointEquals() instead?
+              let on_line = this.pointOnLineSegment(
+                candidate_paths[i][p],
+                [cropShape[pt], cropShape[(pt+1) % cropShape.length]],
+                Math.abs(threshold)
+              );
+
+              if (on_line) {
+                intersection_point = {
+                  "x": candidate_paths[i][p][0],
+                  "y": candidate_paths[i][p][1]
+                };
+              }
+
+              if (intersection_point !== false) {
+                path.push(
+                  [intersection_point.x, intersection_point.y],
+                  candidate_paths[i][p+1]
+                );
+                break;
+              }
+            }
+          } else {
+
+            /*
+              The start and end points are out of bounds, however it is
+              possible that the line could cut across the crop shape.
+            */
+
+            // Test if the segment crosses any of the crop borders
+            let intersections = [];
+            for (let pt = 0; pt < cropShape.length; pt++) {
+
+              let intersection_point = this.getLineLineCollision(
+                {"x": candidate_paths[i][p][0], "y": candidate_paths[i][p][1]},
+                {"x": candidate_paths[i][p+1][0], "y": candidate_paths[i][p+1][1]},
+                {"x": cropShape[pt][0], "y": cropShape[pt][1]},
+                {"x": cropShape[(pt+1) % cropShape.length][0], "y": cropShape[(pt+1) % cropShape.length][1]}
+              );
+
+              if (intersection_point !== false) {
+                intersections.push(intersection_point);
+              }
+            }
+
+            // Add the intersection points if two are found. This
+            // works for a convex cropShape, but doesn't account
+            // for a cropShape that may have concave parts, which
+            // could allow more than 2 intersections.
+            if (intersections.length == 2) {
+              path.push(
+                [intersections[0].x, intersections[0].y],
+                [intersections[1].x, intersections[1].y]
+              );
+            }
+
+          }
+        }
+      }
+
+      // Save path if it contains at least one line segment (2 points)
+      if (path.length >= 2) {
+        paths.push(path);
+      }
+    }
+
     return paths;
   }
 

@@ -143,8 +143,9 @@ let i = PH.info(path);
  - lineCircleIntersect
  - solveQuadratic
  - circleInterceptPoints
- - cropToCircle
- - cropToRectangle
+ - cropToCircle (Deprecated: Try cropToShape instead)
+ - cropToRectangle (Deprecated: Try cropToShape instead)
+ - cropToShape
  - knockout
  - pointInPolygon
  - fill
