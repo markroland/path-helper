@@ -558,6 +558,16 @@ class PathHelper {
 
   /**
    * Offset a path of 3 points
+   *
+   * INTENDED TO BE PRIVATE METHOD OF CLASS
+   *
+   *    (A: p1)
+   *      /
+   *     /
+   *    /________
+   *   (C: p2)   (B: p3)
+   *
+   *
    * @param Array Point 1. Endpoint "A"
    * @param Array Point 2. Midpoint/Vertex "C"
    * @param Array Point 3. Endpoint "B"
@@ -586,18 +596,38 @@ class PathHelper {
       console.log("Invalid acos() argument: " + acos_arg);
     }
 
+    // Gamma angle in radians. This is the angle of ACB
     let gamma = Math.acos(acos_arg);
 
     // Calculate the distance that the side AC (or CB)
     // must be extended (or subtracted) in order to turn
     // around (or inside) vertex C
-    let corner_offset = offset * Math.tan(Math.PI/2 - 0.5 * gamma);
+    let corner_offset = offset * Math.tan(Math.PI/2 - (0.5 * gamma));
 
     // Calculate the parallel offset path from point 1 to 2 (Side AC)
     let AC_offset = this.parallelPath(p1, p2, offset);
 
+    // Compute the Cross Product of the vector CA with vector CB
+    // to determine if the parallel path is on the interior or
+    // exterior of the angle. If the magnitude of the cross product
+    // is negative, then invert the corner offset magnitude.
+    let vector_a = [
+      p1[0] - p2[0],
+      p1[1] - p2[1],
+      0
+    ];
+    let vector_b = [
+      p3[0] - p2[0],
+      p3[1] - p2[1],
+      0
+    ];
+    let cross_product = this.crossProduct(vector_a, vector_b);
+    if (cross_product[2] < 0) {
+      corner_offset = corner_offset * -1;
+    }
+
     // Extend/Reduce the line by the Corner Offset distance
-    AC_offset = this.extendLine(AC_offset[0], AC_offset[1], 0, -corner_offset);
+    AC_offset = this.extendLine(AC_offset[0], AC_offset[1], 0, corner_offset);
 
     // Calculate the parallel offset path from point 2 to 3 (Side CB)
     let CB_offset = this.parallelPath(p2, p3, offset);
