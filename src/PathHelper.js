@@ -709,8 +709,6 @@ class PathHelper {
    */
   radiusCorners(path, radius) {
 
-    let PathHelp = new PathHelper;
-
     const bezier_segments = 20;
 
     // Loop through all points
@@ -725,20 +723,20 @@ class PathHelper {
       let p3 = path[i+1];
 
       // Calculate points at which the bezier should start/end
-      let distance_p1_p2 = PathHelp.distance(p1, p2);
+      let distance_p1_p2 = this.distance(p1, p2);
       let p1_bend = [
-        PathHelp.lerp(p1[0], p2[0], (distance_p1_p2 - radius) / distance_p1_p2),
-        PathHelp.lerp(p1[1], p2[1], (distance_p1_p2 - radius) / distance_p1_p2),
+        this.lerp(p1[0], p2[0], (distance_p1_p2 - radius) / distance_p1_p2),
+        this.lerp(p1[1], p2[1], (distance_p1_p2 - radius) / distance_p1_p2),
       ];
 
-      let distance_p3_p2 = PathHelp.distance(p3, p2);
+      let distance_p3_p2 = this.distance(p3, p2);
       let p2_bend = [
-        PathHelp.lerp(p3[0], p2[0], (distance_p3_p2 - radius) / distance_p3_p2),
-        PathHelp.lerp(p3[1], p2[1], (distance_p3_p2 - radius) / distance_p3_p2),
+        this.lerp(p3[0], p2[0], (distance_p3_p2 - radius) / distance_p3_p2),
+        this.lerp(p3[1], p2[1], (distance_p3_p2 - radius) / distance_p3_p2),
       ];
 
       // Add curve
-      let bezier = PathHelp.cubicBezierPath(
+      let bezier = this.cubicBezierPath(
         p1_bend,
         p2,
         p2,
