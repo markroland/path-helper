@@ -190,8 +190,11 @@ class PathHelper {
     while(v === 0) v = Math.random();
     let num = Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
     num = num / 10.0 + 0.5; // Translate to 0 -> 1
-    if (num > 1 || num < 0) return this.getGaussianRandom() // resample between 0 and 1
-    return num
+    if (num > 1 || num < 0) {
+      // resample between 0 and 1
+      return this.getGaussianRandom();
+    }
+    return num;
   }
 
   map (value, in_min, in_max, out_min, out_max) {
