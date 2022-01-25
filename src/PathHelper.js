@@ -1,5 +1,16 @@
+/**
+ * PathHelper class
+ * @author Mark Roland
+ * @license Creative Commons Attribution-ShareAlike 4.0 International License
+ */
 class PathHelper {
 
+  /**
+   * Get information about a 2D path
+   * @param {array} path - A path
+   * @returns {object} An object with information about the object
+   * including its X/Y dimension range and center point
+   */
   info(path) {
     let results = {
       "min": this.getMin(path),
@@ -18,13 +29,18 @@ class PathHelper {
 
   /**
    * Create a deep copy of a JavaScript array/object
+   * @param {array|object} The thing to be copied
+   * @returns {array|object} An independent copy of the input value
    **/
   deepCopy(a) {
-    return JSON.parse(JSON.stringify(a))
+    return JSON.parse(JSON.stringify(a));
   }
 
   /**
-   *
+   * Get the minimum value from each coordinate compononent of a path
+   * Supports 2D and 3D.
+   * @param {array} A Path array
+   * @returns {array} An array with the minimum value for each dimension
    **/
   getMin(path) {
     let x_coordinates = this.arrayColumn(path, 0);
@@ -44,7 +60,10 @@ class PathHelper {
   }
 
   /**
-   *
+   * Get the maximum value from each coordinate compononent of a path
+   * Supports 2D and 3D.
+   * @param {array} A Path array
+   * @returns {array} An array with the maximum value for each dimension
    **/
   getMax(path) {
     let x_coordinates = this.arrayColumn(path, 0);
