@@ -2013,7 +2013,7 @@ class PathHelper {
       // The default uses even spacing. A fill function
       // can be passed in to define the line spacing
       let y = -radius/2 + radius * (j/num_lines);
-      if (typeof fillFunc !== "undefined") {
+      if (typeof fillFunc == "function") {
         y = fillFunc(j/num_lines);
       }
 
