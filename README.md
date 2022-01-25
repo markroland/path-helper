@@ -3,6 +3,46 @@
 The PathHelper class contains a variety of methods to assist with performing operations
 on multi-point paths (polylines).
 
+## Common Data Types
+
+### Point
+
+A point is an array of 2 or 3 elements representing either the point's X,Y or X,Y,Z position.
+
+```
+let point = [0.0, 0.0];
+```
+
+### Path
+
+A path is an array of one or more points.
+
+```
+let path = [
+    [-1, 0],
+    [ 1, 0]
+]
+```
+
+### Paths
+
+Paths represent one or more path.
+
+```
+let paths = [
+    [
+        [-1, 0],
+        [ 1, 0]
+    ],
+    [
+        [0, -1],
+        [0,  1]
+    ]
+];
+```
+
+## Methods
+
  - info
  - deepCopy
  - getMin
