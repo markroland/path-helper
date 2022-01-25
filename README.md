@@ -84,6 +84,7 @@ let i = PH.info(path);
  - deepCopy
  - getMin
  - getMax
+ - crossProduct
  - boundingBox
  - arrayMin
  - arrayMax

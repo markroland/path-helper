@@ -83,6 +83,20 @@ class PathHelper {
   }
 
   /**
+   * Calculate the cross product of A and B
+   * @param {array} a - A 3D Vector (an Array consisting of three Numbers)
+   * @param {array} b - A 3D Vector (an Array consisting of three Numbers)
+   * @returns {array} The Cross Product of A cross B (an Array consisting of three Numbers)
+   */
+  crossProduct(a, b) {
+    return [
+      a[1] * b[2] - a[2] * b[1],
+      a[2] * b[0] - a[0] * b[2],
+      a[0] * b[1] - a[1] * b[0]
+    ];
+  }
+
+  /**
    *
    **/
   boundingBox(path) {
