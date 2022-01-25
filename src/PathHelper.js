@@ -1978,7 +1978,7 @@ class PathHelper {
       let vn = vertices[next];
 
       // compare position, flip 'collision' variable back and forth
-      let within_vertical_band = (vc.y >= py && vn.y < py) || (vc.y < py && vn.y >= py)
+      let within_vertical_band = (vc.y >= py && vn.y < py) || (vc.y < py && vn.y >= py);
       let jordan_curve_theorem = (vn.x-vc.x) * (py-vc.y) / (vn.y-vc.y) + vc.x;
       if (within_vertical_band && px < jordan_curve_theorem) {
         collision = !collision;
@@ -1989,7 +1989,11 @@ class PathHelper {
       // more permissive for counting the point as inside the polyon.
       // If the threshold is negative, then be less permissive with
       // including the point in the polygon
-      let on_line = this.pointOnLineSegment([px, py], [[vc.x, vc.y], [vn.x, vn.y]], Math.abs(threshold));
+      let on_line = this.pointOnLineSegment(
+        [px, py],
+        [[vc.x, vc.y], [vn.x, vn.y]],
+        Math.abs(threshold)
+      );
       if (on_line) {
         if (threshold > 0) {
           return true;
