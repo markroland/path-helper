@@ -2434,15 +2434,76 @@ class PathHelper {
         if (new_segments.length > 0) {
           paths_of_i = paths_of_i.concat(new_segments);
         }
+  /**
+   * Subtract paths from one another. The lowest index
+   * The lowest index (0) of "paths" will be on the bottom
+   * of the stack. Subsequent paths (1, 2, 3...) will
+   * knock out (subtract) any portions of previous paths
+   * that they cover.
+   *
+   * Important: This is very similar to layeredPaths, except
+   * that this method incorporates the path of the shape that
+   * is being subtracted from the original path (as opposed to
+   * removing it as in layeredPaths).
+   *
+   * @param Array An array of path arrays
+   *
+   * @returns Array An array of path objects either labeled as "group"
+   * if it contains more than one path or "path" if it contains a single
+   * path. It is important to group pieces of the same original shape/path
+   * together so that if a fill is applied later all pieces of the same original
+   * shape can be filled the same.
+   **/
+  subtractPaths(paths) {
 
-        if (join) {
-          paths_of_i = this.joinPaths(paths_of_i)
+    // Final paths for plotting
+    let final_paths = [];
+
+    // Loop through shapes
+    for (let i = 0; i < paths.length; i++) {
+
+      // The last shape doesn't need to be evaluated since
+      // it is on "top" of all other shapes
+      if (i == paths.length-1) {
+        // final_paths.push(paths[i])
+        final_paths.push({
+          "path": paths[i]
+        });
+        break;
+      }
+
+      // Get all shapes on "layers" above (higher index) the current shape
+      let comparison_shapes = this.deepCopy(paths);
+      comparison_shapes.splice(0, i+1);
+
+      // Subtract these shapes from the current shape
+      let new_shape = this.deepCopy(paths[i]);
+      for (let j = 0; j < comparison_shapes.length; j++) {
+
+        // Check if the new_shape has been completely
+        // eliminated by other shape subtractions
+        if (typeof new_shape == "undefined") {
+          break;
         }
 
+        // Subtract the comparision shape from the original shape
+        new_shape = this.booleanSubtract(
+          new_shape,
+          comparison_shapes[j]
+        );
       }
 
       // Add the paths of the shape onto the final output paths
-      final_paths = final_paths.concat(paths_of_i)
+      // final_paths = final_paths.concat(new_shape)
+      if (new_shape.length > 1) {
+        final_paths.push({
+          "group": new_shape
+        });
+      } else {
+        final_paths.push({
+          "path": new_shape[0]
+        });
+      }
     }
 
     return final_paths;

@@ -150,6 +150,7 @@ let i = PH.info(path);
  - pointInPolygon
  - fill
  - layeredPaths
+ - subtractPaths
  - linePathSplit (for layeredPaths)
  - linePathsSplit (for layeredPaths)
  - noisify
