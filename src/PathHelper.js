@@ -2222,9 +2222,11 @@ class PathHelper {
    * @param Array An array containing 2 point Arrays that define the x/y position of the
    * line's start and end points
    * @param Array An array containing 2 or more point Arrays defining a path.
+   * @param number An optional threshold value for a distance below which two points
+   * should be considered coincident and not intersecting.
    * @returns An array of zero, one or two line arrays
    **/
-  linePathSplit(line, path) {
+  linePathSplit(line, path, threshold = 0.001) {
 
     // Start and End points for line
     let a = line[0];
@@ -2313,7 +2315,11 @@ class PathHelper {
       // split the line into two non-overlapping segments
       let dist1 = this.distance(a, intersections[0])
       let dist2 = this.distance(a, intersections[1])
-      if (dist1 < dist2) {
+      if (dist1 < threshold && dist2 < threshold) {
+        return [
+          [a,b]
+        ];
+      } else if (dist1 < dist2) {
         return [
           [a, intersections[0]],
           [intersections[1], b]
@@ -2325,6 +2331,7 @@ class PathHelper {
         ];
       }
     }
+    return [];
   }
 
   /**
