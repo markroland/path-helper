@@ -2382,8 +2382,31 @@ class PathHelper {
     return fill;
   }
 
-  // Calculate the stacking intersections
-  layeredPaths(paths, join = false, offset = 0) {
+  /**
+   * Layer paths according to their stacking order
+   * The lowest index (0) of "paths" will be on the bottom
+   * of the stack. Subsequent paths (1, 2, 3...) will
+   * knock out (subtract) any portions of previous paths
+   * that they cover.
+   *
+   * Important: Shapes that are knocked-out do not include
+   * the portion of the otehr shape that covers them. In
+   * other words, the cover section is removed from the original
+   * path and leaves a blank space, rather than incorporating
+   * the portion of the other shape
+   *
+   * @param Array An array of path arrays
+   * @param Boolean Whether or not to join paths
+   * @param number This represents an offset from the original
+   * path that can be used to adjust at what point an intersection
+   * occurs.
+   * @param Boolean Set to true if the Paths are
+   * quadrilaterals where each shares 1 side in succession. This
+   * can be used to achieve an outlined path effect with overlaps
+   *
+   * @returns Array An array of paths
+   **/
+  layeredPaths(paths, join = false, offset = 0, continuous = false) {
 
     // Final paths for plotting
     let final_paths = [];
@@ -2398,6 +2421,13 @@ class PathHelper {
       // The last shape doesn't need to be evaluated since
       // it is on "top" of all other shapes
       if (i == paths.length-1) {
+
+        // In "continuous" mode the final point/side of the
+        // last shape should be removed
+        if (continuous) {
+          paths[i].pop();
+        }
+
         final_paths.push(paths[i])
         break;
       }
@@ -2417,6 +2447,12 @@ class PathHelper {
       // Loop through sides of shape under evaluation
       for (let point = 0; point < paths[i].length-1; point++) {
 
+        // In "continuous" mode, don't evaluate interior/equivalent
+        // sides of adjacent quadrilaterals
+        if (continuous && (point == 1 || (point == 3 && i > 0))) {
+          continue;
+        }
+
         // Initialize the segment as the full side of the path
         let new_segments = [
           [paths[i][point], paths[i][point+1]]
@@ -2434,6 +2470,19 @@ class PathHelper {
         if (new_segments.length > 0) {
           paths_of_i = paths_of_i.concat(new_segments);
         }
+      }
+
+      // Add the paths of the shape onto the final output paths
+      final_paths = final_paths.concat(paths_of_i)
+    }
+
+    if (join) {
+      final_paths = this.joinPaths(final_paths)
+    }
+
+    return final_paths;
+  }
+
   /**
    * Subtract paths from one another. The lowest index
    * The lowest index (0) of "paths" will be on the bottom
