@@ -143,8 +143,8 @@ class PathHelper {
    * Determine if two lines are equivalent
    * @param Array A line array containing two points
    * @param Array line array containing two points
-   * @param Float A maximum distance points can be apart and considered equal
-   * @return Boolean True if the same, false otherwise
+   * @param number A maximum distance points can be apart and considered equal
+   * @returns Boolean True if the same, false otherwise
    */
   lineEquals(a, b, threshold = 0) {
     if (this.pointEquals(a[0], a[1], threshold) && this.pointEquals(b[0], b[1], threshold)) {
@@ -157,8 +157,8 @@ class PathHelper {
    * Determine if two point arrays are equivalent
    * @param Array A point array containing two values for x and y
    * @param Array A point array containing two values for x and y
-   * @param Float A maximum distance points can be apart and considered equal
-   * @return Boolean True if the same, false otherwise
+   * @param number A maximum distance points can be apart and considered equal
+   * @returns Boolean True if the same, false otherwise
    */
   pointEquals(a, b, threshold = 0) {
     if (threshold === 0 && a[0] === b[0] && a[1] === b[1]) {
@@ -287,7 +287,7 @@ class PathHelper {
    * @param Array A point array containing two values for x and y. End Point of Line A
    * @param Array A point array containing two values for x and y. Start Point of Line B
    * @param Array A point array containing two values for x and y. End Point of Line B
-   * @return Boolean True if the lines intersect, false otherwise
+   * @returns Boolean True if the lines intersect, false otherwise
    */
   getLineLineCollision(p0, p1, p2, p3) {
 
@@ -405,10 +405,10 @@ class PathHelper {
   /**
    * Expand a Path
    * @param Array An array of points
-   * @param Float The expansion offset at the start of the path
-   * @param Float the expansion offset at the end of the path
+   * @param number The expansion offset at the start of the path
+   * @param number the expansion offset at the end of the path
    * @param String The Cap style at the end of the line: 'open', 'flat', 'round'
-   * @return Array A multidimensional array of one or more paths. "open" has 2 paths
+   * @returns Array A multidimensional array of one or more paths. "open" has 2 paths
    * while "flat" and "round" is one continuous path.
    **/
   expandPath(path, offset_start, offset_end, capStyle = 'open') {
@@ -494,9 +494,9 @@ class PathHelper {
   /**
    * Offset a Path
    * @param Array An array of points
-   * @param Float the offset distance of the path. A negative number
+   * @param number the offset distance of the path. A negative number
    * represents an "inside" offset for an acute angle ACB
-   * @return Array A multidimensional path array of points
+   * @returns Array A multidimensional path array of points
    **/
   offsetPath(path, offset) {
 
@@ -558,9 +558,9 @@ class PathHelper {
    * @param Array Point 1. Endpoint "A"
    * @param Array Point 2. Midpoint/Vertex "C"
    * @param Array Point 3. Endpoint "B"
-   * @param Float the offset distance of the path. A negative number
+   * @param number the offset distance of the path. A negative number
    * represents an "inside" offset for an acute angle ACB
-   * @return Array A path array
+   * @returns Array A path array
    **/
   offsetAngle(p1, p2, p3, offset) {
 
@@ -630,7 +630,7 @@ class PathHelper {
   /**
    * Smooth the corners on a Path based on percentages
    * @param Array An array of points representing the path to be modified
-   * @param Float A value from 0 to 1. A sharpness of 0 represents the maximum amount of curvature
+   * @param number A value from 0 to 1. A sharpness of 0 represents the maximum amount of curvature
    * possible between adjacent points. A sharpness of 1 represents no change
    */
   smoothCorners(path, sharpness) {
@@ -702,7 +702,7 @@ class PathHelper {
   /**
    * Smooth the corners on a Path based on a radius distance
    * @param Array An array of points representing the path to be modified
-   * @param Float A numeric radius to apply to the corner
+   * @param number A numeric radius to apply to the corner
    */
   radiusCorners(path, radius) {
 
@@ -761,7 +761,7 @@ class PathHelper {
    * @param y2 Y-position of end point
    * @param theta rotation/angle to travel
    * @param segments The number of steps to use
-   * @return Array A Path array of points
+   * @returns Array A Path array of points
    **/
   arcPointToPoint(x1, y1, x2, y2, theta, segments = 12) {
     let path = [];
@@ -780,11 +780,11 @@ class PathHelper {
    * Compose an arc
    * Draw an arc centered at a position
    * @param Array An array of position [x,y]
-   * @param float The radius of the arc from the position
-   * @param float The number of radius to rotate through the arc
-   * @param float A radian offset from which to start the arc
+   * @param number The radius of the arc from the position
+   * @param number The number of radius to rotate through the arc
+   * @param number A radian offset from which to start the arc
    * @param integer The number of line segments used to render the arc
-   * @return Array A Path array of points
+   * @returns Array A Path array of points
    **/
   arc(position, radius, theta, theta_offset, segments) {
     let path = [];
@@ -927,9 +927,9 @@ class PathHelper {
    *
    * @param Array The path to be reflected
    * @param String The axis over which to reflect "x" or "Y")
-   * @param Float An optional Axis offset value. The origin is the default
+   * @param number An optional Axis offset value. The origin is the default
    *
-   * @return Array The reflected path
+   * @returns Array The reflected path
    */
   reflectPath(path, axis, offset = 0.0) {
     return path.map(function(point){
@@ -1035,12 +1035,12 @@ class PathHelper {
   /**
    * Join Paths together when endpoints within threshold distance of each other
    * @param paths Array A multidimensional arry of paths
-   * @param float The distance threshold below which points should be considered the same location.
+   * @param number The distance threshold below which points should be considered the same location.
    *   The value is based on the Standard unit of canvas center to canvas nearest edge.
    *   In thise case 1 = 1.5" (Default of 0.01 = 0.015" ~ 1/64")
    * @param integer The index position of the paths input that is being analyzed
    * @param integer A counter of function call iterations. Useful for debugging and stopping the recursion
-   * @return Array An array of paths
+   * @returns Array An array of paths
    **/
   joinPaths(paths, threshold = 0.01, active_path_index = 0, iteration = 0) {
 
@@ -1480,7 +1480,7 @@ class PathHelper {
    *
    * @param paths An array of paths
    *
-   * @return An array of paths now in a random order
+   * @returns An array of paths now in a random order
    */
   shufflePaths(paths) {
     for (let i = paths.length - 1; i > 0; i--) {
@@ -1591,7 +1591,7 @@ class PathHelper {
    * @param r1 float Radius of Circle 1
    * @param p2 Array of x/y position ([x,y]) of Circle 2
    * @param r2 float Radius of Circle 2
-   * @return Array An array of intersection points
+   * @returns Array An array of intersection points
    **/
   circleInterceptPoints(p1, r1, p2, r2, sign) {
 
@@ -1724,7 +1724,7 @@ class PathHelper {
    * @param The maximum X value to be included (inclusive)
    * @param The minimum Y value to be included (inclusive)
    * @param The maximum Y value to be included (inclusive)
-   * @return Array A multidimensional array of paths
+   * @returns Array A multidimensional array of paths
    */
   cropToRectangle(candidate_paths, x_min, x_max, y_min, y_max) {
 
@@ -1873,12 +1873,12 @@ class PathHelper {
    * Threshold has been added so that points very close to the border of the
    * polygon can be selecteive counted as in or out
    * @param Array Vertices of Polygon
-   * @param Float X Position of Point
-   * @param Float Y Position of Point
-   * @param Float The Threshold at which to consider a point near the border as either
+   * @param number X Position of Point
+   * @param number Y Position of Point
+   * @param number The Threshold at which to consider a point near the border as either
    * inside or outside.
    *
-   * @return Boolean True if the point is inside the Polygon, false otherwise
+   * @returns Boolean True if the point is inside the Polygon, false otherwise
    **/
   pointInPolygon(vertices, px, py, threshold = -0.00001) {
 
@@ -1931,13 +1931,13 @@ class PathHelper {
    * Fill a convex shape (polygon) with straight lines
    *
    * @param array The shape to be filled
-   * @param float The space between the fill lines
-   * @param float The angle (in radians) of the fill lines (0.0 is horizontal)
+   * @param number The space between the fill lines
+   * @param number The angle (in radians) of the fill lines (0.0 is horizontal)
    * @param boolean Set whether the lines should alternate directions (optimal for plotting)
    * @param boolean Set to true to connect the lines. Default is false
    * @param function An optional function to describe how to space fill lines
    *
-   * @return Array A multidimensional array of paths
+   * @returns Array A multidimensional array of paths
    */
   fill(shape, spacing, angle = 0.0, alternate = true, connect = false, fillFunc = null) {
 
@@ -2315,10 +2315,10 @@ class PathHelper {
   /**
    * Add noise to a path
    * @param Array The source path
-   * @param Float The maximum distance allowed between points. If a segment
+   * @param number The maximum distance allowed between points. If a segment
    * of the path is greater than this distance it will be subdivided into
    * shorter segments.
-   * @param Float The maximum magnitude of the noise offset
+   * @param number The maximum magnitude of the noise offset
    * @param Boolean Whether to use Guassian noise
    * @param Boolean Whether to force the path to close (end point equals start point)
    * @param Integer An optional smoothing window value
@@ -2411,7 +2411,7 @@ class PathHelper {
    * @param Array An array of points defining a closed shape
    * @param Array An array of points defining a closed shape
    *
-   * @return Array An array of points representing Shape B added to Shape A.
+   * @returns Array An array of points representing Shape B added to Shape A.
    * If Shape B does not overlap Shape A, then Shape A will be returned unchanged.
    **/
   booleanAdd(shapeA, shapeB) {
@@ -2446,7 +2446,7 @@ class PathHelper {
    * @param Array An array of points defining a closed shape
    * @param Array An array of points defining a closed shape
    *
-   * @return Array A multidimensional array of paths from Shape A
+   * @returns Array A multidimensional array of paths from Shape A
    * that are outside of Shape B
    **/
   booleanAddComparison(shapeA, shapeB) {
@@ -2491,7 +2491,7 @@ class PathHelper {
    * @param Array An array of points defining a closed shape
    * @param Array An array of points defining a closed shape
    *
-   * @return Array An array of points representing Shape B removed from Shape A.
+   * @returns Array An array of points representing Shape B removed from Shape A.
    * If Shape B does not overlap Shape A, then Shape A will be returned unchanged.
    **/
   booleanSubtract(shapeA, shapeB) {
@@ -2526,7 +2526,7 @@ class PathHelper {
    * @param Array An array of points defining a closed shape
    * @param Array An array of points defining a closed shape
    *
-   * @return Array A multidimensional array of paths from Shape A
+   * @returns Array A multidimensional array of paths from Shape A
    * that are outside of Shape B
    **/
   booleanSubtractComparison(shapeA, shapeB, invert = false) {
@@ -2597,7 +2597,7 @@ class PathHelper {
    * @param Array An array of points defining a closed shape
    * @param Array An array of points defining a closed shape
    *
-   * @return Array An array of points representing the overlapping region(s) of Shape A and Shape B.
+   * @returns Array An array of points representing the overlapping region(s) of Shape A and Shape B.
    * If there is no overlap an empty shape should be returned
    **/
   booleanIntersect(shapeA, shapeB) {
@@ -2632,7 +2632,7 @@ class PathHelper {
    * @param Array An array of points defining a closed shape
    * @param Array An array of points defining a closed shape
    *
-   * @return Array A multidimensional array of paths from Shape A
+   * @returns Array A multidimensional array of paths from Shape A
    * that are outside of Shape B
    **/
   booleanIntersectionComparison(shapeA, shapeB) {
@@ -2685,7 +2685,7 @@ class PathHelper {
    * @param Array An array of points defining a closed shape
    * @param Array An array of points defining a closed shape
    *
-   * @return Array An array of points representing Shape A with
+   * @returns Array An array of points representing Shape A with
    * the intersection points of Shape B added
    **/
   shapeIntersections(shapeA, shapeB) {
