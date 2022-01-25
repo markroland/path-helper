@@ -1286,14 +1286,13 @@ class PathHelper {
     // This doesn't work, but ideally it would
     // Source: https://stackoverflow.com/a/30716969
     // let cleanedPath = path.filter(function(item, pos, arr){
-    //   let PathHelp = new PathHelper();
     //   // Always keep the 0th element as there is nothing before it
     //   // Then check if each element is different than the one before it
     //   console.log(pos, item)
-    //   if (pos !== 0 && PathHelp.pointEquals(item, arr[pos-1])) {
+    //   if (pos !== 0 && this.pointEquals(item, arr[pos-1])) {
     //     console.log("Hit");
     //   }
-    //   return pos === 0 || !PathHelp.pointEquals(item, arr[pos-1]);
+    //   return pos === 0 || !this.pointEquals(item, arr[pos-1]);
     // });
     // console.log(cleanedPath);
 
