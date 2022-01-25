@@ -1945,6 +1945,35 @@ class PathHelper {
   }
 
   /**
+   * Remove portion of paths that are inside of the knockout shape
+   * This may also be considered a Boolean Exclusive Or (XOR)
+   *
+   * @param Array An array of path arrays
+   * @param Array An array definiting a closed shape
+   *
+   * @returns Array An array of path arrays
+   **/
+  knockout(paths, shape) {
+
+    let new_paths = [];
+
+    // Loop through paths
+    for (let i = 0; i < paths.length; i++) {
+
+      // Get intersections
+      let new_path = this.shapeIntersections(paths[i], shape);
+
+      // Remove segments of the path (new_path) that are inside of the shape
+      let knocked_paths = this.booleanSubtractComparison(new_path, shape, false);
+
+      // Add to new paths
+      new_paths = new_paths.concat(knocked_paths);
+    }
+
+    return new_paths;
+  }
+
+  /**
    * PolyPoint from http://www.jeffreythompson.org/collision-detection/poly-point.php
    * Threshold has been added so that points very close to the border of the
    * polygon can be selecteive counted as in or out

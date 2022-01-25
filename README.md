@@ -145,6 +145,7 @@ let i = PH.info(path);
  - circleInterceptPoints
  - cropToCircle
  - cropToRectangle
+ - knockout
  - pointInPolygon
  - fill
  - layeredPaths
