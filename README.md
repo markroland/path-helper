@@ -126,6 +126,8 @@ let i = PH.info(path);
  - subdividePath
  - dividePath
  - dividePathComplete
+ - decimatePath
+ - decimatePaths
  - joinPaths
  - cleanPath
  - pointsToPaths2

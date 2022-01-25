@@ -1034,6 +1034,52 @@ class PathHelper {
   }
 
   /**
+   * Randomly remove portions of a path
+   *
+   * @param Array An path array (array of points)
+   * @param number The ratio of points that should be removed (0 to 1)
+   *
+   * @param Array An array of paths
+   **/
+  decimatePath(path, odds = 0.05) {
+    let new_paths = [];
+    let new_path = [];
+    for (let j = 0; j < path.length; j++) {
+      if (Math.random() < odds) {
+        if (new_path.length > 1) {
+          new_paths.push(new_path);
+        }
+        new_path = [];
+        continue;
+      }
+      new_path.push(path[j])
+    }
+    if (new_path.length > 1) {
+      new_paths.push(new_path);
+    }
+    return new_paths;
+  }
+
+  /**
+   * Randomly remove portions of multiple paths
+   *
+   * @param Array An array of paths
+   * @param number The ratio of points that should be removed (0 to 1)
+   *
+   * @param Array An array of paths
+   **/
+  decimatePaths(paths, odds = 0.05) {
+    let new_paths = [];
+    for (let i = 0; i < paths.length; i++) {
+      let temp_paths = this.decimatePath(paths[i], odds);
+      if (temp_paths.length > 1) {
+        new_paths = new_paths.concat(temp_paths);
+      }
+    }
+    return new_paths;
+  }
+
+  /**
    * Join Paths together when endpoints within threshold distance of each other
    * @param paths Array A multidimensional arry of paths
    * @param number The distance threshold below which points should be considered the same location.
