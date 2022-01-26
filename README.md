@@ -55,7 +55,7 @@ Methods
 let PH = new PathHelper();
 ```
 
-### Info
+### info
 
 Get information about a 2D path
 
@@ -79,9 +79,15 @@ let i = PH.info(path);
 }
 ```
 
+### deepCopy
+
+Create a deep copy of a JavaScript array/object.
+
+This is useful so that paths can be duplicated and then manipulated
+independently without any references.
+
 ### Other:
 
- - deepCopy
  - getMin
  - getMax
  - crossProduct

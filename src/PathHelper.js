@@ -29,7 +29,7 @@ class PathHelper {
 
   /**
    * Create a deep copy of a JavaScript array/object
-   * @param {array|object} The thing to be copied
+   * @param {array|object} a - The thing to be copied
    * @returns {array|object} An independent copy of the input value
    **/
   deepCopy(a) {
