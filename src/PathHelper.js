@@ -62,7 +62,7 @@ class PathHelper {
   /**
    * Get the maximum value from each coordinate compononent of a path
    * Supports 2D and 3D.
-   * @param {array} A Path array
+   * @param {array} path - A Path array
    * @returns {array} An array with the maximum value for each dimension
    **/
   getMax(path) {

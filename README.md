@@ -105,9 +105,27 @@ let i = PH.getMin(path);
 [-2, -3]
 ```
 
+### getMax
+
+Get the minimum value from each coordinate compononent of a 2D or 3D path
+
+```js
+let path = [
+    [-2,  1],
+    [ 4,  1],
+    [ 4, -3],
+    [-2, -3]
+];
+let i = PH.getMax(path);
+```
+
+**Expected Output:**
+```js
+[4, 1]
+```
+
 ### Other:
 
- - getMax
  - crossProduct
  - boundingBox
  - arrayMin
