@@ -187,9 +187,17 @@ PH.radiansToDegrees(0.5 * Math.PI);
 // Output is 90
 ```
 
+### greatestCommonDivisor
+
+Get the [Greatest Common Divisor](https://en.wikipedia.org/wiki/Greatest_common_divisor) of two numbers
+
+```js
+PH.greatestCommonDivisor(50, 30);
+// Output is 10
+```
+
 ### Other:
 
- - greatestCommonDivisor
  - lineEquals
  - pointEquals
  - getRndInteger

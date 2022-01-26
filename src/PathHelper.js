@@ -157,6 +157,10 @@ class PathHelper {
    *
    * https://en.wikipedia.org/wiki/Greatest_common_divisor
    * https://www.geeksforgeeks.org/c-program-find-gcd-hcf-two-numbers/
+   *
+   * @param {number} a
+   * @param {number} b
+   * @returns {number}
    */
   greatestCommonDivisor(a, b) {
     if (b == 0) {
