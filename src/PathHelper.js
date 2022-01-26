@@ -39,7 +39,7 @@ class PathHelper {
   /**
    * Get the minimum value from each coordinate compononent of a path
    * Supports 2D and 3D.
-   * @param {array} A Path array
+   * @param {array} path - A Path array
    * @returns {array} An array with the minimum value for each dimension
    **/
   getMin(path) {

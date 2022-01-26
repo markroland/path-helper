@@ -86,9 +86,27 @@ Create a deep copy of a JavaScript array/object.
 This is useful so that paths can be duplicated and then manipulated
 independently without any references.
 
+### getMin
+
+Get the minimum value from each coordinate compononent of a 2D or 3D path
+
+```js
+let path = [
+    [-2,  1],
+    [ 4,  1],
+    [ 4, -3],
+    [-2, -3]
+];
+let i = PH.getMin(path);
+```
+
+**Expected Output:**
+```js
+[-2, -3]
+```
+
 ### Other:
 
- - getMin
  - getMax
  - crossProduct
  - boundingBox
