@@ -97,12 +97,8 @@ let path = [
     [ 4, -3],
     [-2, -3]
 ];
-let i = PH.getMin(path);
-```
-
-**Expected Output:**
-```js
-[-2, -3]
+PH.getMin(path);
+// Output is [-2, -3]
 ```
 
 ### getMax
@@ -116,12 +112,8 @@ let path = [
     [ 4, -3],
     [-2, -3]
 ];
-let i = PH.getMax(path);
-```
-
-**Expected Output:**
-```js
-[4, 1]
+PH.getMax(path);
+// Output is [4, 1]
 ```
 
 ### crossProduct
@@ -131,12 +123,8 @@ Calculate the cross product of two 3D vectors
 ```js
 let a = [-2, 1, 1];
 let b = [ 3, 2, 1];
-let i = PH.crossProduct(a, b);
-```
-
-**Expected Output:**
-```js
-[-1, 5, -7]
+PH.crossProduct(a, b);
+// Output is [-1, 5, -7]
 ```
 
 ### boundingBox
@@ -152,7 +140,7 @@ let path = [
     [ 1,  0],
     [ 0,  1]
 ];
-let i = PH.boundingBox(path);
+PH.boundingBox(path);
 ```
 
 **Expected Output:**
@@ -169,11 +157,7 @@ Get the smallest number from an array
 
 ```js
 PH.arrayMin([10, 2, 4.5, 7, 2.3, -1.2, -2.7]);
-```
-
-**Expected Output:**
-```js
--2.7
+// Output is -2.7
 ```
 
 ### arrayMax
@@ -182,11 +166,7 @@ Get the largest number from an array
 
 ```js
 PH.arrayMax([10, 2, 4.5, 7, 2.3, -1.2, -2.7]);
-```
-
-**Expected Output:**
-```js
-10
+// Output is 10
 ```
 
 ### degreesToRadians
