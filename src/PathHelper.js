@@ -134,13 +134,21 @@ class PathHelper {
     return Math.max(...a);
   }
 
-  degreesToRadians(degrees)
-  {
+  /**
+   * Convert Degrees to Radians
+   * @param {number} degrees
+   * @returns {number} The input number represented in units of Radians
+   **/
+  degreesToRadians(degrees) {
     return degrees * (Math.PI/180);
   }
 
-  radiansToDegrees(radians)
-  {
+  /**
+   * Convert Radians to Degrees
+   * @param {number} radians
+   * @returns {number} The input number represented in units of Degrees
+   **/
+  radiansToDegrees(radians) {
     return radians * (180/Math.PI);
   }
 

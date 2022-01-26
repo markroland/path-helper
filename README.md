@@ -189,10 +189,26 @@ PH.arrayMax([10, 2, 4.5, 7, 2.3, -1.2, -2.7]);
 10
 ```
 
+### degreesToRadians
+
+Convert Degrees to Radians
+
+```js
+PH.degreesToRadians(135.0);
+// Output is 2.356194490192345
+```
+
+### radiansToDegrees
+
+Convert Radians to Degrees
+
+```js
+PH.radiansToDegrees(0.5 * Math.PI);
+// Output is 90
+```
+
 ### Other:
 
- - degreesToRadians
- - radiansToDegrees
  - greatestCommonDivisor
  - lineEquals
  - pointEquals
