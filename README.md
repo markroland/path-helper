@@ -124,9 +124,23 @@ let i = PH.getMax(path);
 [4, 1]
 ```
 
+### crossProduct
+
+Calculate the cross product of two 3D vectors
+
+```js
+let a = [-2, 1, 1];
+let b = [ 3, 2, 1];
+let i = PH.crossProduct(a, b);
+```
+
+**Expected Output:**
+```js
+[-1, 5, -7]
+```
+
 ### Other:
 
- - crossProduct
  - boundingBox
  - arrayMin
  - arrayMax
