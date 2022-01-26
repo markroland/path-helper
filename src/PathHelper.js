@@ -116,10 +116,20 @@ class PathHelper {
     return bbox;
   }
 
+  /**
+   * Get the smallest number from an array
+   * @param {array} a - An array of numbers
+   * @returns {number} The smallest number from the input
+   **/
   arrayMin(a) {
     return Math.min(...a);
   }
 
+  /**
+   * Get the largest number from an array
+   * @param {array} a - An array of numbers
+   * @returns {number} The largest number from the input
+   **/
   arrayMax(a) {
     return Math.max(...a);
   }

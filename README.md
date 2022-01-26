@@ -163,10 +163,34 @@ let i = PH.boundingBox(path);
 ]
 ```
 
+### arrayMin
+
+Get the smallest number from an array
+
+```js
+PH.arrayMin([10, 2, 4.5, 7, 2.3, -1.2, -2.7]);
+```
+
+**Expected Output:**
+```js
+-2.7
+```
+
+### arrayMax
+
+Get the largest number from an array
+
+```js
+PH.arrayMax([10, 2, 4.5, 7, 2.3, -1.2, -2.7]);
+```
+
+**Expected Output:**
+```js
+10
+```
+
 ### Other:
 
- - arrayMin
- - arrayMax
  - degreesToRadians
  - radiansToDegrees
  - greatestCommonDivisor
