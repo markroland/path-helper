@@ -139,9 +139,32 @@ let i = PH.crossProduct(a, b);
 [-1, 5, -7]
 ```
 
+### boundingBox
+
+Get the Bounding Box coordinates for a 2D or 3D path
+
+This returns a multidimensional array with the minimum and maximum values for each dimension
+
+```js
+let path = [
+    [-1,  0],
+    [ 0, -1],
+    [ 1,  0],
+    [ 0,  1]
+];
+let i = PH.boundingBox(path);
+```
+
+**Expected Output:**
+```js
+[
+    [-1, 1],
+    [-1, 1],
+]
+```
+
 ### Other:
 
- - boundingBox
  - arrayMin
  - arrayMax
  - degreesToRadians

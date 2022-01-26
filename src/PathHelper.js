@@ -97,15 +97,23 @@ class PathHelper {
   }
 
   /**
-   *
+   * Get the Bounding Box coordinates for a 2D or 3D path
+   * @param {array} path - A Path array
+   * @returns {array} A multidimensional array with the minimum and maximum values for each dimension
    **/
   boundingBox(path) {
     let mins = this.getMin(path);
     let maxs = this.getMax(path);
-    return [
+    let bbox = [
       [mins[0], maxs[0]],
       [mins[1], maxs[1]]
     ];
+
+    if (mins.length === 3 && maxs.length === 3) {
+      bbox.push([mins[2], maxs[2]]);
+    }
+
+    return bbox;
   }
 
   arrayMin(a) {
