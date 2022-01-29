@@ -196,9 +196,31 @@ PH.greatestCommonDivisor(50, 30);
 // Output is 10
 ```
 
+### lineEquals
+
+Determine if two lines are equivalent by comparing their start and end points.
+This supports an optional `threshold` parameter that can be set to specify a
+maximum distance that two points can be apart and still considered coincident.
+This is very useful when dealing with floating point numbers.
+
+```js
+let AB = [
+    [0, 0],
+    [0, 1]
+];
+let CD = [
+    [0.005, 0],
+    [0, 1.005]
+];
+PH.lineEquals(AB, CD);
+// Output is False
+
+PH.lineEquals(AB, CD, 0.01);
+// Output is True
+```
+
 ### Other:
 
- - lineEquals
  - pointEquals
  - getRndInteger
  - getRandom

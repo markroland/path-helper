@@ -171,13 +171,13 @@ class PathHelper {
 
   /**
    * Determine if two lines are equivalent
-   * @param Array A line array containing two points
-   * @param Array line array containing two points
-   * @param number A maximum distance points can be apart and considered equal
-   * @returns Boolean True if the same, false otherwise
+   * @param {array} a - A path containing two points
+   * @param {array} b - A path containing two points
+   * @param {number} [threshold=0] -  A maximum distance points can be apart and considered equal
+   * @returns {boolean} True if the same, false otherwise
    */
   lineEquals(a, b, threshold = 0) {
-    if (this.pointEquals(a[0], a[1], threshold) && this.pointEquals(b[0], b[1], threshold)) {
+    if (this.pointEquals(a[0], b[0], threshold) && this.pointEquals(a[1], b[1], threshold)) {
       return true;
     }
     return false;
