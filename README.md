@@ -219,9 +219,25 @@ PH.lineEquals(AB, CD, 0.01);
 // Output is True
 ```
 
+### pointEquals
+
+Determine if two points are coincident.
+This supports an optional `threshold` parameter that can be set to specify a
+maximum distance that the points can be apart and still considered coincident.
+This is very useful when dealing with floating point numbers.
+
+```js
+let A = [0.0, 0.0];
+let B = [0.005, 0];
+PH.pointEquals(A, B);
+// Output is False
+
+PH.pointEquals(A, B, 0.01);
+// Output is True
+```
+
 ### Other:
 
- - pointEquals
  - getRndInteger
  - getRandom
  - getGaussianRandom
