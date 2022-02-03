@@ -266,8 +266,9 @@ PH.pointEquals(A, B, 0.01);
  - scalePath
  - translatePath
  - rotatePath
- - shiftPath
  - reflectPath
+ - distortPath
+ - shiftPath
  - subdividePath
  - dividePath
  - dividePathComplete

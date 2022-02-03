@@ -1005,6 +1005,94 @@ class PathHelper {
   }
 
   /**
+   * Free Distort a Path
+   * @param {array} path - A Path array
+   * @param {array} bounding_box - An array of 4 points representing the bounding box of the path.
+   * Points should start in the top-left and proceed clockwise.
+   * A -- B
+   * |    |
+   * D -- C
+   * @param {array} distortion - An array of 4 points representing the distorted points of the bounding box.
+   * Points should start in the top-left and proceed clockwise
+   * A ------ B
+   *  \      /
+   *   \    /
+   *   D - C
+   * @return {array} The transformed shape
+   **/
+  distortPath(path, bounding_box, distortion) {
+
+    // The distortion array must always contain four points
+    // representing the transformation, starting in the top-left
+    // and going clockwise.
+    if (distortion.length != 4) {
+      console.log("distortion array length must be four.");
+      return [];
+    }
+
+    // Initialize output
+    let transformed_path = [];
+
+    // Get bounding box of shape
+    const shape_info = this.info(bounding_box);
+
+    // Loop through points of the input path
+    for (let j = 0; j < path.length; j++) {
+
+      let x_delta_percent = (path[j][0] - shape_info.min[0]) / shape_info.range[0];
+      let y_delta_percent = (path[j][1] - shape_info.min[1]) / shape_info.range[1];
+
+      // Map the current point's X position to the top of the distortion quadrilateral
+      let p_top = [
+        this.lerp(
+          distortion[0][0],
+          distortion[1][0],
+          x_delta_percent
+        ),
+        this.lerp(
+          distortion[0][1],
+          distortion[1][1],
+          x_delta_percent
+        ),
+      ];
+
+      // Map the current point's X position to the bottom of the distortion quadrilateral
+      let p_bottom = [
+        this.lerp(
+          distortion[3][0],
+          distortion[2][0],
+          x_delta_percent
+        ),
+        this.lerp(
+          distortion[3][1],
+          distortion[2][1],
+          x_delta_percent
+        ),
+      ];
+
+      // Interpolate the current point's Y position between the top and bottom of the
+      // distortion quadrilateral
+      let p_prime = [
+        this.lerp(
+          p_top[0],
+          p_bottom[0],
+          y_delta_percent
+        ),
+        this.lerp(
+          p_top[1],
+          p_bottom[1],
+          y_delta_percent
+        ),
+      ];
+
+      // Add the new point to the output
+      transformed_path.push(p_prime);
+    }
+
+    return transformed_path;
+  }
+
+  /**
    * Shift and wrap the elements in the array
    * https://javascript.plainenglish.io/algorithms-101-rotate-array-in-javascript-three-solutions-260fbc923b64
    */
