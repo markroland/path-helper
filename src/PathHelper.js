@@ -270,20 +270,35 @@ class PathHelper {
     return beginning + (end - beginning) * percent;
   }
 
-  polygon(sides, length, rotation = 0)
-  {
+  /**
+   * Create a regular convex polygon centered at the origin
+   * @param {number} sides - The number of sides for the shape
+   * @param {number} radius - The radius of the shape - the distance from the center to a vertex
+   * @param {number} [rotation=0] - An optional rotation to be applied to the shape
+   * @return {array} - An array of Points for the vertices of the shape. The first
+   * and last points will overlap to create a closed path.
+   **/
+  polygon(sides, radius, rotation = 0) {
     let polygon = [];
     let polygon_theta = 0.0;
     for (let a = 0; a <= sides; a++) {
       polygon_theta = (a/sides) * (2 * Math.PI);
       polygon.push([
-        length * Math.cos(polygon_theta + rotation),
-        length * Math.sin(polygon_theta + rotation)
+        radius * Math.cos(polygon_theta + rotation),
+        radius * Math.sin(polygon_theta + rotation)
       ]);
     }
     return polygon;
   }
 
+  /**
+   * Create a regular star polygon centered at the origin
+   * @param {number} [star_points=5] - The number of points to the star
+   * @param {number} [outer_radius=1.0] - The distance from the center to the outer points
+   * @param {number} [inner_radius=0] - The distance from the center to the concave points
+   * @return {array} - An array of Points for the vertices of the shape. The first
+   * and last points will overlap to create a closed path.
+   **/
   star(star_points = 5, outer_radius = 1.0, inner_radius = 0.5) {
 
     let shape = [];
