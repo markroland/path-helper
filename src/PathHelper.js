@@ -452,31 +452,6 @@ class PathHelper {
     return distance;
   }
 
-  perpendicularPath(p1, p2) {
-
-    // Slope "m"
-    let m = (p2[1] - p1[1]) / (p2[0] - p1[0]);
-
-    // Y-intercept "b"
-    // let b = p1[1] - m * p1[0];
-
-    // let distance = this.distance(p1, p2);
-
-    // Calculate slope and intercept of perpendicular line
-    let m_perp = -1/m;
-    let b_perp = p1[1] - m_perp * p1[0];
-
-    // Calculate the coordinates of the pependicular
-    let x3 = p1[0] - (p2[1] - p1[1]);
-    let p3 = [
-      x3,
-      m_perp * x3 + b_perp
-    ];
-
-    // Return 2-point path for perpendicular line
-    return [p1, p3];
-  }
-
   parallelPath(p1, p2, offset_amount) {
 
     // Calculate the slope of the line AB as an angle

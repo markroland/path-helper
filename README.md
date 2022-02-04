@@ -487,7 +487,6 @@ PH.pathLength([
 
 ### Other:
 
- - perpendicularPath
  - parallelPath
  - expandPath
  - offsetPath
