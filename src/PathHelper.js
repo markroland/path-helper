@@ -326,6 +326,14 @@ class PathHelper {
     return shape;
   }
 
+  /**
+   * Create a parabola path
+   * @param {number} focus - The focal distance of the parabola
+   * @param {number} width - The width of the parabola to return
+   * @param {number} segments - The number of segments to use to describe
+   * the path. A higher number increases the smoothness of the path.
+   * @return {array} - An array of Points defining a Path
+   **/
   parabola(focus, width, segments) {
     let path = [];
     for (let a = 0; a <= segments; a++) {

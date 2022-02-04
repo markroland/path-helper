@@ -373,9 +373,50 @@ PH.star(4, 1.0, Math.PI/4);
 ]
 ```
 
+### parabola
+
+Create a [parabolic path](https://en.wikipedia.org/wiki/Parabola) centered at the origin
+
+```js
+PH.parabola(2.0, 1.0, 6);
+```
+
+**Expected Output:**
+```js
+[
+    [
+        -0.5,
+        0.5
+    ],
+    [
+        -0.33333333333333337,
+        0.22222222222222227
+    ],
+    [
+        -0.16666666666666669,
+        0.055555555555555566
+    ],
+    [
+        0,
+        0
+    ],
+    [
+        0.16666666666666663,
+        0.05555555555555553
+    ],
+    [
+        0.33333333333333337,
+        0.22222222222222227
+    ],
+    [
+        0.5,
+        0.5
+    ]
+]
+```
+
 ### Other:
 
- - parabola
  - intersect_point
  - getLineLineCollision
  - distance (point-to-point)
