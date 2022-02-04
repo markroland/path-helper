@@ -457,11 +457,36 @@ PH.getLineLineCollision(
 {x:  0, y: 1}
 ```
 
+### distance
+
+Calculate the distance between two points in 2D or 3D space
+
+```js
+PH.distance([0, 0], [1, 1]);
+// Output is 1.4142135623730951
+
+PH.distance([0, 0, 0], [1, 1, 1]);
+// Output is 1.7320508075688772
+```
+
+### pathLength
+
+Calculate the total distance of a path of two or more points in 2D or 3D
+
+```js
+PH.pathLength([
+    [0, 0],
+    [0, 1],
+    [1, 1],
+    [1, 0],
+    [0, 0]
+]);
+// Output is 4
+```
+
 
 ### Other:
 
- - distance (point-to-point)
- - pathLength
  - perpendicularPath
  - parallelPath
  - expandPath

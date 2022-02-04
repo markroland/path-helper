@@ -423,10 +423,27 @@ class PathHelper {
     return p;
   }
 
+  /**
+   * Calculate the distance between two points in 2D or 3D space
+   * @param {array} p1 - A Point array containing two values for x and y. End Point of Line A
+   * @param {array} p2 - A Point array containing two values for x and y. Start Point of Line B
+   * @returns {number} - The distance between the two points
+   */
   distance(p1, p2) {
-    return Math.sqrt(Math.pow(p2[0] - p1[0], 2) + Math.pow(p2[1] - p1[1], 2));
+    if (p1.length == 2) {
+      p1.push(0);
+    }
+    if (p2.length == 2) {
+      p2.push(0);
+    }
+    return Math.sqrt(Math.pow(p2[0] - p1[0], 2) + Math.pow(p2[1] - p1[1], 2) + Math.pow(p2[2] - p1[2], 2));
   }
 
+  /**
+   * Calculate the total distance of a path of two or more points
+   * @param {array} path - A Path array
+   * @returns {number} - The total distance of the path
+   */
   pathLength(path) {
     let distance = 0.0;
     for (let i = 0; i < path.length-1; i++) {
