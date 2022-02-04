@@ -452,6 +452,21 @@ class PathHelper {
     return distance;
   }
 
+  /**
+   * Create a parallel path to two points
+   *
+   *    (C) -------- (D) (Positive Offset)
+   * p1 (A) -------- (B) p2
+   *    (C) -------- (D) (Negative Offset)
+   *
+   *  Cross product of BA X AC indicates positive side
+   *
+   * @param {array} p1 - A Point array
+   * @param {array} p2 - A Point array
+   * @param {number} offset_amount - The distance to offset the
+   * parallel path
+   * @returns {array} - A Path array
+   */
   parallelPath(p1, p2, offset_amount) {
 
     // Calculate the slope of the line AB as an angle

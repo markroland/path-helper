@@ -484,10 +484,35 @@ PH.pathLength([
 // Output is 4
 ```
 
+### parallelPath
+
+Create a path that runs parallel to the input path.
+
+The side that the path runs parallel is determined by the
+cross product of BA and AC (BA X AC), where A = p1, B = p2
+and C = the first point of the returned line. This follows
+the convention of the [right hand rule](https://en.wikipedia.org/wiki/Right-hand_rule).
+
+```
+   (C) -------- (D) (Positive Offset)
+p1 (A) -------- (B) p2
+   (C) -------- (D) (Negative Offset)
+```
+
+```js
+PH.parallelPath([0, 0], [0, 1], 0.2);
+```
+
+**Expected Output:**
+```js
+[
+    [-0.2, 0],
+    [-0.2, 1]
+]
+```
 
 ### Other:
 
- - parallelPath
  - expandPath
  - offsetPath
  - offsetAngle
