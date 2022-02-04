@@ -263,10 +263,26 @@ PH.getGaussianRandom();
 // Output is 0.5166768388415707
 ```
 
+### map
+
+Map a value from one scale to another scale
+
+```js
+PH.map(2, 0, 10, -5, 5);
+// Output is -3
+```
+
+### lerp
+
+Perform a linear interpolation between two values
+
+```js
+PH.lerp(0, 20, 0.3);
+// Output is 6
+```
+
 ### Other:
 
- - map
- - lerp
  - polygon
  - star
  - parabola

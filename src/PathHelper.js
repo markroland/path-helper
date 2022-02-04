@@ -240,6 +240,15 @@ class PathHelper {
     return num;
   }
 
+  /**
+   * Map a value from one scale to another scale
+   * @param {number} value - The value to be mapped
+   * @param {number} in_min - The minimum value on the current scale
+   * @param {number} in_max - The maximum value on the current scale
+   * @param {number} out_min - The minimum value on the new scale
+   * @param {number} out_max - The maximum value on the new scale
+   * @return {number} - The mapped value
+   */
   map (value, in_min, in_max, out_min, out_max) {
     // Shift negative values up into positive range
     if (in_min < 0 || in_max < 0) {
@@ -251,7 +260,11 @@ class PathHelper {
   }
 
   /**
-   * Linear Interpolate between two points
+   * Perform a linear interpolation between two value
+   * @param {number} beginning - The start of the scale
+   * @param {number} end - The end of the scale
+   * @param {number} percent - The percentage (0.0 to 1.0) to be selected along the input range
+   * @return {number} - The interpolated value
    **/
   lerp(beginning, end, percent) {
     return beginning + (end - beginning) * percent;
