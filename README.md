@@ -236,11 +236,35 @@ PH.pointEquals(A, B, 0.01);
 // Output is True
 ```
 
+### getRndInteger
+
+Get a random Integer (whole number) between two values (inclusive)
+
+```js
+PH.getRndInteger(1, 10);
+// Output is 5
+```
+
+### getRandom
+
+Get a random Number between two values (inclusive)
+
+```js
+PH.getRandom(1, 3);
+// Output is 1.3623930350489668
+```
+
+### getGaussianRandom
+
+Get a random number between 0 and 1 within a Gaussian Distribution probability
+
+```js
+PH.getGaussianRandom();
+// Output is 0.5166768388415707
+```
+
 ### Other:
 
- - getRndInteger
- - getRandom
- - getGaussianRandom
  - map
  - lerp
  - polygon

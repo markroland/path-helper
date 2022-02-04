@@ -200,12 +200,22 @@ class PathHelper {
   }
 
   /**
-   * https://www.w3schools.com/js/js_random.asp
+   * Get a Random Integer (whole number) between two values (inclusive)
+   * Reference: https://www.w3schools.com/js/js_random.asp
+   * @param {number} min - The lower bound of acceptable values
+   * @param {number} max - The upper bound of acceptable values
+   * @return {number} - A randomly selected number
    */
   getRndInteger(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
+  /**
+   * Get a Random Number between two values (inclusive)
+   * @param {number} min - The lower bound of acceptable values
+   * @param {number} max - The upper bound of acceptable values
+   * @return {number} - A randomly selected number
+   */
   getRandom(min, max) {
     return Math.random() * (max - min) + min;
   }
@@ -214,6 +224,9 @@ class PathHelper {
    * Get a Random number within a Gaussian Distribution probability
    * From Stack Overflow - https://stackoverflow.com/a/49434653
    * Currently unverified
+   * @param {number} [u=0] - Should be left at zero
+   * @param {number} [v=0] - Should be left at zero
+   * @return {number} - A randomly selected number
    */
   getGaussianRandom(u = 0, v = 0) {
     while(u === 0) u = Math.random(); // Converting [0,1) to (0,1)
