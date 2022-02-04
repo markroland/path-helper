@@ -344,7 +344,15 @@ class PathHelper {
     return path;
   }
 
-  // Copied from https://editor.p5js.org/mwburke/sketches/h1ec1s6LG
+  /**
+   * Calculate the location where two lines (p1-to-p2 and p3-to-p4) intersect
+   * Copied from https://editor.p5js.org/mwburke/sketches/h1ec1s6LG
+   * @param {array} p1 - Starting point of Line A
+   * @param {array} p2 - Ending point of Line A
+   * @param {array} p3 - Starting point of Line B
+   * @param {array} p4 - Ending point of Line B
+   * @return {array} - An array defining a point of intersection
+   **/
   intersect_point(p1, p2, p3, p4) {
     const ua = ((p4[0] - p3[0]) * (p1[1] - p3[1]) -
       (p4[1] - p3[1]) * (p1[0] - p3[0])) /
@@ -365,10 +373,10 @@ class PathHelper {
   /**
    * Calculate if and where two finite line segments intersect
    * From https://stackoverflow.com/a/30159167
-   * @param Array A point array containing two values for x and y. Start Point of Line A
-   * @param Array A point array containing two values for x and y. End Point of Line A
-   * @param Array A point array containing two values for x and y. Start Point of Line B
-   * @param Array A point array containing two values for x and y. End Point of Line B
+   * @param {array} p0 - A point array containing two values for x and y. Start Point of Line A
+   * @param {array} p1 - A point array containing two values for x and y. End Point of Line A
+   * @param {array} p2 - A point array containing two values for x and y. Start Point of Line B
+   * @param {array} p3 - A point array containing two values for x and y. End Point of Line B
    * @returns Boolean True if the lines intersect, false otherwise
    */
   getLineLineCollision(p0, p1, p2, p3) {

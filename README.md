@@ -415,10 +415,51 @@ PH.parabola(2.0, 1.0, 6);
 ]
 ```
 
+### intersect_point
+
+Calculate the location where two lines intersect.
+
+Note: Consider using getLineLineCollision instead
+
+```js
+PH.intersect_point(
+    [ 0, 0],
+    [ 0, 3],
+    [-1, 1],
+    [ 1, 1]
+);
+```
+
+**Expected Output:**
+```js
+[0, 1]
+```
+
+### getLineLineCollision
+
+Calculate if and where two finite line segments intersect
+
+Note: This method and intersect_point are very similar. This method
+is more robust because it detects non-intersection. Both methods
+were copied from other sources.
+
+```js
+PH.getLineLineCollision(
+    {x:  0, y: 0},
+    {x:  0, y: 3},
+    {x: -1, y: 1},
+    {x:  1, y: 1}
+);
+```
+
+**Expected Output:**
+```js
+{x:  0, y: 1}
+```
+
+
 ### Other:
 
- - intersect_point
- - getLineLineCollision
  - distance (point-to-point)
  - pathLength
  - perpendicularPath
