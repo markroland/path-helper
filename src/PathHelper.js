@@ -736,13 +736,17 @@ class PathHelper {
     return expanded_path;
   }
 
+  /**
+   * Extend the line segment between points A and B by an amount in either direction
+   * @param {array} A - The starting Point
+   * @param {array} B - The ending Point
+   * @param {number} deltaA - The amount to extend the line from Point A
+   * @param {number} deltaB - The amount to extend the line from Point B
+   * @return {array} A 2-point Path array
+   **/
   extendLine(A, B, deltaA, deltaB) {
 
-    // let lineSlope = this.lineSlopeIntercept(A, B);
-
     let theta = Math.atan2(B[1] - A[1], B[0] - A[0]);
-
-    // console.log("Angle (Degrees): ", (theta * 180 / Math.PI).toFixed(2));
 
     let new_A = [
       A[0] - (deltaA * Math.cos(theta)),

@@ -554,9 +554,30 @@ represents an "interior" offset for the acute angle ACB.
 This is used by the `offsetPath` method and is currently intended
 to be a private method of the class.
 
+### extendLine
+
+Extend the line segment between points A and B by an amount in either direction
+
+```
+          A          B
+  In:     ------------
+  Out:  ----------------
+```
+
+```js
+PH.extendLine([0, 0], [1, 1], 0.2, 0.2);
+```
+
+**Expected Output:**
+```js
+[
+    [-0.1414, -0.1414],
+    [ 1.1414,  1.1414]
+]
+```
+
 ### Other:
 
- - extendLine
  - smoothCorners
  - radiusCorners
  - arcPointToPoint
