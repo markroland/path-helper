@@ -501,11 +501,11 @@ class PathHelper {
 
   /**
    * Expand a Path
-   * @param Array An array of points
-   * @param number The expansion offset at the start of the path
-   * @param number the expansion offset at the end of the path
-   * @param String The Cap style at the end of the line: 'open', 'flat', 'round'
-   * @returns Array A multidimensional array of one or more paths. "open" has 2 paths
+   * @param {array} path - A Path array
+   * @param {number} offset_start - The expansion offset at the start of the path
+   * @param {number} offset_end - the expansion offset at the end of the path
+   * @param [string} capStyle - The Cap style at the end of the line: 'open', 'flat', 'round'
+   * @returns {array} A multidimensional array of one or more paths. "open" has 2 paths
    * while "flat" and "round" is one continuous path.
    **/
   expandPath(path, offset_start, offset_end, capStyle = 'open') {
@@ -590,12 +590,16 @@ class PathHelper {
 
   /**
    * Offset a Path
-   * @param Array An array of points
-   * @param number the offset distance of the path. A negative number
+   * @param {array} path - An array of points. Must contain at least 3 points.
+   * @param {number} offset - the offset distance of the path. A negative number
    * represents an "inside" offset for an acute angle ACB
-   * @returns Array A multidimensional path array of points
+   * @returns {array} A multidimensional path array of points
    **/
   offsetPath(path, offset) {
+
+    if (path.length < 3) {
+      throw 'Input path must contain 3 or more points';
+    }
 
     let offset_path = [];
 
@@ -661,13 +665,12 @@ class PathHelper {
    *    /________
    *   (C: p2)   (B: p3)
    *
-   *
-   * @param Array Point 1. Endpoint "A"
-   * @param Array Point 2. Midpoint/Vertex "C"
-   * @param Array Point 3. Endpoint "B"
-   * @param number the offset distance of the path. A negative number
+   * @param {array} p1 - Point 1. Endpoint "A"
+   * @param {array} p2 - Point 2. Midpoint/Vertex "C"
+   * @param {array} p3 - Point 3. Endpoint "B"
+   * @param {number} offset - the offset distance of the path. A negative number
    * represents an "inside" offset for an acute angle ACB
-   * @returns Array A path array
+   * @returns {array} A path array of 3 points
    **/
   offsetAngle(p1, p2, p3, offset) {
 

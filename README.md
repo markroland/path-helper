@@ -486,7 +486,7 @@ PH.pathLength([
 
 ### parallelPath
 
-Create a path that runs parallel to the input path.
+Create a line that runs parallel to the input points.
 
 The side that the path runs parallel is determined by the
 cross product of BA and AC (BA X AC), where A = p1, B = p2
@@ -511,11 +511,51 @@ PH.parallelPath([0, 0], [0, 1], 0.2);
 ]
 ```
 
+### expandPath
+
+Create two paths that run alongside the input path, either in
+parallel or in a taper. Optionally close the path with an end cap.
+
+```js
+PH.expandPath([[0, 0], [0, 1]], 0.2, 0.2, "open");
+```
+
+### offsetPath
+
+Create a path that runs parallel to the input path. This handles
+closed paths (end point coincident with start point) as well as
+open paths. The path must contain 3 or more points.
+
+```js
+PH.offsetPath([[0, 0], [0, 0.5], [0, 1]], 0.2);
+```
+
+**Expected Output:**
+```js
+[
+    [-0.2, 0.0],
+    [-0.2, 0.5]
+]
+```
+
+### offsetAngle (PRIVATE)
+
+Create a path offset from 3 points: A, B, C. A negative offset
+represents an "interior" offset for the acute angle ACB.
+
+```
+  (A: p1)
+   /  /
+  /  /____ Negative Offset
+ /________
+(C: p2)   (B: p3)
+```
+
+This is used by the `offsetPath` method and is currently intended
+to be a private method of the class.
+
 ### Other:
 
- - expandPath
- - offsetPath
- - offsetAngle
  - extendLine
  - smoothCorners
  - radiusCorners
