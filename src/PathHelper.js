@@ -952,6 +952,8 @@ class PathHelper {
 
   /**
    * Translate a group of paths to be centered around the origin
+   * @param {array} paths - An array of Path arrays
+   * @returns {array} An array of Path arrays centered at the origin
    **/
   centerPaths(paths) {
 
@@ -1009,10 +1011,12 @@ class PathHelper {
   }
 
   /**
-   * Scale Path
-   * path A 2D path array of [x,y] coordinates
-   *   OR a 3D path array of [x,y,z] coordinates
-   * scale A value from 0 to 1
+   * Scale a Path with respect to the origin
+   * @param {array} path - A Path array. Supports 2D and 3D.
+   * @param {number|number[]} scale - The amount by which to scale
+   * the path. A single numeric value can be applied to all dimensions
+   * or a value can be provided for each dimension
+   * @returns {array} A Path array
    **/
   scalePath(path, scale) {
     let scale_x = scale;
@@ -1037,6 +1041,10 @@ class PathHelper {
 
   /**
    * Translate a path
+   * @param {array} path - A Path array
+   * @param {number[]} delta - The amount by which to move
+   * the path in each dimension
+   * @returns {array} A Path array
    **/
   translatePath(path, delta) {
     return path.map(function(a){
@@ -1048,8 +1056,11 @@ class PathHelper {
   }
 
   /**
-   * Rotate points x and y by angle theta about center point (0,0)
-   * https://en.wikipedia.org/wiki/Rotation_matrix
+   * Rotate Path by angle theta around origin (0,0)
+   * @param {array} path - A Path array
+   * @param {number} theta - The number of radians to
+   * rotate the path. Positive rotation is clockwise.
+   * @returns {array} A Path array
    **/
   rotatePath(path, theta) {
     return path.map(function(a){

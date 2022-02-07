@@ -51,6 +51,9 @@ let paths = [
 Methods
 -------
 
+Note: Some examples show rounded results in floating point numbers in order
+to keep the examples concise.
+
 ```js
 let PH = new PathHelper();
 ```
@@ -627,12 +630,86 @@ PH.lineSlopeIntercept([1, 2], [2, 3]);
 // Output is {m: 1, b: 1}
 ```
 
+### centerPaths
+
+Translate a group of paths to be centered around the origin
+
+### scalePath
+
+Scale a Path with respect to the origin. To scale "in place", translate
+the path to be centered at the origin, apply `scalePath`, and then re-translate
+the path in the opposite direction.
+
+```js
+let path = [
+    [-1,  0],
+    [ 0, -1],
+    [ 1,  0],
+    [ 0,  1]
+];
+PH.scalePath(path, 0.5);
+```
+
+**Expected Output:**
+```js
+[
+    [-0.5, 0],
+    [0, -0.5],
+    [0.5, 0],
+    [0, 0.5]
+]
+```
+
+### translatePath
+
+Translate a Path in 2D Cartesian coordinates
+
+```js
+let path = [
+    [-1,  0],
+    [ 0, -1],
+    [ 1,  0],
+    [ 0,  1]
+];
+PH.translatePath(path, [0.5, 0.5]);
+```
+
+**Expected Output:**
+```js
+[
+    [-0.5, 0.5],
+    [0.5, -0.5],
+    [1.5, 0.5],
+    [0.5, 1.5]
+]
+```
+
+### rotatePath
+
+Rotate a path around the origin using the [Rotation Matrix](https://en.wikipedia.org/wiki/Rotation_matrix).
+
+```js
+let path = [
+    [-1,  0],
+    [ 0, -1],
+    [ 1,  0],
+    [ 0,  1]
+];
+PH.rotatePath(path, 0.5 * Math.PI);
+```
+
+**Expected Output:**
+```js
+[
+    [ 0, -1],
+    [ 1,  0],
+    [ 0,  1],
+    [-1,  0]
+]
+```
+
 ### Other:
 
- - centerPaths
- - scalePath
- - translatePath
- - rotatePath
  - reflectPath
  - distortPath
  - shiftPath
@@ -675,6 +752,12 @@ PH.lineSlopeIntercept([1, 2], [2, 3]);
  - booleanIntersection
  - booleanIntersectionComparison
  - shapeIntersections
+
+To Do:
+------
+
+ - Add optional rotation center point parameter to scalePath
+ - Add optional rotation center point parameter to rotatePath
 
 License
 -------
