@@ -576,10 +576,21 @@ PH.extendLine([0, 0], [1, 1], 0.2, 0.2);
 ]
 ```
 
+### smoothCorners
+
+Smooth the corners on a Path in relation to other points on the path.
+A `sharpness` parameter controls the curvature on a scale from 0 to 1,
+where 0 represents the maximum amount of curvature
+between points and a value of 1 represents no curvature.
+
+### radiusCorners
+
+Smooth the corners on a Path by a set value. The curvature begins at the
+`radius` distance from the each point. This is useful for creating
+uniform curvatures, like to round corners on polygon.
+
 ### Other:
 
- - smoothCorners
- - radiusCorners
  - arcPointToPoint
  - arc
  - lineSlopeIntercept

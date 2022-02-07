@@ -504,7 +504,7 @@ class PathHelper {
    * @param {array} path - A Path array
    * @param {number} offset_start - The expansion offset at the start of the path
    * @param {number} offset_end - the expansion offset at the end of the path
-   * @param [string} capStyle - The Cap style at the end of the line: 'open', 'flat', 'round'
+   * @param [string} [capStyle="open"|"flat"|"round"] - The Cap style at the end of the line: 'open', 'flat', 'round'
    * @returns {array} A multidimensional array of one or more paths. "open" has 2 paths
    * while "flat" and "round" is one continuous path.
    **/
@@ -763,14 +763,13 @@ class PathHelper {
 
   /**
    * Smooth the corners on a Path based on percentages
-   * @param Array An array of points representing the path to be modified
-   * @param number A value from 0 to 1. A sharpness of 0 represents the maximum amount of curvature
+   * @param {array} path - An array of points representing the path to be modified
+   * @param {number} sharpness - A value from 0 to 1. A sharpness of 0 represents the maximum amount of curvature
    * possible between adjacent points. A sharpness of 1 represents no change
+   * @param {number} [bezier_segments=20] - The number of segments in the curve. More is smoother.
+   * @return {array} A Path array
    */
-  smoothCorners(path, sharpness) {
-
-    // This is somewhat arbitrary. A larger value is needed for larger paths
-    const bezier_segments = 20;
+  smoothCorners(path, sharpness, bezier_segments = 20) {
 
     // Don't exceed limits
     if (sharpness >= 1) {
@@ -835,12 +834,12 @@ class PathHelper {
 
   /**
    * Smooth the corners on a Path based on a radius distance
-   * @param Array An array of points representing the path to be modified
-   * @param number A numeric radius to apply to the corner
+   * @param {array} path - An array of points representing the path to be modified
+   * @param {number} radius - A numeric radius to apply to the corner
+   * @param {number} [bezier_segments=20] - The number of segments in the curve. More is smoother.
+   * @return {number} A Path array
    */
-  radiusCorners(path, radius) {
-
-    const bezier_segments = 20;
+  radiusCorners(path, radius, bezier_segments = 20) {
 
     // Loop through all points
     // First point won't have a bend
