@@ -601,11 +601,18 @@ connect them using a circular arc.
 
 Compose a circular arc centered around a known point with a known radius
 
+### lineSlopeIntercept
 
+Calculate the slope and y-intercept of the line passing between two points.
+In the return object, `m` represents slope and `b` represents the y-intercept.
+
+```js
+PH.lineSlopeIntercept([1, 2], [2, 3]);
+// Output is {m: 1, b: 1}
+```
 
 ### Other:
 
- - lineSlopeIntercept
  - arrayColumn
  - centerPaths
  - scalePath

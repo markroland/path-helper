@@ -929,13 +929,15 @@ class PathHelper {
 
   /**
    * Returns objet representing Line equation.
-   * m = slope
-   * b = Y intercept
+   * @param {array} p1 - A Point array
+   * @param {array} p2 - A Point array
+   * @returns {object} Returns an object with parameter "m" representing
+   * the slope and a parameter "b" representing the Y intercept.
    **/
   lineSlopeIntercept(p1, p2) {
     let m = (p2[1] - p1[1]) / (p2[0] - p1[0]);
     let b = p1[1] - m * p1[0];
-    return { "m": m, "b": b};
+    return {"m": m, "b": b};
   }
 
   arrayColumn(arr, n){
