@@ -86,6 +86,22 @@ Create a deep copy of a JavaScript array/object.
 This is useful so that paths can be duplicated and then manipulated
 independently without any references.
 
+### arrayColumn
+
+Get the values from a single column in the input array
+
+```js
+PH.arrayColumn(
+    [
+        [1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 9]
+    ],
+    2
+);
+// Output is [3, 6, 9]
+```
+
 ### getMin
 
 Get the minimum value from each coordinate compononent of a 2D or 3D path
@@ -613,7 +629,6 @@ PH.lineSlopeIntercept([1, 2], [2, 3]);
 
 ### Other:
 
- - arrayColumn
  - centerPaths
  - scalePath
  - translatePath

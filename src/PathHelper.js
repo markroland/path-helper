@@ -37,6 +37,16 @@ class PathHelper {
   }
 
   /**
+   * Get the values from a single column in the input array
+   * @param {array} arr - The input array
+   * @param {number} n - The array offset to isolate
+   * @returns {array}
+   **/
+  arrayColumn(arr, n){
+    return arr.map(a => a[n]);
+  }
+
+  /**
    * Get the minimum value from each coordinate compononent of a path
    * Supports 2D and 3D.
    * @param {array} path - A Path array
@@ -938,10 +948,6 @@ class PathHelper {
     let m = (p2[1] - p1[1]) / (p2[0] - p1[0]);
     let b = p1[1] - m * p1[0];
     return {"m": m, "b": b};
-  }
-
-  arrayColumn(arr, n){
-    return arr.map(a => a[n]);
   }
 
   /**
