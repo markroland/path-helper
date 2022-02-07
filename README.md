@@ -589,10 +589,22 @@ Smooth the corners on a Path by a set value. The curvature begins at the
 `radius` distance from the each point. This is useful for creating
 uniform curvatures, like to round corners on polygon.
 
+### arcPointToPoint
+
+Compose a circular arc between two points. The center of the circle on
+which the arc lies is the midpoint between (x1, y1) and (x2, y2). The
+arc starts at (x1, y1) and proceeds clockwise for `theta` radians.
+This method is most useful when you have two known points and wish to
+connect them using a circular arc.
+
+### arc
+
+Compose a circular arc centered around a known point with a known radius
+
+
+
 ### Other:
 
- - arcPointToPoint
- - arc
  - lineSlopeIntercept
  - arrayColumn
  - centerPaths

@@ -885,14 +885,14 @@ class PathHelper {
 
   /**
    * Compose an arc between 2 points
-   * Description incomplete
-   * @param x1 X-position of starting point
-   * @param y1 Y-position of starting point
-   * @param x2 X-position of end point
-   * @param y2 Y-position of end point
-   * @param theta rotation/angle to travel
-   * @param segments The number of steps to use
-   * @returns Array A Path array of points
+   * @param {number} x1 - X-position of starting point
+   * @param {number} y1 - Y-position of starting point
+   * @param {number} x2 - X-position of end point
+   * @param {number} y2 - Y-position of end point
+   * @param {number} theta - rotation/angle to travel
+   * @param {number} [segments=12] - The number of steps to use. A higher
+   * number cfeates a smoother path
+   * @returns {array} A Path array
    **/
   arcPointToPoint(x1, y1, x2, y2, theta, segments = 12) {
     let path = [];
@@ -908,14 +908,13 @@ class PathHelper {
   }
 
   /**
-   * Compose an arc
-   * Draw an arc centered at a position
-   * @param Array An array of position [x,y]
-   * @param number The radius of the arc from the position
-   * @param number The number of radius to rotate through the arc
-   * @param number A radian offset from which to start the arc
-   * @param integer The number of line segments used to render the arc
-   * @returns Array A Path array of points
+   * Compose an arc centered at a position
+   * @param {array} posotion - A Point array defining a position [x,y]
+   * @param {number} radius - The radius of the arc from the position
+   * @param {number} theta - The number of radians to rotate through the circular arc
+   * @param {number} theta_offset - A radian offset from which to start the arc
+   * @param {number} segments - The number of line segments used to render the arc
+   * @returns {array} A Path array of points
    **/
   arc(position, radius, theta, theta_offset, segments) {
     let path = [];
