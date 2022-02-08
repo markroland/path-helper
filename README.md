@@ -708,9 +708,18 @@ PH.rotatePath(path, 0.5 * Math.PI);
 ]
 ```
 
+### reflectPath
+
+Reflect a Path about an axis (X or Y)
+
+```js
+PH.reflectPath([[1, 1], [2, 2]], "x");
+// Expected output is [[-1, 1], [-2, 2]]
+```
+
+
 ### Other:
 
- - reflectPath
  - distortPath
  - shiftPath
  - subdividePath
