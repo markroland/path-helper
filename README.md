@@ -822,11 +822,33 @@ a maximum distance. This can be used to "upsample" a path so that
 smoothing, adding noise, or other follow-up transformations may
 be applied in a more uniform manner.
 
+### decimatePath
+
+Randomly remove portions of a path. This is controlled by an `odds`
+parameter where a value of zero means that there is no chance any point
+will be removed from the path and a value of one means that there is
+a 100% chance that the point will be removed from the path.
+
+To achieve this each point in the path is evaluated against a random
+number between 0 and 1 and if the number is less than the odds, then
+the point is removed from the path.
+
+** Example of odds at 0.1 **
+
+Here 2 out of the 20 segments have been removed as an example of what
+could happen if the odds of removal are 10%.
+
+```
+Input:  --------------------
+Output: -------- -------- --
+```
+
+### decimatePaths
+
+This applies the same logic as `decimatePath` to multiple Path arrays.
 
 ### Other:
 
- - decimatePath
- - decimatePaths
  - joinPaths
  - cleanPath
  - pointsToPaths2

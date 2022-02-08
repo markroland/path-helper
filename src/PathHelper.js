@@ -1278,10 +1278,12 @@ class PathHelper {
   /**
    * Randomly remove portions of a path
    *
-   * @param Array An path array (array of points)
-   * @param number The ratio of points that should be removed (0 to 1)
+   * @param {array} path - A Path array
+   * @param {number} odds - The odds (0 to 100% represented as 0 to 1.0) that any
+   * point in the path should be removed, thereby terminating the current path
+   * and establishing a new path with the next point
    *
-   * @param Array An array of paths
+   * @returns {array} An array of Paths
    **/
   decimatePath(path, odds = 0.05) {
     let new_paths = [];
@@ -1305,10 +1307,12 @@ class PathHelper {
   /**
    * Randomly remove portions of multiple paths
    *
-   * @param Array An array of paths
-   * @param number The ratio of points that should be removed (0 to 1)
+   * @param {array} paths - An array of Paths
+   * @param {number} odds - The odds (0 to 100% represented as 0 to 1.0) that any
+   * point in the path should be removed, thereby terminating the current path
+   * and establishing a new path with the next point
    *
-   * @param Array An array of paths
+   * @param {array} An array of paths
    **/
   decimatePaths(paths, odds = 0.05) {
     let new_paths = [];
