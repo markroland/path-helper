@@ -717,10 +717,30 @@ PH.reflectPath([[1, 1], [2, 2]], "x");
 // Expected output is [[-1, 1], [-2, 2]]
 ```
 
+### distortPath
+
+Distort a path by mapping the corners of a rectangular bounding box
+to the respective corners of a manipulated quadrilateral.
+The path will be distorted using a linear interpolation of the
+transformation.
+
+```
+Bouding Box:
+
+ A -- B
+ |    |
+ D -- C
+
+Distortion:
+
+ A ------- B
+  \       /
+   \     /
+    D - C
+```
 
 ### Other:
 
- - distortPath
  - shiftPath
  - subdividePath
  - dividePath
