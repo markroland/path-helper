@@ -847,9 +847,25 @@ Output: -------- -------- --
 
 This applies the same logic as `decimatePath` to multiple Path arrays.
 
+### joinPaths
+
+Join Paths together when their endpoints are within a minimum distance of each other.
+This is a recursive algorithm that will keep consolidating paths until no paths
+are left within the threshold distance of each other.
+
+*Note: There are currently margin/boundary conditions in this method that are highly specific
+to another project*
+
+```
+        A          B C           D
+Input:  ------------ -------------
+Output: --------------------------
+        A                        B
+```
+
+
 ### Other:
 
- - joinPaths
  - cleanPath
  - pointsToPaths2
  - pointsToPaths
@@ -889,6 +905,8 @@ To Do:
 
  - Add optional rotation center point parameter to scalePath
  - Add optional rotation center point parameter to rotatePath
+ - Generalize joinPaths to not include dimensions
+
 
 License
 -------

@@ -1327,13 +1327,13 @@ class PathHelper {
 
   /**
    * Join Paths together when endpoints within threshold distance of each other
-   * @param paths Array A multidimensional arry of paths
-   * @param number The distance threshold below which points should be considered the same location.
+   * @param {array} paths - An array of Path arrays
+   * @param {number} [threshold=0.01] - The distance threshold below which points should be considered the same location.
    *   The value is based on the Standard unit of canvas center to canvas nearest edge.
    *   In thise case 1 = 1.5" (Default of 0.01 = 0.015" ~ 1/64")
-   * @param integer The index position of the paths input that is being analyzed
-   * @param integer A counter of function call iterations. Useful for debugging and stopping the recursion
-   * @returns Array An array of paths
+   * @param {number} [active_path_index=0] - The index position of the paths input that is being analyzed
+   * @param {number} [iteration=0] - A counter of function call iterations. Useful for debugging and stopping the recursion
+   * @returns {array} An array of paths
    **/
   joinPaths(paths, threshold = 0.01, active_path_index = 0, iteration = 0) {
 
