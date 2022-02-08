@@ -766,11 +766,65 @@ PH.shiftPath(path, 2);
 ]
 ```
 
+### subdividePath
+
+Divide each segment of a multi-point Path array into
+two segments.
+
+```js
+let path = [
+    [0, 0],
+    [0, 1],
+    [1, 1]
+];
+PH.subdividePath(path);
+```
+
+**Expected Output:**
+```js
+[
+    [0, 0],
+    [0, 0.5],
+    [0, 1],
+    [0.5, 1],
+    [1, 1]
+]
+```
+
+### dividePath
+
+Divide a two-point Path array (line) into 2 or more segments
+
+```js
+let path = [
+    [0, 0],
+    [0, 1]
+];
+PH.dividePath(path, 5);
+```
+
+**Expected Output:**
+```js
+[
+    [0, 0],
+    [0, 0.2],
+    [0, 0.4],
+    [0, 0.6],
+    [0, 0.8],
+    [0, 1]
+]
+```
+
+### dividePathComplete
+
+Refactor a Path array so that no segments of the path exceed
+a maximum distance. This can be used to "upsample" a path so that
+smoothing, adding noise, or other follow-up transformations may
+be applied in a more uniform manner.
+
+
 ### Other:
 
- - subdividePath
- - dividePath
- - dividePathComplete
  - decimatePath
  - decimatePaths
  - joinPaths

@@ -1200,6 +1200,8 @@ class PathHelper {
 
   /**
    * Split each segment of the source path into 2 parts and return the result
+   * @param {array} path - The source path
+   * @returns {array} - The input path with each segment divided into two segments
    **/
   subdividePath(path) {
 
@@ -1215,21 +1217,19 @@ class PathHelper {
         path[i][0] + (path[i+1][0] - path[i][0])/2,
         path[i][1] + (path[i+1][1] - path[i][1])/2
       ]);
-
-      // Point halfway to next point (Also works)
-      /*
-      divided_path.push([
-        path[i][0] - (path[i][0] - path[i+1][0])/2,
-        path[i][1] - (path[i][1] - path[i+1][1])/2
-      ]);
-      //*/
     }
+
+    // Add the last point
+    divided_path.push(path[path.length-1]);
 
     return divided_path;
   }
 
   /**
    * Split each segment of the source path into multiple segments
+   * @param {array} line - A 2-Point Path array
+   * @param {number} segments - The number of segments to create from the input line
+   * @returns {array} A Path array
    **/
   dividePath(line, segments) {
 
@@ -1250,6 +1250,11 @@ class PathHelper {
   /**
    * Break down a multi-point path into segments that don't
    * exceed a maximum segment length
+   * @param {array} path - A Path array
+   * @param {number} max_segment_length - If any segment of the path
+   * is larger than this value, then the segment should be divided
+   * into equal segments that are below this value.
+   * @returns {array} A Path array
    **/
   dividePathComplete(path, max_segment_length) {
     let divided_path = [];
