@@ -1181,6 +1181,9 @@ class PathHelper {
   /**
    * Shift and wrap the elements in the array
    * https://javascript.plainenglish.io/algorithms-101-rotate-array-in-javascript-three-solutions-260fbc923b64
+   * @param {array} path - A Path array
+   * @param {number} k - An integer number for how many elements to shift the array
+   * @returns {array}
    */
   shiftPath(path, k) {
     if (path.length > k) {

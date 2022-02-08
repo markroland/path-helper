@@ -739,9 +739,35 @@ Distortion:
     D - C
 ```
 
+### shiftPath
+
+Shift and wrap the elements in the array. This is useful for changing the
+start/end point of a closed shape. Specifically, when using a pen plotter
+this can be used to break up undesired patterns created by a pen depositing
+extra ink when it starts/stops a path.
+
+```js
+let path = [
+    [1, 1],
+    [2, 2],
+    [3, 3],
+    [4, 4]
+];
+PH.shiftPath(path, 2);
+```
+
+**Expected Output:**
+```js
+[
+    [3, 3],
+    [4, 4],
+    [1, 1],
+    [2, 2]
+]
+```
+
 ### Other:
 
- - shiftPath
  - subdividePath
  - dividePath
  - dividePathComplete
