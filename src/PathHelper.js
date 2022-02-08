@@ -1523,24 +1523,15 @@ class PathHelper {
   }
 
   /**
-   * Remove duplicate consecutive points in a path
+   * Remove duplicate (coincident) consecutive points in a path
+   * @param {array} path - A Path array
+   * @param {number} [threshold=0.0001] - The threshold below which 2 points should
+   * be considered coincident
+   * @returns {array} A Path array
    */
   cleanPath(path, threshold = 0.0001) {
 
     let cleanedPath = [];
-
-    // This doesn't work, but ideally it would
-    // Source: https://stackoverflow.com/a/30716969
-    // let cleanedPath = path.filter(function(item, pos, arr){
-    //   // Always keep the 0th element as there is nothing before it
-    //   // Then check if each element is different than the one before it
-    //   console.log(pos, item)
-    //   if (pos !== 0 && this.pointEquals(item, arr[pos-1])) {
-    //     console.log("Hit");
-    //   }
-    //   return pos === 0 || !this.pointEquals(item, arr[pos-1]);
-    // });
-    // console.log(cleanedPath);
 
     // Copy first position of "path" to the filtered path
     cleanedPath.push(path[0]);
@@ -1548,7 +1539,7 @@ class PathHelper {
     // Subsequent positions must greater than the minimum distance to be added
     path.forEach(function(point, index) {
       var last_point = cleanedPath[cleanedPath.length - 1];
-      var step_distance = Math.sqrt(Math.pow(point[0] - last_point[0], 2) + Math.pow(point[1] - last_point[1], 2));
+      var step_distance = this.distance(point, last_point);
       if (step_distance > threshold) {
         cleanedPath.push(point);
       }

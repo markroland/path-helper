@@ -863,10 +863,39 @@ Output: --------------------------
         A                        B
 ```
 
+### cleanPath
+
+Remove consecutive points if they are less than or equal to a threshold distance of the previous point.
+
+This is useful to "downsample" a path if its spatial resolution is higher than required
+by the output device, such as a screen or pen plotter. This can help reduce file size or
+reduce plotting time without sacrificing image quality.
+
+```js
+let path = [
+    [0, 0],
+    [0.1, 0],
+    [0.2, 0],
+    [0.21, 0],
+    [0.22, 0],
+    [0.25, 0],
+    [0.3, 0]
+];
+PH.cleanPath(path, 0.05);
+```
+
+**Expected Output:**
+```js
+[
+    [0, 0],
+    [0.1, 0],
+    [0.2, 0],
+    [0.3, 0]
+]
+```
 
 ### Other:
 
- - cleanPath
  - pointsToPaths2
  - pointsToPaths
  - smoothPath
