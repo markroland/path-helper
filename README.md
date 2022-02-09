@@ -894,10 +894,25 @@ PH.cleanPath(path, 0.05);
 ]
 ```
 
+### pointsToPaths2
+
+This method takes a flat array of Points, and calculates the distance between
+each point. If the distance is below a threshold these points are considered to
+be part of a connected Path. Each Path will continue to grow until there are no
+points within the threshold distance. Once a Path terminates a new Point is selected
+for Path evaluation. This continues until no points remain to be evaluated.
+
+This method was developed in order to convert raster/bitmap images into vector images.
+This works by performing edge detection on the image and then using this method to
+"connect the dots" of pixels determined to be edges.
+
+### pointsToPaths
+
+This is the original recursive version of pointsToPaths2 and is known to cause a stack overflow.
+Consider using pointsToPaths2 instead.
+
 ### Other:
 
- - pointsToPaths2
- - pointsToPaths
  - smoothPath
  - quadraticBezierPath
  - quadraticBezierPathAlgorithm

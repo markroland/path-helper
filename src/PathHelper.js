@@ -1548,6 +1548,13 @@ class PathHelper {
     return cleanedPath;
   }
 
+  /**
+   * Combine points within a threhold distance of each other into a Path
+   * @param {array} points - An array of Points
+   * @param {number} threshold - A maximum value for the distance between
+   * two points where they can be considered as part of the same path.
+   * @returns {array} An array of Paths
+   **/
   pointsToPaths2(points, threshold) {
     const paths = [];
 
@@ -1604,13 +1611,26 @@ class PathHelper {
     }
 
     // We might be left with a non-empty path
-    if (new_path.length > 0) paths.push(new_path);
+    if (new_path.length > 0) {
+      paths.push(new_path);
+    }
 
     return paths;
   }
 
   /**
-   * Join points together when endpoints within threshold distance of each other
+   * Combine points within a threhold distance of each other into a Path
+   * This is a recursive solution that is known to cause a stack overflow.
+   * Consider using pointsToPaths2 instead.
+   * @param {array} paths - An array of Paths. This will grow in size during
+   * each recursion
+   * @param {array} points - An array of Points. This will reduce in size
+   * during each recursion
+   * @param {number} active_path_index - This points to the array index of
+   * the `paths` parameter that is actively being evaluated
+   * @param {number} threshold - A maximum value for the distance between
+   * two points where they can be considered as part of the same path.
+   * @returns {array} An array of Paths
    **/
   pointsToPaths(paths, points, active_path_index = 0, threshold = 0.001) {
 
