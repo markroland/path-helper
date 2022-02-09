@@ -595,6 +595,13 @@ PH.extendLine([0, 0], [1, 1], 0.2, 0.2);
 ]
 ```
 
+### smoothPath
+
+Smooth a path by performing a one dimensional convolution on the X
+and Y components of each point in the path. The `size` parameter defines
+the window size. A larger window size will produce a smoother, less
+defined path.
+
 ### smoothCorners
 
 Smooth the corners on a Path in relation to other points on the path.
@@ -894,6 +901,12 @@ PH.cleanPath(path, 0.05);
 ]
 ```
 
+### simplify
+
+Simplify a path by removing points that do not significantly alter
+the path's shape. Like `cleanPath` this is useful to reduce the complexity of
+a path without sacrificing image quality.
+
 ### pointsToPaths2
 
 This method takes a flat array of Points, and calculates the distance between
@@ -913,7 +926,6 @@ Consider using pointsToPaths2 instead.
 
 ### Other:
 
- - smoothPath
  - quadraticBezierPath
  - quadraticBezierPathAlgorithm
  - cubicBezierPath
@@ -935,7 +947,6 @@ Consider using pointsToPaths2 instead.
  - linePathSplit (for layeredPaths)
  - linePathsSplit (for layeredPaths)
  - noisify
- - simplify
  - booleanAdd
  - booleanAddComparison
  - booleanSubtract
@@ -950,6 +961,7 @@ To Do:
  - Add optional rotation center point parameter to scalePath
  - Add optional rotation center point parameter to rotatePath
  - Generalize joinPaths to not include dimensions
+ - Evaluate need for both cleanPath and simplify
 
 
 License

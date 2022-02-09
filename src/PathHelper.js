@@ -772,6 +772,34 @@ class PathHelper {
   }
 
   /**
+   * Smooth a path
+   * @param {array} path - A Path array
+   * @param {number} size - The smoothing window size. This should be an odd number
+   * @returns {array} A Path array
+   **/
+  smoothPath(path, size = 3) {
+    let newData = [];
+    newData.push(path[0]);
+    if (path.length < size) {
+      return path;
+    }
+    let range = (size - 1)/2;
+    let v = 1 / size;
+    const kernel = new Array(size).fill(v);
+    for (let p = range; p < path.length-range; p++) {
+      let sum = [0,0];
+      for (let k = -range; k <= range; k++) {
+        // Sum X and Y components
+        sum[0] += path[p+k][0] * kernel[k+range];
+        sum[1] += path[p+k][1] * kernel[k+range];
+      }
+      newData.push(sum);
+    }
+    newData.push(path[path.length-1]);
+    return newData;
+  }
+
+  /**
    * Smooth the corners on a Path based on percentages
    * @param {array} path - An array of points representing the path to be modified
    * @param {number} sharpness - A value from 0 to 1. A sharpness of 0 represents the maximum amount of curvature
@@ -1549,6 +1577,48 @@ class PathHelper {
   }
 
   /**
+   * Simplify a path by removing points that do not significantly alter
+   * the path's shape
+   * @param {array} path - A Path array
+   * @param {number} [distance_threshold=1.0] - The threshold below which 2 points should
+   * be considered coincident. If the distance between the previously accepted point
+   * and the point under evaluation is less than or equal to this value it will be
+   * not be added to the new path.
+   * @param {number} [direction_threshold=Math.PI/4] - If the change in direction between the
+   * previously accepted segment and the segment under evaluation is greater than
+   * this value (in Radians) then it will be added to the new path.
+   * @returns {array} A Path array
+   */
+  simplify(path, distance_threshold = 1.0, direction_threshold = Math.PI / 4) {
+
+    var simplified = [];
+
+    // Copy first position of "path" to the filtered path
+    simplified.push(path[0], path[1]);
+
+    let last_direction = Math.atan2(path[1][1] - path[0][1], path[1][0] - path[0][0]);
+
+    // Subsequent positions must be greater than the minimum distance to be added
+    for (let i = 1; i < path.length-1; i++) {
+
+      var magnitude = this.distance(simplified[simplified.length - 1], path[i+1]);
+
+      let direction = Math.atan2(path[i+1][1] - path[i][1], path[i+1][0] - path[i][0]);
+      let direction_delta = last_direction - direction;
+
+      if (Math.abs(direction_delta) > direction_threshold) {
+        last_direction = direction;
+        simplified.push(path[i+1]);
+      } else if (magnitude > distance_threshold) {
+        last_direction = direction;
+        simplified.push(path[i+1]);
+      }
+    }
+
+    return simplified;
+  }
+
+  /**
    * Combine points within a threhold distance of each other into a Path
    * @param {array} points - An array of Points
    * @param {number} threshold - A maximum value for the distance between
@@ -1688,28 +1758,6 @@ class PathHelper {
     paths = this.pointsToPaths(paths, points, active_path_index, threshold);
 
     return paths;
-  }
-
-  smoothPath(path, size = 3) {
-    let newData = [];
-    newData.push(path[0]);
-    if (path.length < size) {
-      return path;
-    }
-    let range = (size - 1)/2;
-    let v = 1 / size;
-    const kernel = new Array(size).fill(v);
-    for (let p = range; p < path.length-range; p++) {
-      let sum = [0,0];
-      for (let k = -range; k <= range; k++) {
-        // Sum X and Y components
-        sum[0] += path[p+k][0] * kernel[k+range];
-        sum[1] += path[p+k][1] * kernel[k+range];
-      }
-      newData.push(sum);
-    }
-    newData.push(path[path.length-1]);
-    return newData;
   }
 
   quadraticBezierPath(p1, p2, p3, segments) {
@@ -3027,41 +3075,6 @@ class PathHelper {
     }
 
     return newpath;
-  }
-
-  /**
-   * Remove unnecessary points
-   */
-  simplify(path, distance_threshold = 1.0, direction_threshold = Math.PI / 4) {
-
-    var simplified = [];
-
-    // Copy first position of "path" to the filtered path
-    simplified.push(path[0], path[1]);
-
-    let last_direction = Math.atan2(path[1][1] - path[0][1], path[1][0] - path[0][0]);
-
-    // Subsequent positions must greater than the minimum distance to be added
-    for (let i = 1; i < path.length-1; i++) {
-      var magnitude = this.distance(simplified[simplified.length - 1], path[i+1]);
-
-      let direction = Math.atan2(path[i+1][1] - path[i][1], path[i+1][0] - path[i][0]);
-      let direction_delta = last_direction - direction;
-
-      // console.log(magnitude, Math.abs(direction_delta));
-
-      if (Math.abs(direction_delta) > direction_threshold) {
-        // console.log(Math.abs(direction_delta), direction_threshold);
-        last_direction = direction;
-        simplified.push(path[i+1]);
-      } else if (magnitude > distance_threshold) {
-        // console.log("magnitude exceeded");
-        last_direction = direction;
-        simplified.push(path[i+1]);
-      }
-    }
-
-    return simplified;
   }
 
   /**
