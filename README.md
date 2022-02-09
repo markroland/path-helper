@@ -924,11 +924,61 @@ This works by performing edge detection on the image and then using this method 
 This is the original recursive version of pointsToPaths2 and is known to cause a stack overflow.
 Consider using pointsToPaths2 instead.
 
+### quadraticBezierPath
+
+Create a [Quadratic Bézier curve](https://en.wikipedia.org/wiki/Bézier_curve#Quadratic_Bézier_curves) path.
+
+```js
+PH.quadraticBezierPath(
+    [0, 0],
+    [1, 1],
+    [0, 2],
+    5
+);
+```
+
+**Expected Output:**
+```js
+[
+    [0, 0],
+    [0.32, 0.4],
+    [0.48, 0.8],
+    [0.48, 1.2],
+    [0.32, 1.6],
+    [0, 2],
+]
+```
+
+### cubicBezierPath
+
+Create a [Cubic Bézier curve](https://en.wikipedia.org/wiki/Bézier_curve#Cubic_Bézier_curves) path.
+
+```js
+PH.cubicBezierPath(
+    [0, 0],
+    [1, 0.5],
+    [1, 1.5],
+    [0, 2],
+    5
+);
+```
+
+**Expected Output:**
+```js
+[
+    [0, 0],
+    [0.48, 0.35],
+    [0.72, 0.78],
+    [0.72, 1.2],
+    [0.48, 1.65],
+    [0, 2]
+]
+```
+
+###
+
 ### Other:
 
- - quadraticBezierPath
- - quadraticBezierPathAlgorithm
- - cubicBezierPath
  - sortPaths
  - shufflePaths
  - polarToRect

@@ -1760,9 +1760,18 @@ class PathHelper {
     return paths;
   }
 
+  /**
+   * Create a Quadratic Bezier curve using 3 control points
+   * @param {array} p1 - Control Point number 1. This is the start of the curve path.
+   * @param {array} p2 - Control Point number 2. This is the middle control point.
+   * @param {array} p3 - Control Point number 3. This is the end of the curve path.
+   * @param {number} segments - The number of segments to use to represent the curve. A
+   * higher number will create a smoother, high-resolution curve
+   * @returns {array} A Path array
+   **/
   quadraticBezierPath(p1, p2, p3, segments) {
     let path = [];
-    for (let i = 0; i < segments; i++) {
+    for (let i = 0; i <= segments; i++) {
       let t = i/segments;
       path.push([
         Math.pow(1-t, 2) * p1[0] + 2 * (1-t) * t * p2[0] + Math.pow(t, 2) * p3[0],
@@ -1772,38 +1781,16 @@ class PathHelper {
     return path;
   }
 
-  quadraticBezierPathAlgorithm(p1, p2, p3, segments) {
-
-    let path = [];
-
-    path.push(p1);
-
-    let a = p1;
-    let b = p2;
-    let c;
-    let d;
-    for (let i = 1; i < segments; i++) {
-      c = [
-        p1[0] - (p1[0] - p2[0]) * (i/(segments-1)),
-        p1[1] - (p1[1] - p2[1]) * (i/(segments-1))
-      ];
-      d = [
-        p2[0] - (p2[0] - p3[0]) * (i/(segments-1)),
-        p2[1] - (p2[1] - p3[1]) * (i/(segments-1))
-      ];
-      path.push(this.intersect_point(a,b,c,d));
-      a = c;
-      b = d;
-    }
-
-    path.push(p3);
-
-    return path;
-  }
-
   /**
-   * Bezier Path with 4 control points
-   * Equations from https://javascript.info/bezier-curve
+   * Create a Cubic Bezier curve using 4 control points
+   * Equation from https://javascript.info/bezier-curve
+   * @param {array} p1 - Control Point number 1. This is the start of the curve path.
+   * @param {array} p2 - Control Point number 2. This is the control point nearest the start point p1.
+   * @param {array} p3 - Control Point number 3. This is the control point nearest the end point p4.
+   * @param {array} p4 - Control Point number 3. This is the end of the curve path.
+   * @param {number} segments - The number of segments to use to represent the curve. A
+   * higher number will create a smoother, high-resolution curve
+   * @returns {array} A Path array
    */
   cubicBezierPath(p1, p2, p3, p4, segments) {
     let path = [];
