@@ -1013,11 +1013,28 @@ PH.cubicBezierPath(
 ]
 ```
 
-###
+### pointOnLineSegment
+
+Check if a Point is on a Line Segment (or within a threshold/buffer)
+
+```js
+PH.pointOnLineSegment(
+    [0.5, 0.01],
+    [[0, 0], [1, 0]],
+    0
+);
+// Output is false
+
+PH.pointOnLineSegment(
+    [0.5, 0.01],
+    [[0, 0], [1, 0]],
+    0.001
+);
+// Output is true
+```
 
 ### Other:
 
- - pointOnLineSegment
  - lineCircleIntersect
  - solveQuadratic
  - circleInterceptPoints

@@ -1872,24 +1872,31 @@ class PathHelper {
     return path;
   }
 
-  // From http://www.jeffreythompson.org/collision-detection/line-circle.php
+  /**
+   * Check if a Point is on a Line Segment (or within a threshold/buffer)
+   * This is from Jeffrey Thompson's excellent eBook on Collission Detection
+   * online at http://www.jeffreythompson.org/collision-detection/line-circle.php
+   *
+   *   | length + buffer  |
+   *   |                 ||
+   *   A ------_-------- B
+   *   |       p         |
+   *   |   d1  |    d2   |
+   *
+   * @param {array} p - A Point array
+   * @param {array} line - A 2-point Path array
+   * @param {number} [buffer=0.01] - A value representing a maximum difference between the length
+   * of the line and the length of the distance from the line start to point `p` to the line end
+   * and still be considered as "on" the line segment.
+   * @returns {boolean} True if the point is on the line (or within the buffer). False otherwise.
+   **/
   pointOnLineSegment(p, line, buffer = 0.01) {
-
-    // get distance from the point to the two ends of the line
     let d1 = this.distance(p, line[0]);
     let d2 = this.distance(p, line[1]);
-
-    // get the length of the line
     let lineLen = this.distance(line[0], line[1]);
-
-    // if the two distances are equal to the line's
-    // length, the point is on the line!
-    // note we use the buffer here to give a range,
-    // rather than one #
     if (d1+d2 >= lineLen-buffer && d1+d2 <= lineLen+buffer) {
       return true;
     }
-
     return false;
   }
 
