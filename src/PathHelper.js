@@ -163,6 +163,38 @@ class PathHelper {
   }
 
   /**
+   * Convert Polar radius/angle coordinates to Rectangular (Cartesian) coordinates
+   * @param {number} radius - The radius of the point (from the origin)
+   * @param {number} theta - The angle of the point (from the origin) in Radians
+   * from the positive X axis (3 O'clock direction). Positive theta is in the
+   * counter-clockwise direction
+   * @returns {array} An array of length two, where the first parameter is
+   * the X position and the second the Y position
+   **/
+  polarToRect(radius, theta) {
+    return [
+      radius * Math.cos(theta),
+      radius * Math.sin(theta)
+    ];
+  }
+
+  /**
+   * Convert Rectangular (Cartesian) coordinates to Polar radius/angle coordinates
+   * @param {number} x - An X position relative to the origin
+   * @param {number} y - A Y position relative to the origin
+   * @returns {object} An object containing a 'radius' parameter that is the distance
+   * from the origin to the point [x,y] and a `theta` parameter` that is the angle
+   * from the positive X axis (3 O'clock direction). Positive theta is in the
+   * counter-clockwise direction
+   **/
+  rectToPolar(x, y) {
+    return {
+      'radius': this.distance([0, 0], [x, y]),
+      'theta': Math.atan2(y, x)
+    };
+  }
+
+  /**
    * Calculate the Greatest Common Divisor (or Highest Common Factor) of 2 numbers
    *
    * https://en.wikipedia.org/wiki/Greatest_common_divisor
@@ -1838,13 +1870,6 @@ class PathHelper {
       ]);
     }
     return path;
-  }
-
-  polarToRect(radius, theta) {
-    return [
-      radius * Math.cos(theta),
-      radius * Math.sin(theta)
-    ];
   }
 
   // From http://www.jeffreythompson.org/collision-detection/line-circle.php

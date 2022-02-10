@@ -206,6 +206,24 @@ PH.radiansToDegrees(0.5 * Math.PI);
 // Output is 90
 ```
 
+### polarToRect
+
+Convert Polar coordinates to Rectangular (Cartesian) coordinates
+
+```js
+PH.polarToRect(1, 0.25 * Math.PI);
+// Output is [0.7071067811865476, 0.7071067811865475]
+```
+
+### rectToPolar
+
+Convert Rectangular (Cartesian) coordinates to Polar coordinates
+
+```js
+PH.rectToPolar(0.7071, 0.7071);
+// Output is {radius: 0.99999, theta: 0.7854}
+```
+
 ### greatestCommonDivisor
 
 Get the [Greatest Common Divisor](https://en.wikipedia.org/wiki/Greatest_common_divisor) of two numbers
@@ -999,7 +1017,6 @@ PH.cubicBezierPath(
 
 ### Other:
 
- - polarToRect
  - pointOnLineSegment
  - lineCircleIntersect
  - solveQuadratic
