@@ -901,6 +901,26 @@ PH.cleanPath(path, 0.05);
 ]
 ```
 
+### sortPaths
+
+Sort Path arrays by start point from left to right, top to bottom.
+This is primarily useful for plotting optimization in order to reduce the
+distance traveled for non-drawing movements.
+
+*Note:* This is a simple algorithm and could be improved for greater
+efficiency in the future. For example, rather than sorting every path by
+the starting point, the end point of the previous path could be used as
+the position by which to find the next closest path. This could be further
+optimized by optionally allowing paths to be plotted in reverse.
+
+### shufflePaths
+
+Randomly re-sort Path arrays. This is useful for plotting if the design has
+a repetitive pattern and it is undesirable for pen up/down artifacts to appear
+in a pattern that could negatively impact the desired image. This uses the
+[Fisher-Yates algorithm](https://dev.to/codebubb/how-to-shuffle-an-array-in-javascript-2ikj)
+for shuffling.
+
 ### simplify
 
 Simplify a path by removing points that do not significantly alter
@@ -979,8 +999,6 @@ PH.cubicBezierPath(
 
 ### Other:
 
- - sortPaths
- - shufflePaths
  - polarToRect
  - pointOnLineSegment
  - lineCircleIntersect

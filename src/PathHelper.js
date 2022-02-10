@@ -1577,6 +1577,42 @@ class PathHelper {
   }
 
   /**
+   * Sort Paths by start point from left to right, top to bottom
+   * @param {array} paths - An array of Path arrays
+   * @returns {array} - An array of Path arrays
+   **/
+  sortPaths(paths) {
+
+    // Sort by Horizontal X position
+    paths = paths.sort(function(a, b){
+      return a[0][0] - b[0][0];
+    });
+
+    // Sort by Vertical Y position
+    paths = paths.sort(function(a, b){
+      return a[0][1] - b[0][1];
+    });
+
+    return paths;
+  }
+
+  /**
+   * Shuffle Paths using the Fisher-Yates algorithm
+   * From https://dev.to/codebubb/how-to-shuffle-an-array-in-javascript-2ikj
+   * @param {array} paths - An array of Path arrays
+   * @returns {array} - An array of Path arrays
+   */
+  shufflePaths(paths) {
+    for (let i = paths.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const temp = paths[i];
+      paths[i] = paths[j];
+      paths[j] = temp;
+    }
+    return paths;
+  }
+
+  /**
    * Simplify a path by removing points that do not significantly alter
    * the path's shape
    * @param {array} path - A Path array
@@ -1802,32 +1838,6 @@ class PathHelper {
       ]);
     }
     return path;
-  }
-
-  sortPaths(paths) {
-    paths = paths.sort(function(a, b){
-      // Compare the X-position of the first point in the path
-      return a[0][0] - b[0][0];
-    });
-    return paths;
-  }
-
-  /**
-   * Shuffle Paths using the Fisher-Yates algorithm
-   * From https://dev.to/codebubb/how-to-shuffle-an-array-in-javascript-2ikj
-   *
-   * @param paths An array of paths
-   *
-   * @returns An array of paths now in a random order
-   */
-  shufflePaths(paths) {
-    for (let i = paths.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      const temp = paths[i];
-      paths[i] = paths[j];
-      paths[j] = temp;
-    }
-    return paths;
   }
 
   polarToRect(radius, theta) {
