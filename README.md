@@ -1061,9 +1061,15 @@ PH.lineCircleIntersect([-1, -1], [1, 1], [[0,0], 1]);
 ]
 ```
 
+### circleInterceptPoints
+
+Calculate the intersection point between two circles. This requires both
+circles to be centered at the origin. A `sign` parameter solves for one of
+two possible solutions. This assumes the input circles do intersect and
+does not solve for non-intersection.
+
 ### Other:
 
- - circleInterceptPoints
  - cropToCircle (Deprecated: Try cropToShape instead)
  - cropToRectangle (Deprecated: Try cropToShape instead)
  - cropToShape
@@ -1091,6 +1097,7 @@ To Do:
  - Generalize joinPaths to not include dimensions
  - Evaluate need for both cleanPath and simplify
  - Update lineCircleIntersect to work for a circle at any location
+ - Improve or remove circleInterceptPoints
 
 
 License

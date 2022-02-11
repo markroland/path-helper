@@ -1982,11 +1982,12 @@ class PathHelper {
    * https://math.stackexchange.com/questions/256100/how-can-i-find-the-points-at-which-two-circles-intersect
    * https://www.analyzemath.com/CircleEq/circle_intersection.html
    * See alternate implementation: https://gist.github.com/jupdike/bfe5eb23d1c395d8a0a1a4ddd94882ac
-   * @param p1 Array of x/y position ([x,y]) of Circle 1
-   * @param r1 float Radius of Circle 1
-   * @param p2 Array of x/y position ([x,y]) of Circle 2
-   * @param r2 float Radius of Circle 2
-   * @returns Array An array of intersection points
+   * @param {array} p1 - Point array of x/y position ([x,y]) of Circle 1
+   * @param {number} r1 - Radius of Circle 1
+   * @param {array} p2 - Point array of x/y position ([x,y]) of Circle 2
+   * @param {number} r2 - Radius of Circle 2
+   * @param {number} sign=1|+1|-1 - Look for one of two points
+   * @returns {array} - A Point array
    **/
   circleInterceptPoints(p1, r1, p2, r2, sign) {
 
