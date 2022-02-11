@@ -1085,11 +1085,27 @@ circles to be centered at the origin. A `sign` parameter solves for one of
 two possible solutions. This assumes the input circles do intersect and
 does not solve for non-intersection.
 
+### cropToShape
+
+Crop paths to a bounding shape. This supports a threshold value that can
+be used to handle points that are near the boundary of the crop shape.
+
+### cropToCircle
+
+Crop paths to a circle.
+
+**DEPRECATED**: This has been replaced by the more generalized `cropToShape` method
+and will be removed in the future.
+
+### cropToRectangle
+
+Crop paths to a rectangle.
+
+**DEPRECATED**: This has been replaced by the more generalized `cropToShape` method
+and will be removed in the future.
+
 ### Other:
 
- - cropToCircle (Deprecated: Try cropToShape instead)
- - cropToRectangle (Deprecated: Try cropToShape instead)
- - cropToShape
  - knockout
  - pointInPolygon
  - fill
