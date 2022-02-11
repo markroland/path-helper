@@ -5,6 +5,10 @@
  */
 class PathHelper {
 
+  /*************************************/
+  // General operations
+  /*************************************/
+
   /**
    * Get information about a 2D path
    * @param {array} path - A path
@@ -93,20 +97,6 @@ class PathHelper {
   }
 
   /**
-   * Calculate the cross product of A and B
-   * @param {array} a - A 3D Vector (an Array consisting of three Numbers)
-   * @param {array} b - A 3D Vector (an Array consisting of three Numbers)
-   * @returns {array} The Cross Product of A cross B (an Array consisting of three Numbers)
-   */
-  crossProduct(a, b) {
-    return [
-      a[1] * b[2] - a[2] * b[1],
-      a[2] * b[0] - a[0] * b[2],
-      a[0] * b[1] - a[1] * b[0]
-    ];
-  }
-
-  /**
    * Get the Bounding Box coordinates for a 2D or 3D path
    * @param {array} path - A Path array
    * @returns {array} A multidimensional array with the minimum and maximum values for each dimension
@@ -142,103 +132,6 @@ class PathHelper {
    **/
   arrayMax(a) {
     return Math.max(...a);
-  }
-
-  /**
-   * Convert Degrees to Radians
-   * @param {number} degrees
-   * @returns {number} The input number represented in units of Radians
-   **/
-  degreesToRadians(degrees) {
-    return degrees * (Math.PI/180);
-  }
-
-  /**
-   * Convert Radians to Degrees
-   * @param {number} radians
-   * @returns {number} The input number represented in units of Degrees
-   **/
-  radiansToDegrees(radians) {
-    return radians * (180/Math.PI);
-  }
-
-  /**
-   * Convert Polar radius/angle coordinates to Rectangular (Cartesian) coordinates
-   * @param {number} radius - The radius of the point (from the origin)
-   * @param {number} theta - The angle of the point (from the origin) in Radians
-   * from the positive X axis (3 O'clock direction). Positive theta is in the
-   * counter-clockwise direction
-   * @returns {array} An array of length two, where the first parameter is
-   * the X position and the second the Y position
-   **/
-  polarToRect(radius, theta) {
-    return [
-      radius * Math.cos(theta),
-      radius * Math.sin(theta)
-    ];
-  }
-
-  /**
-   * Convert Rectangular (Cartesian) coordinates to Polar radius/angle coordinates
-   * @param {number} x - An X position relative to the origin
-   * @param {number} y - A Y position relative to the origin
-   * @returns {object} An object containing a 'radius' parameter that is the distance
-   * from the origin to the point [x,y] and a `theta` parameter` that is the angle
-   * from the positive X axis (3 O'clock direction). Positive theta is in the
-   * counter-clockwise direction
-   **/
-  rectToPolar(x, y) {
-    return {
-      'radius': this.distance([0, 0], [x, y]),
-      'theta': Math.atan2(y, x)
-    };
-  }
-
-  /**
-   * Calculate the Greatest Common Divisor (or Highest Common Factor) of 2 numbers
-   *
-   * https://en.wikipedia.org/wiki/Greatest_common_divisor
-   * https://www.geeksforgeeks.org/c-program-find-gcd-hcf-two-numbers/
-   *
-   * @param {number} a
-   * @param {number} b
-   * @returns {number}
-   */
-  greatestCommonDivisor(a, b) {
-    if (b == 0) {
-      return a;
-    }
-    return this.greatestCommonDivisor(b, a % b);
-  }
-
-  /**
-   * Determine if two lines are equivalent
-   * @param {array} a - A path containing two points
-   * @param {array} b - A path containing two points
-   * @param {number} [threshold=0] -  A maximum distance points can be apart and considered equal
-   * @returns {boolean} True if the same, false otherwise
-   */
-  lineEquals(a, b, threshold = 0) {
-    if (this.pointEquals(a[0], b[0], threshold) && this.pointEquals(a[1], b[1], threshold)) {
-      return true;
-    }
-    return false;
-  }
-
-  /**
-   * Determine if two points are equivalent (coincident)
-   * @param {array} a - A point array containing two values for x and y
-   * @param {array} b - A point array containing two values for x and y
-   * @param {number} [threshold=0] - A maximum distance points can be apart and considered equal
-   * @returns {boolean} True if the same, false otherwise
-   */
-  pointEquals(a, b, threshold = 0) {
-    if (threshold === 0 && a[0] === b[0] && a[1] === b[1]) {
-      return true;
-    } else if (this.distance(a, b) <= threshold) {
-      return true;
-    }
-    return false;
   }
 
   /**
@@ -313,6 +206,155 @@ class PathHelper {
   }
 
   /**
+   * Convert Degrees to Radians
+   * @param {number} degrees
+   * @returns {number} The input number represented in units of Radians
+   **/
+  degreesToRadians(degrees) {
+    return degrees * (Math.PI/180);
+  }
+
+  /**
+   * Convert Radians to Degrees
+   * @param {number} radians
+   * @returns {number} The input number represented in units of Degrees
+   **/
+  radiansToDegrees(radians) {
+    return radians * (180/Math.PI);
+  }
+
+  /**
+   * Convert Polar radius/angle coordinates to Rectangular (Cartesian) coordinates
+   * @param {number} radius - The radius of the point (from the origin)
+   * @param {number} theta - The angle of the point (from the origin) in Radians
+   * from the positive X axis (3 O'clock direction). Positive theta is in the
+   * counter-clockwise direction
+   * @returns {array} An array of length two, where the first parameter is
+   * the X position and the second the Y position
+   **/
+  polarToRect(radius, theta) {
+    return [
+      radius * Math.cos(theta),
+      radius * Math.sin(theta)
+    ];
+  }
+
+  /**
+   * Convert Rectangular (Cartesian) coordinates to Polar radius/angle coordinates
+   * @param {number} x - An X position relative to the origin
+   * @param {number} y - A Y position relative to the origin
+   * @returns {object} An object containing a 'radius' parameter that is the distance
+   * from the origin to the point [x,y] and a `theta` parameter` that is the angle
+   * from the positive X axis (3 O'clock direction). Positive theta is in the
+   * counter-clockwise direction
+   **/
+  rectToPolar(x, y) {
+    return {
+      'radius': this.distance([0, 0], [x, y]),
+      'theta': Math.atan2(y, x)
+    };
+  }
+
+  /**
+   * Calculate the Greatest Common Divisor (or Highest Common Factor) of 2 numbers
+   *
+   * https://en.wikipedia.org/wiki/Greatest_common_divisor
+   * https://www.geeksforgeeks.org/c-program-find-gcd-hcf-two-numbers/
+   *
+   * @param {number} a
+   * @param {number} b
+   * @returns {number}
+   */
+  greatestCommonDivisor(a, b) {
+    if (b == 0) {
+      return a;
+    }
+    return this.greatestCommonDivisor(b, a % b);
+  }
+
+  /*************************************/
+  // Mathematical Formulas
+  /*************************************/
+
+  /**
+   * Calculate the cross product of A and B
+   * @param {array} a - A 3D Vector (an Array consisting of three Numbers)
+   * @param {array} b - A 3D Vector (an Array consisting of three Numbers)
+   * @returns {array} The Cross Product of A cross B (an Array consisting of three Numbers)
+   */
+  crossProduct(a, b) {
+    return [
+      a[1] * b[2] - a[2] * b[1],
+      a[2] * b[0] - a[0] * b[2],
+      a[0] * b[1] - a[1] * b[0]
+    ];
+  }
+
+  /**
+   * Returns objet representing Line equation.
+   * @param {array} p1 - A Point array
+   * @param {array} p2 - A Point array
+   * @returns {object} Returns an object with parameter "m" representing
+   * the slope and a parameter "b" representing the Y intercept.
+   **/
+  lineSlopeIntercept(p1, p2) {
+    let m = (p2[1] - p1[1]) / (p2[0] - p1[0]);
+    let b = p1[1] - m * p1[0];
+    return {"m": m, "b": b};
+  }
+
+  /**
+   * Solve the Quadratic Equation. For real values only
+   *
+   * Standard Quadratic Equation: ax^2 + bx + c = 0
+   *
+   * @param {number} a - Parameter `a` of the standard quadratic equation
+   * @param {number} b - Parameter `b` of the standard quadratic equation
+   * @param {number} c - Parameter `c` of the standard quadratic equation
+   * @returns {array} A 2-element array containing real solutions of x or
+   * and empty array for non-real solutions of x
+   */
+  solveQuadratic(a, b, c) {
+
+    let discriminant = Math.pow(b, 2) - 4 * a * c;
+
+    // One real and equal answer
+    if (discriminant === 0) {
+      let x = -b / (2 * a);
+      return [x];
+    }
+
+    // Two real and different answers
+    if (discriminant > 0) {
+      let x1 = (-b + Math.sqrt(discriminant)) / (2 * a);
+      let x2 = (-b - Math.sqrt(discriminant)) / (2 * a);
+      return [x1, x2];
+    }
+
+    return [];
+  }
+
+  /**
+   * Calculate the distance between two points in 2D or 3D space
+   * @param {array} p1 - A Point array containing two values for x and y. End Point of Line A
+   * @param {array} p2 - A Point array containing two values for x and y. Start Point of Line B
+   * @returns {number} - The distance between the two points
+   */
+  distance(p1, p2) {
+    if (p1.length == 2) {
+      p1.push(0);
+    }
+    if (p2.length == 2) {
+      p2.push(0);
+    }
+    return Math.sqrt(Math.pow(p2[0] - p1[0], 2) + Math.pow(p2[1] - p1[1], 2) + Math.pow(p2[2] - p1[2], 2));
+  }
+
+  /*************************************/
+  // Shapes
+  /*************************************/
+
+  /**
    * Create a regular convex polygon centered at the origin
    * @param {number} sides - The number of sides for the shape
    * @param {number} radius - The radius of the shape - the distance from the center to a vertex
@@ -384,6 +426,705 @@ class PathHelper {
       path.push([x,y]);
     }
     return path;
+  }
+
+  /**
+   * Compose an arc between 2 points
+   * @param {number} x1 - X-position of starting point
+   * @param {number} y1 - Y-position of starting point
+   * @param {number} x2 - X-position of end point
+   * @param {number} y2 - Y-position of end point
+   * @param {number} theta - rotation/angle to travel
+   * @param {number} [segments=12] - The number of steps to use. A higher
+   * number cfeates a smoother path
+   * @returns {array} A Path array
+   **/
+  arcPointToPoint(x1, y1, x2, y2, theta, segments = 12) {
+    let path = [];
+    let theta_0 = Math.atan2(y2 - y1, x2 - x1);
+    let distance = this.distance([x1, y1], [x2, y2]);
+    for (let c = 1; c < segments; c++) {
+      path.push([
+        x1 + (x2 - x1)/2 + distance/2 * Math.cos(theta_0 + Math.PI + c/segments * theta),
+        y1 + (y2 - y1)/2 + distance/2 * Math.sin(theta_0 + Math.PI + c/segments * theta)
+      ]);
+    }
+    return path;
+  }
+
+  /**
+   * Compose an arc centered at a position
+   * @param {array} posotion - A Point array defining a position [x,y]
+   * @param {number} radius - The radius of the arc from the position
+   * @param {number} theta - The number of radians to rotate through the circular arc
+   * @param {number} theta_offset - A radian offset from which to start the arc
+   * @param {number} segments - The number of line segments used to render the arc
+   * @returns {array} A Path array of points
+   **/
+  arc(position, radius, theta, theta_offset, segments) {
+    let path = [];
+    for (let s = 0; s <= segments; s++) {
+      path.push([
+        position[0] + radius * Math.cos(theta_offset + s/segments * theta),
+        position[0] + radius * Math.sin(theta_offset + s/segments * theta)
+      ]);
+    }
+    return path;
+  }
+
+  /**
+   * Create a Quadratic Bezier curve using 3 control points
+   * @param {array} p1 - Control Point number 1. This is the start of the curve path.
+   * @param {array} p2 - Control Point number 2. This is the middle control point.
+   * @param {array} p3 - Control Point number 3. This is the end of the curve path.
+   * @param {number} segments - The number of segments to use to represent the curve. A
+   * higher number will create a smoother, high-resolution curve
+   * @returns {array} A Path array
+   **/
+  quadraticBezierPath(p1, p2, p3, segments) {
+    let path = [];
+    for (let i = 0; i <= segments; i++) {
+      let t = i/segments;
+      path.push([
+        Math.pow(1-t, 2) * p1[0] + 2 * (1-t) * t * p2[0] + Math.pow(t, 2) * p3[0],
+        Math.pow(1-t, 2) * p1[1] + 2 * (1-t) * t * p2[1] + Math.pow(t, 2) * p3[1]
+      ]);
+    }
+    return path;
+  }
+
+  /**
+   * Create a Cubic Bezier curve using 4 control points
+   * Equation from https://javascript.info/bezier-curve
+   * @param {array} p1 - Control Point number 1. This is the start of the curve path.
+   * @param {array} p2 - Control Point number 2. This is the control point nearest the start point p1.
+   * @param {array} p3 - Control Point number 3. This is the control point nearest the end point p4.
+   * @param {array} p4 - Control Point number 3. This is the end of the curve path.
+   * @param {number} segments - The number of segments to use to represent the curve. A
+   * higher number will create a smoother, high-resolution curve
+   * @returns {array} A Path array
+   */
+  cubicBezierPath(p1, p2, p3, p4, segments) {
+    let path = [];
+    for (let i = 0; i <= segments; i++) {
+      let t = i/segments;
+      path.push([
+        Math.pow(1-t, 3) * p1[0] + 3 * Math.pow(1-t, 2) * t * p2[0] + 3 * (1-t) * Math.pow(t,2) * p3[0] + Math.pow(t,3) * p4[0],
+        Math.pow(1-t, 3) * p1[1] + 3 * Math.pow(1-t, 2) * t * p2[1] + 3 * (1-t) * Math.pow(t,2) * p3[1] + Math.pow(t,3) * p4[1]
+      ]);
+    }
+    return path;
+  }
+
+  /*************************************/
+  // Linear Transformations
+  /*************************************/
+
+  /**
+   * Translate a group of paths to be centered around the origin
+   * @param {array} paths - An array of Path arrays
+   * @returns {array} An array of Path arrays centered at the origin
+   **/
+  centerPaths(paths) {
+
+    let x;
+    let x_min = 0;
+    let x_max = 0;
+    let y;
+    let y_min = 0;
+    let y_max = 0;
+
+    // Get the most extreme points (bounds) from all paths
+    for (let i = 0; i < paths.length; i++) {
+
+      // Get X coordinates as an 1-dimensional array
+      let x_coordinates = this.arrayColumn(paths[i], 0);
+
+      x = Math.min(...x_coordinates);
+      if (x < x_min) {
+        x_min = x;
+      }
+
+      x = Math.max(...x_coordinates);
+      if (x > x_max) {
+        x_max = x;
+      }
+
+      // Get Y coordinates as an 1-dimensional array
+      let y_coordinates = this.arrayColumn(paths[i], 1);
+
+      y = Math.min(...y_coordinates);
+      if (y < y_min) {
+        y_min = y;
+      }
+
+      y = Math.max(...y_coordinates);
+      if (y > y_max) {
+        y_max = y;
+      }
+    }
+
+    // Determine offset of X direction
+    let x_range = x_max - x_min;
+    let x_center_offset = x_min + x_range/2;
+
+    // Determine offset of Y direction
+    let y_range = y_max - y_min;
+    let y_center_offset = y_min + y_range/2;
+
+    // Translate each path
+    for (let i = 0; i < paths.length; i++) {
+      paths[i] = this.translatePath(paths[i], [-x_center_offset, -y_center_offset]);
+    }
+
+    return paths;
+  }
+
+  /**
+   * Scale a Path with respect to the origin
+   * @param {array} path - A Path array. Supports 2D and 3D.
+   * @param {number|number[]} scale - The amount by which to scale
+   * the path. A single numeric value can be applied to all dimensions
+   * or a value can be provided for each dimension
+   * @returns {array} A Path array
+   **/
+  scalePath(path, scale) {
+    let scale_x = scale;
+    let scale_y = scale;
+    let scale_z = scale;
+    if (scale.length !== undefined) {
+      scale_x = scale[0];
+      scale_y = scale[1];
+      scale_z = scale[2] !== undefined ? scale[2] : 1;
+    }
+    return path.map(function(a){
+      let scaled = [
+        a[0] * scale_x,
+        a[1] * scale_y
+      ];
+      if (a.length == 3) {
+        scaled.push(a[2] * scale_z);
+      }
+      return scaled;
+    });
+  }
+
+  /**
+   * Translate a path
+   * @param {array} path - A Path array
+   * @param {number[]} delta - The amount by which to move
+   * the path in each dimension
+   * @returns {array} A Path array
+   **/
+  translatePath(path, delta) {
+    return path.map(function(a){
+      return [
+        a[0] + delta[0],
+        a[1] + delta[1]
+      ];
+    });
+  }
+
+  /**
+   * Rotate Path by angle theta around origin (0,0)
+   * @param {array} path - A Path array
+   * @param {number} theta - The number of radians to
+   * rotate the path. Positive rotation is clockwise.
+   * @returns {array} A Path array
+   **/
+  rotatePath(path, theta) {
+    return path.map(function(a){
+      return [
+        a[0] * Math.cos(theta) - a[1] * Math.sin(theta),
+        a[0] * Math.sin(theta) + a[1] * Math.cos(theta)
+      ];
+    });
+  }
+
+  /**
+   * Reflect a Path (array of points) about an axis (X or Y)
+   * @param {array} path - The path to be reflected
+   * @param {string} axis=("x"|"y") - The axis over which to reflect "x" or "Y")
+   * @param {number} offset - NOT IMPLEMENTED. An optional Axis offset value. The origin is the default
+   * @returns {array} A Path array
+   */
+  reflectPath(path, axis, offset = 0.0) {
+    return path.map(function(point){
+      if (axis == "x") {
+        return [point[0] * -1, point[1]];
+      } else if (axis == "y") {
+        return [point[0], point[1] * -1];
+      } else {
+        return point;
+      }
+    });
+  }
+
+  /**
+   * Free Distort a Path
+   * @param {array} path - A Path array
+   * @param {array} bounding_box - An array of 4 points representing the bounding box of the path.
+   * Points should start in the top-left and proceed clockwise.
+   * A -- B
+   * |    |
+   * D -- C
+   * @param {array} distortion - An array of 4 points representing the distorted points of the bounding box.
+   * Points should start in the top-left and proceed clockwise
+   * A ------ B
+   *  \      /
+   *   \    /
+   *   D - C
+   * @return {array} The transformed shape
+   **/
+  distortPath(path, bounding_box, distortion) {
+
+    // The distortion array must always contain four points
+    // representing the transformation, starting in the top-left
+    // and going clockwise.
+    if (distortion.length != 4) {
+      console.log("distortion array length must be four.");
+      return [];
+    }
+
+    // Initialize output
+    let transformed_path = [];
+
+    // Get bounding box of shape
+    const shape_info = this.info(bounding_box);
+
+    // Loop through points of the input path
+    for (let j = 0; j < path.length; j++) {
+
+      let x_delta_percent = (path[j][0] - shape_info.min[0]) / shape_info.range[0];
+      let y_delta_percent = (path[j][1] - shape_info.min[1]) / shape_info.range[1];
+
+      // Map the current point's X position to the top of the distortion quadrilateral
+      let p_top = [
+        this.lerp(
+          distortion[0][0],
+          distortion[1][0],
+          x_delta_percent
+        ),
+        this.lerp(
+          distortion[0][1],
+          distortion[1][1],
+          x_delta_percent
+        ),
+      ];
+
+      // Map the current point's X position to the bottom of the distortion quadrilateral
+      let p_bottom = [
+        this.lerp(
+          distortion[3][0],
+          distortion[2][0],
+          x_delta_percent
+        ),
+        this.lerp(
+          distortion[3][1],
+          distortion[2][1],
+          x_delta_percent
+        ),
+      ];
+
+      // Interpolate the current point's Y position between the top and bottom of the
+      // distortion quadrilateral
+      let p_prime = [
+        this.lerp(
+          p_top[0],
+          p_bottom[0],
+          y_delta_percent
+        ),
+        this.lerp(
+          p_top[1],
+          p_bottom[1],
+          y_delta_percent
+        ),
+      ];
+
+      // Add the new point to the output
+      transformed_path.push(p_prime);
+    }
+
+    return transformed_path;
+  }
+
+  /*************************************/
+  // Boolean Shape Operations
+  /*************************************/
+
+  /**
+   * Perform a Boolean addition (union) of two closed paths
+   *
+   * @param {array} shapeA - An array of points defining a closed shape
+   * @param {array} shapeB - An array of points defining a closed shape
+   *
+   * @returns {array} - An array of points representing Shape B added to Shape A.
+   * If Shape B does not overlap Shape A, then Shape A will be returned unchanged.
+   **/
+  booleanAdd(shapeA, shapeB) {
+
+    // Ensure that shapes are closed (e.g. Last point matches first point)
+    if (!this.pointEquals(shapeA[shapeA.length-1], shapeA[0], 0.0001)) {
+      shapeA.push(shapeA[0]);
+    }
+    if (!this.pointEquals(shapeB[shapeB.length-1], shapeB[0], 0.0001)) {
+      shapeB.push(shapeB[0]);
+    }
+
+    // Get intersections
+    let newA = this.shapeIntersections(shapeA, shapeB);
+    let newB = this.shapeIntersections(shapeB, shapeA);
+
+    // Build a new shape from the two shapes using the segments
+    // that are outside of the other shape
+    let newShape = [];
+    newShape = newShape.concat(this.booleanAddComparison(newA, shapeB));
+    newShape = newShape.concat(this.booleanAddComparison(newB, shapeA));
+
+    // Join all of the path segments into a continuous path
+    newShape = this.joinPaths(newShape);
+
+    return newShape;
+  }
+
+  /**
+   * Remove segments of Shape A that are inside of Shape B
+   *
+   * @param {array} shapeA - An array of points defining a closed shape
+   * @param {array} shapeB - An array of points defining a closed shape
+   *
+   * @returns {array} - A multidimensional array of paths from Shape A
+   * that are outside of Shape B
+   **/
+  booleanAddComparison(shapeA, shapeB) {
+    let paths = [];
+
+    let shapeB_vertices = [];
+    for (let v = 0; v < shapeB.length-1; v++) {
+      shapeB_vertices.push({x: shapeB[v][0], y: shapeB[v][1]});
+    }
+
+    let path = [];
+    let i_max = shapeA.length-1;
+    for (let i = 0; i < i_max; i++) {
+      let mid_point = [
+        this.lerp(shapeA[i][0], shapeA[i+1][0], 0.5),
+        this.lerp(shapeA[i][1], shapeA[i+1][1], 0.5),
+      ];
+      if (this.pointInPolygon(shapeB_vertices, mid_point[0], mid_point[1])) {
+        path.push(shapeA[i]);
+        if (path.length > 1) {
+          paths.push(path);
+        }
+        path = [];
+      } else {
+        path.push(shapeA[i]);
+      }
+      // Add last point if end of loop... I'm not convinced this is correct
+      if (i == i_max - 1) {
+        path.push(shapeA[i+1]);
+      }
+    }
+    if (path.length > 1) {
+      paths.push(path);
+    }
+
+    return paths;
+  }
+
+  /**
+   * Perform a Boolean subtraction (difference) of two closed paths
+   *
+   * @param {array} shapeA - An array of points defining a closed shape
+   * @param {array} shapeB - An array of points defining a closed shape
+   *
+   * @returns {array} - An array of points representing Shape B removed from Shape A.
+   * If Shape B does not overlap Shape A, then Shape A will be returned unchanged.
+   **/
+  booleanSubtract(shapeA, shapeB) {
+
+    // Ensure that shapes are closed (e.g. Last point matches first point)
+    if (!this.pointEquals(shapeA[shapeA.length-1], shapeA[0], 0.0001)) {
+      shapeA.push(shapeA[0]);
+    }
+    if (!this.pointEquals(shapeB[shapeB.length-1], shapeB[0], 0.0001)) {
+      shapeB.push(shapeB[0]);
+    }
+
+    // Get intersections
+    let newA = this.shapeIntersections(shapeA, shapeB);
+    let newB = this.shapeIntersections(shapeB, shapeA);
+
+    // Build a new shape from the two shapes using the segments
+    // that are outside of the other shape
+    let newShape = [];
+    newShape = newShape.concat(this.booleanSubtractComparison(newA, shapeB));
+    newShape = newShape.concat(this.booleanSubtractComparison(newB, shapeA, true));
+
+    // Join all of the path segments into a continuous path
+    newShape = this.joinPaths(newShape);
+
+    return newShape;
+  }
+
+  /**
+   * Remove segments of Shape B that are outside of Shape A
+   *
+   * @param {array} shapeA - An array of points defining a closed shape
+   * @param {array} shapeB - An array of points defining a closed shape
+   *
+   * @returns {array} - A multidimensional array of paths from Shape A
+   * that are outside of Shape B
+   **/
+  booleanSubtractComparison(shapeA, shapeB, invert = false) {
+    let paths = [];
+
+    // Extract and reformat vertices from shapeB for use with this.pointInPolygon
+    let shapeB_vertices = [];
+    for (let v = 0; v < shapeB.length-1; v++) {
+      shapeB_vertices.push({x: shapeB[v][0], y: shapeB[v][1]});
+    }
+
+    // Loop through all segments of Shape A and determine if they are inside
+    // or outside of Shape B
+    let path = [];
+    let i_max = shapeA.length-1;
+    for (let i = 0; i < i_max; i++) {
+
+      // Get the midpoint of the segment as the point to compare
+      let mid_point = [
+        this.lerp(shapeA[i][0], shapeA[i+1][0], 0.5),
+        this.lerp(shapeA[i][1], shapeA[i+1][1], 0.5),
+      ];
+
+      if (!invert) {
+
+        if (this.pointInPolygon(shapeB_vertices, mid_point[0], mid_point[1])) {
+          path.push(shapeA[i]);
+          if (path.length > 1) {
+            paths.push(path);
+          }
+          path = [];
+        } else {
+          path.push(shapeA[i]);
+        }
+        // Add last point if end of loop... I'm not convinced this is correct
+        if (i == i_max - 1) {
+          path.push(shapeA[i+1]);
+        }
+
+      } else {
+
+        if (!this.pointInPolygon(shapeB_vertices, mid_point[0], mid_point[1])) {
+          path.push(shapeA[i]);
+          if (path.length > 1) {
+            paths.push(path);
+          }
+          path = [];
+        } else {
+          path.push(shapeA[i]);
+        }
+        // Add last point if end of loop... I'm not convinced this is correct
+        if (i == i_max - 1) {
+          path.push(shapeA[i+1]);
+        }
+
+      }
+    }
+    if (path.length > 1) {
+      paths.push(path);
+    }
+
+    return paths;
+  }
+
+  /**
+   * Perform a Boolean intersection of two closed paths
+   *
+   * @param {array} shapeA - An array of points defining a closed shape
+   * @param {array} shapeB - An array of points defining a closed shape
+   *
+   * @returns {array} - An array of points representing the overlapping
+   * region(s) of Shape A and Shape B. If there is no overlap an empty
+   * shape should be returned
+   **/
+  booleanIntersect(shapeA, shapeB) {
+
+    // Ensure that shapes are closed (e.g. Last point matches first point)
+    if (!this.pointEquals(shapeA[shapeA.length-1], shapeA[0], 0.0001)) {
+      shapeA.push(shapeA[0]);
+    }
+    if (!this.pointEquals(shapeB[shapeB.length-1], shapeB[0], 0.0001)) {
+      shapeB.push(shapeB[0]);
+    }
+
+    // Get intersections
+    let newA = this.shapeIntersections(shapeA, shapeB);
+    let newB = this.shapeIntersections(shapeB, shapeA);
+
+    // Build a new shape from the two shapes using the segments
+    // that are outside of the other shape
+    let newShape = [];
+    newShape = newShape.concat(this.booleanIntersectionComparison(newA, shapeB));
+    newShape = newShape.concat(this.booleanIntersectionComparison(newB, shapeA, true));
+
+    // Join all of the path segments into a continuous path
+    newShape = this.joinPaths(newShape);
+
+    return newShape;
+  }
+
+  /**
+   * Remove segments of Shape B that are outside of Shape A
+   *
+   * @param {array} shapeA - An array of points defining a closed shape
+   * @param {array} shapeB - An array of points defining a closed shape
+   *
+   * @returns {array} - A multidimensional array of paths from Shape A
+   * that are outside of Shape B
+   **/
+  booleanIntersectionComparison(shapeA, shapeB) {
+    let paths = [];
+
+    // Extract and reformat vertices from shapeB for use with this.pointInPolygon
+    let shapeB_vertices = [];
+    for (let v = 0; v < shapeB.length-1; v++) {
+      shapeB_vertices.push({x: shapeB[v][0], y: shapeB[v][1]});
+    }
+
+    // Loop through all segments of Shape A and determine if they are inside
+    // or outside of Shape B
+    let path = [];
+    let i_max = shapeA.length-1;
+    for (let i = 0; i < i_max; i++) {
+
+      // Get the midpoint of the segment as the point to compare
+      let mid_point = [
+        this.lerp(shapeA[i][0], shapeA[i+1][0], 0.5),
+        this.lerp(shapeA[i][1], shapeA[i+1][1], 0.5),
+      ];
+
+      if (!this.pointInPolygon(shapeB_vertices, mid_point[0], mid_point[1])) {
+        path.push(shapeA[i]);
+        if (path.length > 1) {
+          paths.push(path);
+        }
+        path = [];
+      } else {
+        path.push(shapeA[i]);
+      }
+      // Add last point if end of loop... I'm not convinced this is correct
+      if (i == i_max - 1) {
+        path.push(shapeA[i+1]);
+      }
+
+    }
+    if (path.length > 1) {
+      paths.push(path);
+    }
+
+    return paths;
+  }
+
+  /**
+   * Calculate the intersection points of Shape A with Shape B,
+   * and insert these intersection points in Shape A (in order)
+   *
+   * @param {array} shapeA - An array of points defining a closed shape
+   * @param {array} shapeB - An array of points defining a closed shape
+   *
+   * @returns {array} - An array of points representing Shape A with
+   * the intersection points of Shape B added
+   **/
+  shapeIntersections(shapeA, shapeB) {
+
+    let newA = [];
+
+    // Loop through points of Shape A
+    for (let i = 0; i < shapeA.length - 1; i++) {
+
+      // Add the starting point
+      newA.push(shapeA[i]);
+
+      // Analyze current line segment of Shape A for intersections
+      // with all segments of Shape B
+      let segment_intersections = [];
+      for (let j = 0; j < shapeB.length-1; j++) {
+        let intersect = this.getLineLineCollision(
+          {x: shapeA[i][0], y: shapeA[i][1]},
+          {x: shapeA[i+1][0], y: shapeA[i+1][1]},
+          {x: shapeB[j][0], y: shapeB[j][1]},
+          {x: shapeB[j+1][0], y: shapeB[j+1][1]}
+        );
+        if (intersect) {
+          segment_intersections.push([
+            intersect.x,
+            intersect.y
+          ]);
+        }
+      }
+
+      // Sort segment_intersections and insert in Shape A
+      if (segment_intersections.length > 0) {
+        let self = this;
+        segment_intersections.sort(function(a, b) {
+          return (self.distance(shapeA[i], a) > self.distance(shapeA[i], b) ? 1 : -1)
+        });
+        newA = newA.concat(segment_intersections);
+      }
+    }
+
+    // Close shape
+    newA.push(shapeA[shapeA.length - 1]);
+
+    return newA;
+  }
+
+  /*************************************/
+  // Path Operations
+  /*************************************/
+
+  /**
+   * Calculate the total distance of a path of two or more points
+   * @param {array} path - A Path array
+   * @returns {number} - The total distance of the path
+   */
+  pathLength(path) {
+    let distance = 0.0;
+    for (let i = 0; i < path.length-1; i++) {
+      distance += this.distance(path[i], path[i+1]);
+    }
+    return distance;
+  }
+
+  /**
+   * Determine if two lines are equivalent
+   * @param {array} a - A path containing two points
+   * @param {array} b - A path containing two points
+   * @param {number} [threshold=0] -  A maximum distance points can be apart and considered equal
+   * @returns {boolean} True if the same, false otherwise
+   */
+  lineEquals(a, b, threshold = 0) {
+    if (this.pointEquals(a[0], b[0], threshold) && this.pointEquals(a[1], b[1], threshold)) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Determine if two points are equivalent (coincident)
+   * @param {array} a - A point array containing two values for x and y
+   * @param {array} b - A point array containing two values for x and y
+   * @param {number} [threshold=0] - A maximum distance points can be apart and considered equal
+   * @returns {boolean} True if the same, false otherwise
+   */
+  pointEquals(a, b, threshold = 0) {
+    if (threshold === 0 && a[0] === b[0] && a[1] === b[1]) {
+      return true;
+    } else if (this.distance(a, b) <= threshold) {
+      return true;
+    }
+    return false;
   }
 
   /**
@@ -466,76 +1207,175 @@ class PathHelper {
   }
 
   /**
-   * Returns objet representing Line equation.
-   * @param {array} p1 - A Point array
-   * @param {array} p2 - A Point array
-   * @returns {object} Returns an object with parameter "m" representing
-   * the slope and a parameter "b" representing the Y intercept.
+   * Calculate the intersection points (0, 1 or 2) between a line and a circle
+   * @param {array} p1 - A Point array defining the start of a line segment
+   * @param {array} p2 - A Point array defining the end of a line segment
+   * @param {array} circle - An array defining a circle. The first parameter should
+   * be the circle's position, represented as a Point array, and the secord
+   * parameter should be the circle's radius.
+   * @returns {array} An array with 0, 1 or 2 Point array elements representing the
+   * locations of intersections.
+   */
+  lineCircleIntersect(p1, p2, circle) {
+
+    let intersections = [];
+
+    // Get line.m and line.b
+    let line = this.lineSlopeIntercept(p1, p2);
+
+    let r = circle[1];
+
+    // Note: This is for circle at origin only right now
+    let a = Math.pow(line.m, 2) + 1;
+    let b = 2 * line.m * line.b;
+    let c = Math.pow(line.b, 2) - Math.pow(r,2);
+
+    let x_values = this.solveQuadratic(a, b, c);
+
+    if (x_values.length === 0) {
+      return intersections;
+    }
+
+    for (let x_value of x_values) {
+
+      let intersect = [
+        x_value,
+        line.m * x_value + line.b
+      ];
+
+      // Determine if coordinate is on the line p1->p2
+      if (this.pointOnLineSegment(intersect, [p1, p2])) {
+        intersections.push(intersect);
+      }
+    }
+
+    return intersections;
+  }
+
+  /**
+   * Calculate an intersection point of two circles
+   * https://math.stackexchange.com/questions/256100/how-can-i-find-the-points-at-which-two-circles-intersect
+   * https://www.analyzemath.com/CircleEq/circle_intersection.html
+   * See alternate implementation: https://gist.github.com/jupdike/bfe5eb23d1c395d8a0a1a4ddd94882ac
+   * @param {array} p1 - Point array of x/y position ([x,y]) of Circle 1
+   * @param {number} r1 - Radius of Circle 1
+   * @param {array} p2 - Point array of x/y position ([x,y]) of Circle 2
+   * @param {number} r2 - Radius of Circle 2
+   * @param {number} sign=1|+1|-1 - Look for one of two points
+   * @returns {array} - A Point array
    **/
-  lineSlopeIntercept(p1, p2) {
-    let m = (p2[1] - p1[1]) / (p2[0] - p1[0]);
-    let b = p1[1] - m * p1[0];
-    return {"m": m, "b": b};
+  circleInterceptPoints(p1, r1, p2, r2, sign) {
+
+    // Distance between centers of the circles
+    let d = this.distance(p1, p2);
+
+    let x = (1/2) * (p1[0] + p2[0])
+      + ((Math.pow(r1, 2) - Math.pow(r2, 2)) / (2 * Math.pow(d, 2))) * (p2[0] - p1[0])
+      + sign * (1/2) * Math.sqrt(
+          2 * ((Math.pow(r1, 2) + Math.pow(r2, 2))/(Math.pow(d, 2)))
+          - Math.pow((Math.pow(r1, 2) - Math.pow(r2, 2)), 2) / Math.pow(d, 4)
+          - 1
+        ) * (p2[1] - p1[1]);
+
+    let y = (1/2) * (p1[1] + p2[1])
+      + ((Math.pow(r1, 2) - Math.pow(r2, 2)) / (2 * Math.pow(d, 2))) * (p2[1] - p1[1])
+      + sign * (1/2) * Math.sqrt(
+          2 * ((Math.pow(r1, 2) + Math.pow(r2, 2))/(Math.pow(d, 2)))
+          - Math.pow((Math.pow(r1, 2) - Math.pow(r2, 2)), 2) / Math.pow(d, 4)
+          - 1
+        ) * (p1[0] - p2[0]);
+
+    return [x,y];
   }
 
   /**
-   * Solve the Quadratic Equation. For real values only
+   * Check if a Point is on a Line Segment (or within a threshold/buffer)
+   * This is from Jeffrey Thompson's excellent eBook on Collission Detection
+   * online at http://www.jeffreythompson.org/collision-detection/line-circle.php
    *
-   * Standard Quadratic Equation: ax^2 + bx + c = 0
+   *   | length + buffer  |
+   *   |                 ||
+   *   A ------_-------- B
+   *   |       p         |
+   *   |   d1  |    d2   |
    *
-   * @param {number} a - Parameter `a` of the standard quadratic equation
-   * @param {number} b - Parameter `b` of the standard quadratic equation
-   * @param {number} c - Parameter `c` of the standard quadratic equation
-   * @returns {array} A 2-element array containing real solutions of x or
-   * and empty array for non-real solutions of x
-   */
-  solveQuadratic(a, b, c) {
-
-    let discriminant = Math.pow(b, 2) - 4 * a * c;
-
-    // One real and equal answer
-    if (discriminant === 0) {
-      let x = -b / (2 * a);
-      return [x];
+   * @param {array} p - A Point array
+   * @param {array} line - A 2-point Path array
+   * @param {number} [buffer=0.01] - A value representing a maximum difference between the length
+   * of the line and the length of the distance from the line start to point `p` to the line end
+   * and still be considered as "on" the line segment.
+   * @returns {boolean} True if the point is on the line (or within the buffer). False otherwise.
+   **/
+  pointOnLineSegment(p, line, buffer = 0.01) {
+    let d1 = this.distance(p, line[0]);
+    let d2 = this.distance(p, line[1]);
+    let lineLen = this.distance(line[0], line[1]);
+    if (d1+d2 >= lineLen-buffer && d1+d2 <= lineLen+buffer) {
+      return true;
     }
-
-    // Two real and different answers
-    if (discriminant > 0) {
-      let x1 = (-b + Math.sqrt(discriminant)) / (2 * a);
-      let x2 = (-b - Math.sqrt(discriminant)) / (2 * a);
-      return [x1, x2];
-    }
-
-    return [];
+    return false;
   }
 
   /**
-   * Calculate the distance between two points in 2D or 3D space
-   * @param {array} p1 - A Point array containing two values for x and y. End Point of Line A
-   * @param {array} p2 - A Point array containing two values for x and y. Start Point of Line B
-   * @returns {number} - The distance between the two points
-   */
-  distance(p1, p2) {
-    if (p1.length == 2) {
-      p1.push(0);
-    }
-    if (p2.length == 2) {
-      p2.push(0);
-    }
-    return Math.sqrt(Math.pow(p2[0] - p1[0], 2) + Math.pow(p2[1] - p1[1], 2) + Math.pow(p2[2] - p1[2], 2));
-  }
+   * PolyPoint from http://www.jeffreythompson.org/collision-detection/poly-point.php
+   * Threshold has been added so that points very close to the border of the
+   * polygon can be selecteive counted as in or out
+   * @param {array} vertices - Vertices of Polygon
+   * @param {number} px - X Position of Point
+   * @param {number} py - Y Position of Point
+   * @param {number} [threshold=-0.00001] - The Threshold at which to consider a point near the border as either
+   * inside or outside.
+   * @returns {boolean} - True if the point is inside the Polygon, false otherwise
+   **/
+  pointInPolygon(vertices, px, py, threshold = -0.00001) {
 
-  /**
-   * Calculate the total distance of a path of two or more points
-   * @param {array} path - A Path array
-   * @returns {number} - The total distance of the path
-   */
-  pathLength(path) {
-    let distance = 0.0;
-    for (let i = 0; i < path.length-1; i++) {
-      distance += this.distance(path[i], path[i+1]);
+    let collision = false;
+
+    // go through each of the vertices, plus
+    // the next vertex in the list
+    let next = 0;
+    for (let current=0; current<vertices.length; current++) {
+
+      // get next vertex in list
+      // if we've hit the end, wrap around to 0
+      next = current+1;
+      if (next == vertices.length) {
+        next = 0;
+      }
+
+      // get the PVectors at our current position
+      // this makes our if statement a little cleaner
+      let vc = vertices[current];
+      let vn = vertices[next];
+
+      // compare position, flip 'collision' variable back and forth
+      let within_vertical_band = (vc.y >= py && vn.y < py) || (vc.y < py && vn.y >= py);
+      let jordan_curve_theorem = (vn.x-vc.x) * (py-vc.y) / (vn.y-vc.y) + vc.x;
+      if (within_vertical_band && px < jordan_curve_theorem) {
+        collision = !collision;
+      }
+
+      // If the point is within the threshold of a border, then
+      // return right away. If the threshold is positive, then be
+      // more permissive for counting the point as inside the polyon.
+      // If the threshold is negative, then be less permissive with
+      // including the point in the polygon
+      let on_line = this.pointOnLineSegment(
+        [px, py],
+        [[vc.x, vc.y], [vn.x, vn.y]],
+        Math.abs(threshold)
+      );
+      if (on_line) {
+        if (threshold > 0) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+
     }
-    return distance;
+
+    return collision;
   }
 
   /**
@@ -1053,278 +1893,6 @@ class PathHelper {
     new_path.push(path[path.length - 1]);
 
     return new_path;
-  }
-
-  /**
-   * Compose an arc between 2 points
-   * @param {number} x1 - X-position of starting point
-   * @param {number} y1 - Y-position of starting point
-   * @param {number} x2 - X-position of end point
-   * @param {number} y2 - Y-position of end point
-   * @param {number} theta - rotation/angle to travel
-   * @param {number} [segments=12] - The number of steps to use. A higher
-   * number cfeates a smoother path
-   * @returns {array} A Path array
-   **/
-  arcPointToPoint(x1, y1, x2, y2, theta, segments = 12) {
-    let path = [];
-    let theta_0 = Math.atan2(y2 - y1, x2 - x1);
-    let distance = this.distance([x1, y1], [x2, y2]);
-    for (let c = 1; c < segments; c++) {
-      path.push([
-        x1 + (x2 - x1)/2 + distance/2 * Math.cos(theta_0 + Math.PI + c/segments * theta),
-        y1 + (y2 - y1)/2 + distance/2 * Math.sin(theta_0 + Math.PI + c/segments * theta)
-      ]);
-    }
-    return path;
-  }
-
-  /**
-   * Compose an arc centered at a position
-   * @param {array} posotion - A Point array defining a position [x,y]
-   * @param {number} radius - The radius of the arc from the position
-   * @param {number} theta - The number of radians to rotate through the circular arc
-   * @param {number} theta_offset - A radian offset from which to start the arc
-   * @param {number} segments - The number of line segments used to render the arc
-   * @returns {array} A Path array of points
-   **/
-  arc(position, radius, theta, theta_offset, segments) {
-    let path = [];
-    for (let s = 0; s <= segments; s++) {
-      path.push([
-        position[0] + radius * Math.cos(theta_offset + s/segments * theta),
-        position[0] + radius * Math.sin(theta_offset + s/segments * theta)
-      ]);
-    }
-    return path;
-  }
-
-  /**
-   * Translate a group of paths to be centered around the origin
-   * @param {array} paths - An array of Path arrays
-   * @returns {array} An array of Path arrays centered at the origin
-   **/
-  centerPaths(paths) {
-
-    let x;
-    let x_min = 0;
-    let x_max = 0;
-    let y;
-    let y_min = 0;
-    let y_max = 0;
-
-    // Get the most extreme points (bounds) from all paths
-    for (let i = 0; i < paths.length; i++) {
-
-      // Get X coordinates as an 1-dimensional array
-      let x_coordinates = this.arrayColumn(paths[i], 0);
-
-      x = Math.min(...x_coordinates);
-      if (x < x_min) {
-        x_min = x;
-      }
-
-      x = Math.max(...x_coordinates);
-      if (x > x_max) {
-        x_max = x;
-      }
-
-      // Get Y coordinates as an 1-dimensional array
-      let y_coordinates = this.arrayColumn(paths[i], 1);
-
-      y = Math.min(...y_coordinates);
-      if (y < y_min) {
-        y_min = y;
-      }
-
-      y = Math.max(...y_coordinates);
-      if (y > y_max) {
-        y_max = y;
-      }
-    }
-
-    // Determine offset of X direction
-    let x_range = x_max - x_min;
-    let x_center_offset = x_min + x_range/2;
-
-    // Determine offset of Y direction
-    let y_range = y_max - y_min;
-    let y_center_offset = y_min + y_range/2;
-
-    // Translate each path
-    for (let i = 0; i < paths.length; i++) {
-      paths[i] = this.translatePath(paths[i], [-x_center_offset, -y_center_offset]);
-    }
-
-    return paths;
-  }
-
-  /**
-   * Scale a Path with respect to the origin
-   * @param {array} path - A Path array. Supports 2D and 3D.
-   * @param {number|number[]} scale - The amount by which to scale
-   * the path. A single numeric value can be applied to all dimensions
-   * or a value can be provided for each dimension
-   * @returns {array} A Path array
-   **/
-  scalePath(path, scale) {
-    let scale_x = scale;
-    let scale_y = scale;
-    let scale_z = scale;
-    if (scale.length !== undefined) {
-      scale_x = scale[0];
-      scale_y = scale[1];
-      scale_z = scale[2] !== undefined ? scale[2] : 1;
-    }
-    return path.map(function(a){
-      let scaled = [
-        a[0] * scale_x,
-        a[1] * scale_y
-      ];
-      if (a.length == 3) {
-        scaled.push(a[2] * scale_z);
-      }
-      return scaled;
-    });
-  }
-
-  /**
-   * Translate a path
-   * @param {array} path - A Path array
-   * @param {number[]} delta - The amount by which to move
-   * the path in each dimension
-   * @returns {array} A Path array
-   **/
-  translatePath(path, delta) {
-    return path.map(function(a){
-      return [
-        a[0] + delta[0],
-        a[1] + delta[1]
-      ];
-    });
-  }
-
-  /**
-   * Rotate Path by angle theta around origin (0,0)
-   * @param {array} path - A Path array
-   * @param {number} theta - The number of radians to
-   * rotate the path. Positive rotation is clockwise.
-   * @returns {array} A Path array
-   **/
-  rotatePath(path, theta) {
-    return path.map(function(a){
-      return [
-        a[0] * Math.cos(theta) - a[1] * Math.sin(theta),
-        a[0] * Math.sin(theta) + a[1] * Math.cos(theta)
-      ];
-    });
-  }
-
-  /**
-   * Reflect a Path (array of points) about an axis (X or Y)
-   * @param {array} path - The path to be reflected
-   * @param {string} axis=("x"|"y") - The axis over which to reflect "x" or "Y")
-   * @param {number} offset - NOT IMPLEMENTED. An optional Axis offset value. The origin is the default
-   * @returns {array} A Path array
-   */
-  reflectPath(path, axis, offset = 0.0) {
-    return path.map(function(point){
-      if (axis == "x") {
-        return [point[0] * -1, point[1]];
-      } else if (axis == "y") {
-        return [point[0], point[1] * -1];
-      } else {
-        return point;
-      }
-    });
-  }
-
-  /**
-   * Free Distort a Path
-   * @param {array} path - A Path array
-   * @param {array} bounding_box - An array of 4 points representing the bounding box of the path.
-   * Points should start in the top-left and proceed clockwise.
-   * A -- B
-   * |    |
-   * D -- C
-   * @param {array} distortion - An array of 4 points representing the distorted points of the bounding box.
-   * Points should start in the top-left and proceed clockwise
-   * A ------ B
-   *  \      /
-   *   \    /
-   *   D - C
-   * @return {array} The transformed shape
-   **/
-  distortPath(path, bounding_box, distortion) {
-
-    // The distortion array must always contain four points
-    // representing the transformation, starting in the top-left
-    // and going clockwise.
-    if (distortion.length != 4) {
-      console.log("distortion array length must be four.");
-      return [];
-    }
-
-    // Initialize output
-    let transformed_path = [];
-
-    // Get bounding box of shape
-    const shape_info = this.info(bounding_box);
-
-    // Loop through points of the input path
-    for (let j = 0; j < path.length; j++) {
-
-      let x_delta_percent = (path[j][0] - shape_info.min[0]) / shape_info.range[0];
-      let y_delta_percent = (path[j][1] - shape_info.min[1]) / shape_info.range[1];
-
-      // Map the current point's X position to the top of the distortion quadrilateral
-      let p_top = [
-        this.lerp(
-          distortion[0][0],
-          distortion[1][0],
-          x_delta_percent
-        ),
-        this.lerp(
-          distortion[0][1],
-          distortion[1][1],
-          x_delta_percent
-        ),
-      ];
-
-      // Map the current point's X position to the bottom of the distortion quadrilateral
-      let p_bottom = [
-        this.lerp(
-          distortion[3][0],
-          distortion[2][0],
-          x_delta_percent
-        ),
-        this.lerp(
-          distortion[3][1],
-          distortion[2][1],
-          x_delta_percent
-        ),
-      ];
-
-      // Interpolate the current point's Y position between the top and bottom of the
-      // distortion quadrilateral
-      let p_prime = [
-        this.lerp(
-          p_top[0],
-          p_bottom[0],
-          y_delta_percent
-        ),
-        this.lerp(
-          p_top[1],
-          p_bottom[1],
-          y_delta_percent
-        ),
-      ];
-
-      // Add the new point to the output
-      transformed_path.push(p_prime);
-    }
-
-    return transformed_path;
   }
 
   /**
@@ -1915,222 +2483,6 @@ class PathHelper {
     paths = this.pointsToPaths(paths, points, active_path_index, threshold);
 
     return paths;
-  }
-
-  /**
-   * Create a Quadratic Bezier curve using 3 control points
-   * @param {array} p1 - Control Point number 1. This is the start of the curve path.
-   * @param {array} p2 - Control Point number 2. This is the middle control point.
-   * @param {array} p3 - Control Point number 3. This is the end of the curve path.
-   * @param {number} segments - The number of segments to use to represent the curve. A
-   * higher number will create a smoother, high-resolution curve
-   * @returns {array} A Path array
-   **/
-  quadraticBezierPath(p1, p2, p3, segments) {
-    let path = [];
-    for (let i = 0; i <= segments; i++) {
-      let t = i/segments;
-      path.push([
-        Math.pow(1-t, 2) * p1[0] + 2 * (1-t) * t * p2[0] + Math.pow(t, 2) * p3[0],
-        Math.pow(1-t, 2) * p1[1] + 2 * (1-t) * t * p2[1] + Math.pow(t, 2) * p3[1]
-      ]);
-    }
-    return path;
-  }
-
-  /**
-   * Create a Cubic Bezier curve using 4 control points
-   * Equation from https://javascript.info/bezier-curve
-   * @param {array} p1 - Control Point number 1. This is the start of the curve path.
-   * @param {array} p2 - Control Point number 2. This is the control point nearest the start point p1.
-   * @param {array} p3 - Control Point number 3. This is the control point nearest the end point p4.
-   * @param {array} p4 - Control Point number 3. This is the end of the curve path.
-   * @param {number} segments - The number of segments to use to represent the curve. A
-   * higher number will create a smoother, high-resolution curve
-   * @returns {array} A Path array
-   */
-  cubicBezierPath(p1, p2, p3, p4, segments) {
-    let path = [];
-    for (let i = 0; i <= segments; i++) {
-      let t = i/segments;
-      path.push([
-        Math.pow(1-t, 3) * p1[0] + 3 * Math.pow(1-t, 2) * t * p2[0] + 3 * (1-t) * Math.pow(t,2) * p3[0] + Math.pow(t,3) * p4[0],
-        Math.pow(1-t, 3) * p1[1] + 3 * Math.pow(1-t, 2) * t * p2[1] + 3 * (1-t) * Math.pow(t,2) * p3[1] + Math.pow(t,3) * p4[1]
-      ]);
-    }
-    return path;
-  }
-
-  /**
-   * Check if a Point is on a Line Segment (or within a threshold/buffer)
-   * This is from Jeffrey Thompson's excellent eBook on Collission Detection
-   * online at http://www.jeffreythompson.org/collision-detection/line-circle.php
-   *
-   *   | length + buffer  |
-   *   |                 ||
-   *   A ------_-------- B
-   *   |       p         |
-   *   |   d1  |    d2   |
-   *
-   * @param {array} p - A Point array
-   * @param {array} line - A 2-point Path array
-   * @param {number} [buffer=0.01] - A value representing a maximum difference between the length
-   * of the line and the length of the distance from the line start to point `p` to the line end
-   * and still be considered as "on" the line segment.
-   * @returns {boolean} True if the point is on the line (or within the buffer). False otherwise.
-   **/
-  pointOnLineSegment(p, line, buffer = 0.01) {
-    let d1 = this.distance(p, line[0]);
-    let d2 = this.distance(p, line[1]);
-    let lineLen = this.distance(line[0], line[1]);
-    if (d1+d2 >= lineLen-buffer && d1+d2 <= lineLen+buffer) {
-      return true;
-    }
-    return false;
-  }
-
-  /**
-   * PolyPoint from http://www.jeffreythompson.org/collision-detection/poly-point.php
-   * Threshold has been added so that points very close to the border of the
-   * polygon can be selecteive counted as in or out
-   * @param {array} vertices - Vertices of Polygon
-   * @param {number} px - X Position of Point
-   * @param {number} py - Y Position of Point
-   * @param {number} [threshold=-0.00001] - The Threshold at which to consider a point near the border as either
-   * inside or outside.
-   * @returns {boolean} - True if the point is inside the Polygon, false otherwise
-   **/
-  pointInPolygon(vertices, px, py, threshold = -0.00001) {
-
-    let collision = false;
-
-    // go through each of the vertices, plus
-    // the next vertex in the list
-    let next = 0;
-    for (let current=0; current<vertices.length; current++) {
-
-      // get next vertex in list
-      // if we've hit the end, wrap around to 0
-      next = current+1;
-      if (next == vertices.length) {
-        next = 0;
-      }
-
-      // get the PVectors at our current position
-      // this makes our if statement a little cleaner
-      let vc = vertices[current];
-      let vn = vertices[next];
-
-      // compare position, flip 'collision' variable back and forth
-      let within_vertical_band = (vc.y >= py && vn.y < py) || (vc.y < py && vn.y >= py);
-      let jordan_curve_theorem = (vn.x-vc.x) * (py-vc.y) / (vn.y-vc.y) + vc.x;
-      if (within_vertical_band && px < jordan_curve_theorem) {
-        collision = !collision;
-      }
-
-      // If the point is within the threshold of a border, then
-      // return right away. If the threshold is positive, then be
-      // more permissive for counting the point as inside the polyon.
-      // If the threshold is negative, then be less permissive with
-      // including the point in the polygon
-      let on_line = this.pointOnLineSegment(
-        [px, py],
-        [[vc.x, vc.y], [vn.x, vn.y]],
-        Math.abs(threshold)
-      );
-      if (on_line) {
-        if (threshold > 0) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-
-    }
-
-    return collision;
-  }
-
-  /**
-   * Calculate the intersection points (0, 1 or 2) between a line and a circle
-   * @param {array} p1 - A Point array defining the start of a line segment
-   * @param {array} p2 - A Point array defining the end of a line segment
-   * @param {array} circle - An array defining a circle. The first parameter should
-   * be the circle's position, represented as a Point array, and the secord
-   * parameter should be the circle's radius.
-   * @returns {array} An array with 0, 1 or 2 Point array elements representing the
-   * locations of intersections.
-   */
-  lineCircleIntersect(p1, p2, circle) {
-
-    let intersections = [];
-
-    // Get line.m and line.b
-    let line = this.lineSlopeIntercept(p1, p2);
-
-    let r = circle[1];
-
-    // Note: This is for circle at origin only right now
-    let a = Math.pow(line.m, 2) + 1;
-    let b = 2 * line.m * line.b;
-    let c = Math.pow(line.b, 2) - Math.pow(r,2);
-
-    let x_values = this.solveQuadratic(a, b, c);
-
-    if (x_values.length === 0) {
-      return intersections;
-    }
-
-    for (let x_value of x_values) {
-
-      let intersect = [
-        x_value,
-        line.m * x_value + line.b
-      ];
-
-      // Determine if coordinate is on the line p1->p2
-      if (this.pointOnLineSegment(intersect, [p1, p2])) {
-        intersections.push(intersect);
-      }
-    }
-
-    return intersections;
-  }
-
-  /**
-   * Calculate an intersection point of two circles
-   * https://math.stackexchange.com/questions/256100/how-can-i-find-the-points-at-which-two-circles-intersect
-   * https://www.analyzemath.com/CircleEq/circle_intersection.html
-   * See alternate implementation: https://gist.github.com/jupdike/bfe5eb23d1c395d8a0a1a4ddd94882ac
-   * @param {array} p1 - Point array of x/y position ([x,y]) of Circle 1
-   * @param {number} r1 - Radius of Circle 1
-   * @param {array} p2 - Point array of x/y position ([x,y]) of Circle 2
-   * @param {number} r2 - Radius of Circle 2
-   * @param {number} sign=1|+1|-1 - Look for one of two points
-   * @returns {array} - A Point array
-   **/
-  circleInterceptPoints(p1, r1, p2, r2, sign) {
-
-    // Distance between centers of the circles
-    let d = this.distance(p1, p2);
-
-    let x = (1/2) * (p1[0] + p2[0])
-      + ((Math.pow(r1, 2) - Math.pow(r2, 2)) / (2 * Math.pow(d, 2))) * (p2[0] - p1[0])
-      + sign * (1/2) * Math.sqrt(
-          2 * ((Math.pow(r1, 2) + Math.pow(r2, 2))/(Math.pow(d, 2)))
-          - Math.pow((Math.pow(r1, 2) - Math.pow(r2, 2)), 2) / Math.pow(d, 4)
-          - 1
-        ) * (p2[1] - p1[1]);
-
-    let y = (1/2) * (p1[1] + p2[1])
-      + ((Math.pow(r1, 2) - Math.pow(r2, 2)) / (2 * Math.pow(d, 2))) * (p2[1] - p1[1])
-      + sign * (1/2) * Math.sqrt(
-          2 * ((Math.pow(r1, 2) + Math.pow(r2, 2))/(Math.pow(d, 2)))
-          - Math.pow((Math.pow(r1, 2) - Math.pow(r2, 2)), 2) / Math.pow(d, 4)
-          - 1
-        ) * (p1[0] - p2[0]);
-
-    return [x,y];
   }
 
   /**
@@ -3118,334 +3470,6 @@ class PathHelper {
     }
 
     return segments;
-  }
-
-  /**
-   * Perform a Boolean addition (union) of two closed paths
-   *
-   * @param {array} shapeA - An array of points defining a closed shape
-   * @param {array} shapeB - An array of points defining a closed shape
-   *
-   * @returns {array} - An array of points representing Shape B added to Shape A.
-   * If Shape B does not overlap Shape A, then Shape A will be returned unchanged.
-   **/
-  booleanAdd(shapeA, shapeB) {
-
-    // Ensure that shapes are closed (e.g. Last point matches first point)
-    if (!this.pointEquals(shapeA[shapeA.length-1], shapeA[0], 0.0001)) {
-      shapeA.push(shapeA[0]);
-    }
-    if (!this.pointEquals(shapeB[shapeB.length-1], shapeB[0], 0.0001)) {
-      shapeB.push(shapeB[0]);
-    }
-
-    // Get intersections
-    let newA = this.shapeIntersections(shapeA, shapeB);
-    let newB = this.shapeIntersections(shapeB, shapeA);
-
-    // Build a new shape from the two shapes using the segments
-    // that are outside of the other shape
-    let newShape = [];
-    newShape = newShape.concat(this.booleanAddComparison(newA, shapeB));
-    newShape = newShape.concat(this.booleanAddComparison(newB, shapeA));
-
-    // Join all of the path segments into a continuous path
-    newShape = this.joinPaths(newShape);
-
-    return newShape;
-  }
-
-  /**
-   * Remove segments of Shape A that are inside of Shape B
-   *
-   * @param {array} shapeA - An array of points defining a closed shape
-   * @param {array} shapeB - An array of points defining a closed shape
-   *
-   * @returns {array} - A multidimensional array of paths from Shape A
-   * that are outside of Shape B
-   **/
-  booleanAddComparison(shapeA, shapeB) {
-    let paths = [];
-
-    let shapeB_vertices = [];
-    for (let v = 0; v < shapeB.length-1; v++) {
-      shapeB_vertices.push({x: shapeB[v][0], y: shapeB[v][1]});
-    }
-
-    let path = [];
-    let i_max = shapeA.length-1;
-    for (let i = 0; i < i_max; i++) {
-      let mid_point = [
-        this.lerp(shapeA[i][0], shapeA[i+1][0], 0.5),
-        this.lerp(shapeA[i][1], shapeA[i+1][1], 0.5),
-      ];
-      if (this.pointInPolygon(shapeB_vertices, mid_point[0], mid_point[1])) {
-        path.push(shapeA[i]);
-        if (path.length > 1) {
-          paths.push(path);
-        }
-        path = [];
-      } else {
-        path.push(shapeA[i]);
-      }
-      // Add last point if end of loop... I'm not convinced this is correct
-      if (i == i_max - 1) {
-        path.push(shapeA[i+1]);
-      }
-    }
-    if (path.length > 1) {
-      paths.push(path);
-    }
-
-    return paths;
-  }
-
-  /**
-   * Perform a Boolean subtraction (difference) of two closed paths
-   *
-   * @param {array} shapeA - An array of points defining a closed shape
-   * @param {array} shapeB - An array of points defining a closed shape
-   *
-   * @returns {array} - An array of points representing Shape B removed from Shape A.
-   * If Shape B does not overlap Shape A, then Shape A will be returned unchanged.
-   **/
-  booleanSubtract(shapeA, shapeB) {
-
-    // Ensure that shapes are closed (e.g. Last point matches first point)
-    if (!this.pointEquals(shapeA[shapeA.length-1], shapeA[0], 0.0001)) {
-      shapeA.push(shapeA[0]);
-    }
-    if (!this.pointEquals(shapeB[shapeB.length-1], shapeB[0], 0.0001)) {
-      shapeB.push(shapeB[0]);
-    }
-
-    // Get intersections
-    let newA = this.shapeIntersections(shapeA, shapeB);
-    let newB = this.shapeIntersections(shapeB, shapeA);
-
-    // Build a new shape from the two shapes using the segments
-    // that are outside of the other shape
-    let newShape = [];
-    newShape = newShape.concat(this.booleanSubtractComparison(newA, shapeB));
-    newShape = newShape.concat(this.booleanSubtractComparison(newB, shapeA, true));
-
-    // Join all of the path segments into a continuous path
-    newShape = this.joinPaths(newShape);
-
-    return newShape;
-  }
-
-  /**
-   * Remove segments of Shape B that are outside of Shape A
-   *
-   * @param {array} shapeA - An array of points defining a closed shape
-   * @param {array} shapeB - An array of points defining a closed shape
-   *
-   * @returns {array} - A multidimensional array of paths from Shape A
-   * that are outside of Shape B
-   **/
-  booleanSubtractComparison(shapeA, shapeB, invert = false) {
-    let paths = [];
-
-    // Extract and reformat vertices from shapeB for use with this.pointInPolygon
-    let shapeB_vertices = [];
-    for (let v = 0; v < shapeB.length-1; v++) {
-      shapeB_vertices.push({x: shapeB[v][0], y: shapeB[v][1]});
-    }
-
-    // Loop through all segments of Shape A and determine if they are inside
-    // or outside of Shape B
-    let path = [];
-    let i_max = shapeA.length-1;
-    for (let i = 0; i < i_max; i++) {
-
-      // Get the midpoint of the segment as the point to compare
-      let mid_point = [
-        this.lerp(shapeA[i][0], shapeA[i+1][0], 0.5),
-        this.lerp(shapeA[i][1], shapeA[i+1][1], 0.5),
-      ];
-
-      if (!invert) {
-
-        if (this.pointInPolygon(shapeB_vertices, mid_point[0], mid_point[1])) {
-          path.push(shapeA[i]);
-          if (path.length > 1) {
-            paths.push(path);
-          }
-          path = [];
-        } else {
-          path.push(shapeA[i]);
-        }
-        // Add last point if end of loop... I'm not convinced this is correct
-        if (i == i_max - 1) {
-          path.push(shapeA[i+1]);
-        }
-
-      } else {
-
-        if (!this.pointInPolygon(shapeB_vertices, mid_point[0], mid_point[1])) {
-          path.push(shapeA[i]);
-          if (path.length > 1) {
-            paths.push(path);
-          }
-          path = [];
-        } else {
-          path.push(shapeA[i]);
-        }
-        // Add last point if end of loop... I'm not convinced this is correct
-        if (i == i_max - 1) {
-          path.push(shapeA[i+1]);
-        }
-
-      }
-    }
-    if (path.length > 1) {
-      paths.push(path);
-    }
-
-    return paths;
-  }
-
-  /**
-   * Perform a Boolean intersection of two closed paths
-   *
-   * @param {array} shapeA - An array of points defining a closed shape
-   * @param {array} shapeB - An array of points defining a closed shape
-   *
-   * @returns {array} - An array of points representing the overlapping
-   * region(s) of Shape A and Shape B. If there is no overlap an empty
-   * shape should be returned
-   **/
-  booleanIntersect(shapeA, shapeB) {
-
-    // Ensure that shapes are closed (e.g. Last point matches first point)
-    if (!this.pointEquals(shapeA[shapeA.length-1], shapeA[0], 0.0001)) {
-      shapeA.push(shapeA[0]);
-    }
-    if (!this.pointEquals(shapeB[shapeB.length-1], shapeB[0], 0.0001)) {
-      shapeB.push(shapeB[0]);
-    }
-
-    // Get intersections
-    let newA = this.shapeIntersections(shapeA, shapeB);
-    let newB = this.shapeIntersections(shapeB, shapeA);
-
-    // Build a new shape from the two shapes using the segments
-    // that are outside of the other shape
-    let newShape = [];
-    newShape = newShape.concat(this.booleanIntersectionComparison(newA, shapeB));
-    newShape = newShape.concat(this.booleanIntersectionComparison(newB, shapeA, true));
-
-    // Join all of the path segments into a continuous path
-    newShape = this.joinPaths(newShape);
-
-    return newShape;
-  }
-
-  /**
-   * Remove segments of Shape B that are outside of Shape A
-   *
-   * @param {array} shapeA - An array of points defining a closed shape
-   * @param {array} shapeB - An array of points defining a closed shape
-   *
-   * @returns {array} - A multidimensional array of paths from Shape A
-   * that are outside of Shape B
-   **/
-  booleanIntersectionComparison(shapeA, shapeB) {
-    let paths = [];
-
-    // Extract and reformat vertices from shapeB for use with this.pointInPolygon
-    let shapeB_vertices = [];
-    for (let v = 0; v < shapeB.length-1; v++) {
-      shapeB_vertices.push({x: shapeB[v][0], y: shapeB[v][1]});
-    }
-
-    // Loop through all segments of Shape A and determine if they are inside
-    // or outside of Shape B
-    let path = [];
-    let i_max = shapeA.length-1;
-    for (let i = 0; i < i_max; i++) {
-
-      // Get the midpoint of the segment as the point to compare
-      let mid_point = [
-        this.lerp(shapeA[i][0], shapeA[i+1][0], 0.5),
-        this.lerp(shapeA[i][1], shapeA[i+1][1], 0.5),
-      ];
-
-      if (!this.pointInPolygon(shapeB_vertices, mid_point[0], mid_point[1])) {
-        path.push(shapeA[i]);
-        if (path.length > 1) {
-          paths.push(path);
-        }
-        path = [];
-      } else {
-        path.push(shapeA[i]);
-      }
-      // Add last point if end of loop... I'm not convinced this is correct
-      if (i == i_max - 1) {
-        path.push(shapeA[i+1]);
-      }
-
-    }
-    if (path.length > 1) {
-      paths.push(path);
-    }
-
-    return paths;
-  }
-
-  /**
-   * Calculate the intersection points of Shape A with Shape B,
-   * and insert these intersection points in Shape A (in order)
-   *
-   * @param {array} shapeA - An array of points defining a closed shape
-   * @param {array} shapeB - An array of points defining a closed shape
-   *
-   * @returns {array} - An array of points representing Shape A with
-   * the intersection points of Shape B added
-   **/
-  shapeIntersections(shapeA, shapeB) {
-
-    let newA = [];
-
-    // Loop through points of Shape A
-    for (let i = 0; i < shapeA.length - 1; i++) {
-
-      // Add the starting point
-      newA.push(shapeA[i]);
-
-      // Analyze current line segment of Shape A for intersections
-      // with all segments of Shape B
-      let segment_intersections = [];
-      for (let j = 0; j < shapeB.length-1; j++) {
-        let intersect = this.getLineLineCollision(
-          {x: shapeA[i][0], y: shapeA[i][1]},
-          {x: shapeA[i+1][0], y: shapeA[i+1][1]},
-          {x: shapeB[j][0], y: shapeB[j][1]},
-          {x: shapeB[j+1][0], y: shapeB[j+1][1]}
-        );
-        if (intersect) {
-          segment_intersections.push([
-            intersect.x,
-            intersect.y
-          ]);
-        }
-      }
-
-      // Sort segment_intersections and insert in Shape A
-      if (segment_intersections.length > 0) {
-        let self = this;
-        segment_intersections.sort(function(a, b) {
-          return (self.distance(shapeA[i], a) > self.distance(shapeA[i], b) ? 1 : -1)
-        });
-        newA = newA.concat(segment_intersections);
-      }
-    }
-
-    // Close shape
-    newA.push(shapeA[shapeA.length - 1]);
-
-    return newA;
   }
 
 }

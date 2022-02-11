@@ -51,12 +51,28 @@ let paths = [
 Methods
 -------
 
+The following methods are grouped and ordered loosely by their purpose and use.
+
 Note: Some examples show rounded results in floating point numbers in order
 to keep the examples concise.
+
+**Types of Operations:**
+ - [General Operations](#general-operations)
+ - [Mathematical Formulas](#mathematical-formulas)
+ - [Shapes](#shapes)
+ - [Linear Transformations](#linear-transformations)
+ - [Boolean Shape Operations](#boolean-shape-operations)
+ - [Path Operations](#path-operations)
 
 ```js
 let PH = new PathHelper();
 ```
+
+---------------------------------------------------------------------------------------
+### General Operations
+*The following methods provide general help with interacting with Path data in JavaScript*
+
+---------------------------------------------------------------------------------------
 
 ### info
 
@@ -135,17 +151,6 @@ PH.getMax(path);
 // Output is [4, 1]
 ```
 
-### crossProduct
-
-Calculate the cross product of two 3D vectors
-
-```js
-let a = [-2, 1, 1];
-let b = [ 3, 2, 1];
-PH.crossProduct(a, b);
-// Output is [-1, 5, -7]
-```
-
 ### boundingBox
 
 Get the Bounding Box coordinates for a 2D or 3D path
@@ -186,6 +191,51 @@ Get the largest number from an array
 ```js
 PH.arrayMax([10, 2, 4.5, 7, 2.3, -1.2, -2.7]);
 // Output is 10
+```
+
+### getRndInteger
+
+Get a random Integer (whole number) between two values (inclusive)
+
+```js
+PH.getRndInteger(1, 10);
+// Output is 5
+```
+
+### getRandom
+
+Get a random Number between two values (inclusive)
+
+```js
+PH.getRandom(1, 3);
+// Output is 1.3623930350489668
+```
+
+### getGaussianRandom
+
+Get a random number between 0 and 1 within a Gaussian Distribution probability
+
+```js
+PH.getGaussianRandom();
+// Output is 0.5166768388415707
+```
+
+### map
+
+Map a value from one scale to another scale
+
+```js
+PH.map(2, 0, 10, -5, 5);
+// Output is -3
+```
+
+### lerp
+
+Perform a linear interpolation between two values
+
+```js
+PH.lerp(0, 20, 0.3);
+// Output is 6
 ```
 
 ### degreesToRadians
@@ -233,90 +283,60 @@ PH.greatestCommonDivisor(50, 30);
 // Output is 10
 ```
 
-### lineEquals
+---------------------------------------------------------------------------------------
+### Mathematical Formulas
+*The following methods perform general mathematical operations*
 
-Determine if two lines are equivalent by comparing their start and end points.
-This supports an optional `threshold` parameter that can be set to specify a
-maximum distance that two points can be apart and still considered coincident.
-This is very useful when dealing with floating point numbers.
+---------------------------------------------------------------------------------------
 
-```js
-let AB = [
-    [0, 0],
-    [0, 1]
-];
-let CD = [
-    [0.005, 0],
-    [0, 1.005]
-];
-PH.lineEquals(AB, CD);
-// Output is False
+### crossProduct
 
-PH.lineEquals(AB, CD, 0.01);
-// Output is True
-```
-
-### pointEquals
-
-Determine if two points are coincident.
-This supports an optional `threshold` parameter that can be set to specify a
-maximum distance that the points can be apart and still considered coincident.
-This is very useful when dealing with floating point numbers.
+Calculate the cross product of two 3D vectors
 
 ```js
-let A = [0.0, 0.0];
-let B = [0.005, 0];
-PH.pointEquals(A, B);
-// Output is False
-
-PH.pointEquals(A, B, 0.01);
-// Output is True
+let a = [-2, 1, 1];
+let b = [ 3, 2, 1];
+PH.crossProduct(a, b);
+// Output is [-1, 5, -7]
 ```
 
-### getRndInteger
+### lineSlopeIntercept
 
-Get a random Integer (whole number) between two values (inclusive)
+Calculate the slope and y-intercept of the line passing between two points.
+In the return object, `m` represents slope and `b` represents the y-intercept.
 
 ```js
-PH.getRndInteger(1, 10);
-// Output is 5
+PH.lineSlopeIntercept([1, 2], [2, 3]);
+// Output is {m: 1, b: 1}
 ```
 
-### getRandom
+### solveQuadratic
 
-Get a random Number between two values (inclusive)
+Solve the Quadratic Equation. For real values only.
+Standard Quadratic Equation: ax^2 + bx + c = 0
 
 ```js
-PH.getRandom(1, 3);
-// Output is 1.3623930350489668
+PH.solveQuadratic(2, 4, -4);
+// Output is [0.7321, -2.7321]
 ```
 
-### getGaussianRandom
+### distance
 
-Get a random number between 0 and 1 within a Gaussian Distribution probability
+Calculate the distance between two points in 2D or 3D space
 
 ```js
-PH.getGaussianRandom();
-// Output is 0.5166768388415707
+PH.distance([0, 0], [1, 1]);
+// Output is 1.4142135623730951
+
+PH.distance([0, 0, 0], [1, 1, 1]);
+// Output is 1.7320508075688772
 ```
 
-### map
+---------------------------------------------------------------------------------------
+### Shapes
+*The following methods help create basic shapes, curves, etc.*
 
-Map a value from one scale to another scale
-
-```js
-PH.map(2, 0, 10, -5, 5);
-// Output is -3
-```
-
-### lerp
-
-Perform a linear interpolation between two values
-
-```js
-PH.lerp(0, 20, 0.3);
-// Output is 6
-```
+---------------------------------------------------------------------------------------
 
 ### polygon
 
@@ -452,6 +472,285 @@ PH.parabola(2.0, 1.0, 6);
 ]
 ```
 
+### arcPointToPoint
+
+Compose a circular arc between two points. The center of the circle on
+which the arc lies is the midpoint between (x1, y1) and (x2, y2). The
+arc starts at (x1, y1) and proceeds clockwise for `theta` radians.
+This method is most useful when you have two known points and wish to
+connect them using a circular arc.
+
+### arc
+
+Compose a circular arc centered around a known point with a known radius
+
+### quadraticBezierPath
+
+Create a [Quadratic Bézier curve](https://en.wikipedia.org/wiki/Bézier_curve#Quadratic_Bézier_curves) path.
+
+```js
+PH.quadraticBezierPath(
+    [0, 0],
+    [1, 1],
+    [0, 2],
+    5
+);
+```
+
+**Expected Output:**
+```js
+[
+    [0, 0],
+    [0.32, 0.4],
+    [0.48, 0.8],
+    [0.48, 1.2],
+    [0.32, 1.6],
+    [0, 2],
+]
+```
+
+### cubicBezierPath
+
+Create a [Cubic Bézier curve](https://en.wikipedia.org/wiki/Bézier_curve#Cubic_Bézier_curves) path.
+
+```js
+PH.cubicBezierPath(
+    [0, 0],
+    [1, 0.5],
+    [1, 1.5],
+    [0, 2],
+    5
+);
+```
+
+**Expected Output:**
+```js
+[
+    [0, 0],
+    [0.48, 0.35],
+    [0.72, 0.78],
+    [0.72, 1.2],
+    [0.48, 1.65],
+    [0, 2]
+]
+```
+
+---------------------------------------------------------------------------------------
+### Linear Transformations
+*The following methods perform standard linear transformations*
+
+---------------------------------------------------------------------------------------
+
+### centerPaths
+
+Translate a group of paths to be centered around the origin
+
+### scalePath
+
+Scale a Path with respect to the origin. To scale "in place", translate
+the path to be centered at the origin, apply `scalePath`, and then re-translate
+the path in the opposite direction.
+
+```js
+let path = [
+    [-1,  0],
+    [ 0, -1],
+    [ 1,  0],
+    [ 0,  1]
+];
+PH.scalePath(path, 0.5);
+```
+
+**Expected Output:**
+```js
+[
+    [-0.5, 0],
+    [0, -0.5],
+    [0.5, 0],
+    [0, 0.5]
+]
+```
+
+### translatePath
+
+Translate a Path in 2D Cartesian coordinates
+
+```js
+let path = [
+    [-1,  0],
+    [ 0, -1],
+    [ 1,  0],
+    [ 0,  1]
+];
+PH.translatePath(path, [0.5, 0.5]);
+```
+
+**Expected Output:**
+```js
+[
+    [-0.5, 0.5],
+    [0.5, -0.5],
+    [1.5, 0.5],
+    [0.5, 1.5]
+]
+```
+
+### rotatePath
+
+Rotate a path around the origin using the [Rotation Matrix](https://en.wikipedia.org/wiki/Rotation_matrix).
+
+```js
+let path = [
+    [-1,  0],
+    [ 0, -1],
+    [ 1,  0],
+    [ 0,  1]
+];
+PH.rotatePath(path, 0.5 * Math.PI);
+```
+
+**Expected Output:**
+```js
+[
+    [ 0, -1],
+    [ 1,  0],
+    [ 0,  1],
+    [-1,  0]
+]
+```
+
+### reflectPath
+
+Reflect a Path about an axis (X or Y)
+
+```js
+PH.reflectPath([[1, 1], [2, 2]], "x");
+// Expected output is [[-1, 1], [-2, 2]]
+```
+
+### distortPath
+
+Distort a path by mapping the corners of a rectangular bounding box
+to the respective corners of a manipulated quadrilateral.
+The path will be distorted using a linear interpolation of the
+transformation.
+
+```
+Bouding Box:
+
+ A -- B
+ |    |
+ D -- C
+
+Distortion:
+
+ A ------- B
+  \       /
+   \     /
+    D - C
+```
+
+---------------------------------------------------------------------------------------
+### Boolean Shape Operations
+*The following methods perform standard [Boolean operations on polygons](https://en.wikipedia.org/wiki/Boolean_operations_on_polygons)*
+
+---------------------------------------------------------------------------------------
+
+### booleanAdd
+
+Perform a Boolean addition (union) of two closed paths
+
+### booleanAddComparison (PRIVATE)
+
+Remove segments of Shape A that are inside of Shape B.
+This is a helper method for `booleanAdd`.
+
+### booleanSubtract
+
+Perform a Boolean subtraction (difference) of two closed paths
+
+### booleanSubtractComparison (PRIVATE)
+
+Remove segments of Shape B that are outside of Shape A.
+This is a helper method for `booleanSubtract`.
+
+### booleanIntersection
+
+Perform a Boolean intersection of two closed paths
+
+### booleanIntersectionComparison (PRIVATE)
+
+Remove segments of Shape B that are outside of Shape A.
+This is a helper method for `booleanIntersection`.
+
+### shapeIntersections
+
+Calculate the intersection points of Shape A with Shape B,
+and insert these intersection points in Shape A (in order).
+
+This is a helper method for the Boolean shape operations.
+
+---------------------------------------------------------------------------------------
+### Path Operations
+*The following methods perform a wide variety of operations for manipulating paths*
+
+---------------------------------------------------------------------------------------
+
+### pathLength
+
+Calculate the total distance of a path of two or more points in 2D or 3D
+
+```js
+PH.pathLength([
+    [0, 0],
+    [0, 1],
+    [1, 1],
+    [1, 0],
+    [0, 0]
+]);
+// Output is 4
+```
+
+### lineEquals
+
+Determine if two lines are equivalent by comparing their start and end points.
+This supports an optional `threshold` parameter that can be set to specify a
+maximum distance that two points can be apart and still considered coincident.
+This is very useful when dealing with floating point numbers.
+
+```js
+let AB = [
+    [0, 0],
+    [0, 1]
+];
+let CD = [
+    [0.005, 0],
+    [0, 1.005]
+];
+PH.lineEquals(AB, CD);
+// Output is False
+
+PH.lineEquals(AB, CD, 0.01);
+// Output is True
+```
+
+### pointEquals
+
+Determine if two points are coincident.
+This supports an optional `threshold` parameter that can be set to specify a
+maximum distance that the points can be apart and still considered coincident.
+This is very useful when dealing with floating point numbers.
+
+```js
+let A = [0.0, 0.0];
+let B = [0.005, 0];
+PH.pointEquals(A, B);
+// Output is False
+
+PH.pointEquals(A, B, 0.01);
+// Output is True
+```
+
 ### intersect_point
 
 Calculate the location where two lines intersect.
@@ -494,52 +793,56 @@ PH.getLineLineCollision(
 {x:  0, y: 1}
 ```
 
-### lineSlopeIntercept
+### lineCircleIntersect
 
-Calculate the slope and y-intercept of the line passing between two points.
-In the return object, `m` represents slope and `b` represents the y-intercept.
-
-```js
-PH.lineSlopeIntercept([1, 2], [2, 3]);
-// Output is {m: 1, b: 1}
-```
-
-### solveQuadratic
-
-Solve the Quadratic Equation. For real values only.
-Standard Quadratic Equation: ax^2 + bx + c = 0
+Calculate the intersection points between a line and a circle. The
+response is an array with 0, 1 or 2 Point array elements representing the
+locations of intersections.
 
 ```js
-PH.solveQuadratic(2, 4, -4);
-// Output is [0.7321, -2.7321]
+PH.lineCircleIntersect([-1, -1], [1, 1], [[0,0], 1]);
 ```
 
-### distance
+**Expected Output:**
+```js
+[
+    [0.7071, 0.7071],
+    [-0.7071, -0.7071]
+]
+```
 
-Calculate the distance between two points in 2D or 3D space
+### circleInterceptPoints
+
+Calculate the intersection point between two circles. This requires both
+circles to be centered at the origin. A `sign` parameter solves for one of
+two possible solutions. This assumes the input circles do intersect and
+does not solve for non-intersection.
+
+### pointOnLineSegment
+
+Check if a Point is on a Line Segment (or within a threshold/buffer)
 
 ```js
-PH.distance([0, 0], [1, 1]);
-// Output is 1.4142135623730951
+PH.pointOnLineSegment(
+    [0.5, 0.01],
+    [[0, 0], [1, 0]],
+    0
+);
+// Output is false
 
-PH.distance([0, 0, 0], [1, 1, 1]);
-// Output is 1.7320508075688772
+PH.pointOnLineSegment(
+    [0.5, 0.01],
+    [[0, 0], [1, 0]],
+    0.001
+);
+// Output is true
 ```
 
-### pathLength
+### pointInPolygon
 
-Calculate the total distance of a path of two or more points in 2D or 3D
-
-```js
-PH.pathLength([
-    [0, 0],
-    [0, 1],
-    [1, 1],
-    [1, 0],
-    [0, 0]
-]);
-// Output is 4
-```
+Determine if a point is inside of a polygon. This is taken from
+Jeffrey Thompson's excellent eBook on
+[Collission Detection](http://www.jeffreythompson.org/collision-detection/line-circle.php).
 
 ### parallelPath
 
@@ -670,126 +973,6 @@ Smooth the corners on a Path by a set value. The curvature begins at the
 `radius` distance from the each point. This is useful for creating
 uniform curvatures, like to round corners on polygon.
 
-### arcPointToPoint
-
-Compose a circular arc between two points. The center of the circle on
-which the arc lies is the midpoint between (x1, y1) and (x2, y2). The
-arc starts at (x1, y1) and proceeds clockwise for `theta` radians.
-This method is most useful when you have two known points and wish to
-connect them using a circular arc.
-
-### arc
-
-Compose a circular arc centered around a known point with a known radius
-
-### centerPaths
-
-Translate a group of paths to be centered around the origin
-
-### scalePath
-
-Scale a Path with respect to the origin. To scale "in place", translate
-the path to be centered at the origin, apply `scalePath`, and then re-translate
-the path in the opposite direction.
-
-```js
-let path = [
-    [-1,  0],
-    [ 0, -1],
-    [ 1,  0],
-    [ 0,  1]
-];
-PH.scalePath(path, 0.5);
-```
-
-**Expected Output:**
-```js
-[
-    [-0.5, 0],
-    [0, -0.5],
-    [0.5, 0],
-    [0, 0.5]
-]
-```
-
-### translatePath
-
-Translate a Path in 2D Cartesian coordinates
-
-```js
-let path = [
-    [-1,  0],
-    [ 0, -1],
-    [ 1,  0],
-    [ 0,  1]
-];
-PH.translatePath(path, [0.5, 0.5]);
-```
-
-**Expected Output:**
-```js
-[
-    [-0.5, 0.5],
-    [0.5, -0.5],
-    [1.5, 0.5],
-    [0.5, 1.5]
-]
-```
-
-### rotatePath
-
-Rotate a path around the origin using the [Rotation Matrix](https://en.wikipedia.org/wiki/Rotation_matrix).
-
-```js
-let path = [
-    [-1,  0],
-    [ 0, -1],
-    [ 1,  0],
-    [ 0,  1]
-];
-PH.rotatePath(path, 0.5 * Math.PI);
-```
-
-**Expected Output:**
-```js
-[
-    [ 0, -1],
-    [ 1,  0],
-    [ 0,  1],
-    [-1,  0]
-]
-```
-
-### reflectPath
-
-Reflect a Path about an axis (X or Y)
-
-```js
-PH.reflectPath([[1, 1], [2, 2]], "x");
-// Expected output is [[-1, 1], [-2, 2]]
-```
-
-### distortPath
-
-Distort a path by mapping the corners of a rectangular bounding box
-to the respective corners of a manipulated quadrilateral.
-The path will be distorted using a linear interpolation of the
-transformation.
-
-```
-Bouding Box:
-
- A -- B
- |    |
- D -- C
-
-Distortion:
-
- A ------- B
-  \       /
-   \     /
-    D - C
-```
 
 ### shiftPath
 
@@ -989,108 +1172,6 @@ This works by performing edge detection on the image and then using this method 
 This is the original recursive version of pointsToPaths2 and is known to cause a stack overflow.
 Consider using pointsToPaths2 instead.
 
-### quadraticBezierPath
-
-Create a [Quadratic Bézier curve](https://en.wikipedia.org/wiki/Bézier_curve#Quadratic_Bézier_curves) path.
-
-```js
-PH.quadraticBezierPath(
-    [0, 0],
-    [1, 1],
-    [0, 2],
-    5
-);
-```
-
-**Expected Output:**
-```js
-[
-    [0, 0],
-    [0.32, 0.4],
-    [0.48, 0.8],
-    [0.48, 1.2],
-    [0.32, 1.6],
-    [0, 2],
-]
-```
-
-### cubicBezierPath
-
-Create a [Cubic Bézier curve](https://en.wikipedia.org/wiki/Bézier_curve#Cubic_Bézier_curves) path.
-
-```js
-PH.cubicBezierPath(
-    [0, 0],
-    [1, 0.5],
-    [1, 1.5],
-    [0, 2],
-    5
-);
-```
-
-**Expected Output:**
-```js
-[
-    [0, 0],
-    [0.48, 0.35],
-    [0.72, 0.78],
-    [0.72, 1.2],
-    [0.48, 1.65],
-    [0, 2]
-]
-```
-
-### pointOnLineSegment
-
-Check if a Point is on a Line Segment (or within a threshold/buffer)
-
-```js
-PH.pointOnLineSegment(
-    [0.5, 0.01],
-    [[0, 0], [1, 0]],
-    0
-);
-// Output is false
-
-PH.pointOnLineSegment(
-    [0.5, 0.01],
-    [[0, 0], [1, 0]],
-    0.001
-);
-// Output is true
-```
-
-### pointInPolygon
-
-Determine if a point is inside of a polygon. This is taken from
-Jeffrey Thompson's excellent eBook on
-[Collission Detection](http://www.jeffreythompson.org/collision-detection/line-circle.php).
-
-### lineCircleIntersect
-
-Calculate the intersection points between a line and a circle. The
-response is an array with 0, 1 or 2 Point array elements representing the
-locations of intersections.
-
-```js
-PH.lineCircleIntersect([-1, -1], [1, 1], [[0,0], 1]);
-```
-
-**Expected Output:**
-```js
-[
-    [0.7071, 0.7071],
-    [-0.7071, -0.7071]
-]
-```
-
-### circleInterceptPoints
-
-Calculate the intersection point between two circles. This requires both
-circles to be centered at the origin. A `sign` parameter solves for one of
-two possible solutions. This assumes the input circles do intersect and
-does not solve for non-intersection.
-
 ### cropToShape
 
 Crop paths to a bounding shape. This supports a threshold value that can
@@ -1157,40 +1238,6 @@ Take a line segment and multiple paths representing a closed
 convex polygon and return the portion of that line that is
 not intersected by any of the shapes (paths)
 
-### booleanAdd
-
-Perform a Boolean addition (union) of two closed paths
-
-### booleanAddComparison (PRIVATE)
-
-Remove segments of Shape A that are inside of Shape B.
-This is a helper method for `booleanAdd`.
-
-### booleanSubtract
-
-Perform a Boolean subtraction (difference) of two closed paths
-
-### booleanSubtractComparison (PRIVATE)
-
-Remove segments of Shape B that are outside of Shape A.
-This is a helper method for `booleanSubtract`.
-
-### booleanIntersection
-
-Perform a Boolean intersection of two closed paths
-
-### booleanIntersectionComparison (PRIVATE)
-
-Remove segments of Shape B that are outside of Shape A.
-This is a helper method for `booleanIntersection`.
-
-### shapeIntersections
-
-Calculate the intersection points of Shape A with Shape B,
-and insert these intersection points in Shape A (in order).
-
-This is a helper method for the Boolean shape operations.
-
 To Do:
 ------
 
@@ -1200,7 +1247,6 @@ To Do:
  - Evaluate need for both cleanPath and simplify
  - Update lineCircleIntersect to work for a circle at any location
  - Improve or remove circleInterceptPoints
-
 
 License
 -------
