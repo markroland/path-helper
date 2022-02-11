@@ -7,7 +7,12 @@ on multi-point paths (polylines).
 Documentation
 -------------
 
-I am in the process of formatting this following [JSDoc](https://jsdoc.app/).
+Code is documented using [JSDoc](https://jsdoc.app/) syntax and is compiled using the [NPM jsdoc](https://www.npmjs.com/package/jsdoc) package.
+
+Generate documentation:
+```
+jsdoc src -d docs
+```
 
 Common Data Types
 -----------------
