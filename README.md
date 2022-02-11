@@ -633,6 +633,23 @@ PH.extendLine([0, 0], [1, 1], 0.2, 0.2);
 ]
 ```
 
+### noisify
+
+Add random noise to a path. This can make lines appear more organic or hand-drawn.
+This accepts a number of parameters that impact the quality of the line:
+ - `max_segment_length`: Use a lower value to increase the resolution
+ - `max_noise`: Set a maximum magnitude of the noise displacement
+ - `gaussian`: Use a Gaussian distribution for the noise values instead of using
+   the native `random` function. This should reduce the noise effect
+ - `force_close`: This is useful for closed paths. Since the first and last point
+   of a closed paths may receive different random noise they may or may not close
+   after the noise has been added. Depending on the desired effect this may or
+   may not be desirable, so this may be set to `true` or `false` to achieve either effect
+ - `smooth_window`: Set a smoothing window size to reduce the jaggedness of the
+   path after receiving noise. This creates smoother, wavier lines
+ - `smooth_repeat`: Use this in conjunction with `smooth_window` in order to repeat
+   the `smooth_window` multiple times, making the line even smoother.
+
 ### smoothPath
 
 Smooth a path by performing a one dimensional convolution on the X
@@ -1080,7 +1097,6 @@ does not solve for non-intersection.
  - subtractPaths
  - linePathSplit (for layeredPaths)
  - linePathsSplit (for layeredPaths)
- - noisify
  - booleanAdd
  - booleanAddComparison
  - booleanSubtract

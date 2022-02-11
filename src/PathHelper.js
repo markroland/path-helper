@@ -848,6 +848,64 @@ class PathHelper {
   }
 
   /**
+   * Add noise to a path
+   * @param {array} path - The source path
+   * @param {number} max_segment_length - The maximum distance allowed between points. If a segment
+   * of the path is greater than this distance it will be subdivided into
+   * shorter segments.
+   * @param {number} max_noise - The maximum magnitude of the noise offset
+   * @param {boolean} [gaussian=false] - Whether to use Guassian noise
+   * @param {boolean} [force_close=false] - Whether to force the path to close (end point equals start point)
+   * @param {number} [smooth_window=0] - An optional smoothing window value.
+   * @param {number} [smooth_repeat=1] - An optional repetition of the smoothing window. Repeating a smaller
+   * smoothing window more times keeps sharper angles while still smoothing straight lines.
+   * @param {array} - A Path array
+   */
+  noisify(path, max_segment_length, max_noise, gaussian = false, force_close = false, smooth_window = 0, smooth_repeat = 1) {
+
+    // Break full path into segments
+    let path2 = this.dividePathComplete(path, max_segment_length);
+
+    let newpath = []
+    for (let i = 0; i < path2.length-1; i++) {
+
+      let noise;
+
+      if (gaussian) {
+        noise = this.getGaussianRandom() * max_noise;
+      } else {
+        noise = this.getRandom(-max_noise, max_noise);
+      }
+
+      let delta_y = path2[i+1][1] - path2[i][1];
+      let delta_x = path2[i+1][0] - path2[i][0];
+      let theta = Math.atan2(delta_y, delta_x);
+      newpath.push([
+        path2[i][0] + noise * Math.cos(theta + Math.PI/2),
+        path2[i][1] + noise * Math.sin(theta + Math.PI/2)
+      ]);
+    }
+
+    // Add last point
+    newpath.push(path2[path2.length-1]);
+
+    // Force a close shape (end point equals start point)
+    if (force_close) {
+      if (!this.pointEquals(newpath[0], newpath[newpath.length-1])) {
+        newpath.push(newpath[0]);
+      }
+    }
+
+    if (smooth_window > 1) {
+      for (let i = 0; i < smooth_repeat; i++) {
+        newpath = this.smoothPath(newpath, smooth_window);
+      }
+    }
+
+    return newpath;
+  }
+
+  /**
    * Smooth a path
    * @param {array} path - A Path array
    * @param {number} size - The smoothing window size. This should be an odd number
@@ -3062,64 +3120,6 @@ class PathHelper {
     }
 
     return segments;
-  }
-
-  /**
-   * Add noise to a path
-   * @param Array The source path
-   * @param number The maximum distance allowed between points. If a segment
-   * of the path is greater than this distance it will be subdivided into
-   * shorter segments.
-   * @param number The maximum magnitude of the noise offset
-   * @param Boolean Whether to use Guassian noise
-   * @param Boolean Whether to force the path to close (end point equals start point)
-   * @param Integer An optional smoothing window value
-   * @param Integer An optional repetition of the smoothing window. Repeating a smaller
-   * smoothing window more times keeps sharper angles while still smoothing straight lines.
-   * @param Array The path with added noise
-   */
-  noisify(path, max_segment_length, max_noise, gaussian = false, force_close = false, smooth_window = 0, smooth_repeat = 1) {
-
-    // Break full path into segments
-    let path2 = this.dividePathComplete(path, max_segment_length);
-
-    let newpath = []
-    for (let i = 0; i < path2.length-1; i++) {
-
-      let noise;
-
-      if (gaussian) {
-        noise = this.getGaussianRandom() * max_noise;
-      } else {
-        noise = this.getRandom(-max_noise, max_noise);
-      }
-
-      let delta_y = path2[i+1][1] - path2[i][1];
-      let delta_x = path2[i+1][0] - path2[i][0];
-      let theta = Math.atan2(delta_y, delta_x);
-      newpath.push([
-        path2[i][0] + noise * Math.cos(theta + Math.PI/2),
-        path2[i][1] + noise * Math.sin(theta + Math.PI/2)
-      ]);
-    }
-
-    // Add last point
-    newpath.push(path2[path2.length-1]);
-
-    // Force a close shape (end point equals start point)
-    if (force_close) {
-      if (!this.pointEquals(newpath[0], newpath[newpath.length-1])) {
-        newpath.push(newpath[0]);
-      }
-    }
-
-    if (smooth_window > 1) {
-      for (let i = 0; i < smooth_repeat; i++) {
-        newpath = this.smoothPath(newpath, smooth_window);
-      }
-    }
-
-    return newpath;
   }
 
   /**
