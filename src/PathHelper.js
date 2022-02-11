@@ -2594,13 +2594,11 @@ class PathHelper {
   }
 
   /**
-   * Remove portion of paths that are inside of the knockout shape
+   * Remove portions of paths that are inside of the knockout shape
    * This may also be considered a Boolean Exclusive Or (XOR)
-   *
-   * @param Array An array of path arrays
-   * @param Array An array definiting a closed shape
-   *
-   * @returns Array An array of path arrays
+   * @param {array} paths - An array of Path arrays
+   * @param {array} shape - A Path array definiting a closed shape
+   * @returns {array} - An array of Path arrays
    **/
   knockout(paths, shape) {
 
@@ -2624,15 +2622,13 @@ class PathHelper {
 
   /**
    * Fill a convex shape (polygon) with straight lines
-   *
-   * @param array The shape to be filled
-   * @param number The space between the fill lines
-   * @param number The angle (in radians) of the fill lines (0.0 is horizontal)
-   * @param boolean Set whether the lines should alternate directions (optimal for plotting)
-   * @param boolean Set to true to connect the lines. Default is false
-   * @param function An optional function to describe how to space fill lines
-   *
-   * @returns Array A multidimensional array of paths
+   * @param {array} shape - The shape to be filled
+   * @param {number} spacing - The space between the fill lines
+   * @param {number} angle - The angle (in radians) of the fill lines (0.0 is horizontal)
+   * @param {boolean} alternate - Set whether the lines should alternate directions (optimal for plotting)
+   * @param {boolean} connect - Set to true to connect the lines. Default is false
+   * @param {function} fillFunc - An optional function to describe how to space fill lines
+   * @returns {array} - An array of Path arrays
    */
   fill(shape, spacing, angle = 0.0, alternate = true, connect = false, fillFunc = null) {
 
@@ -2770,21 +2766,21 @@ class PathHelper {
    * that they cover.
    *
    * Important: Shapes that are knocked-out do not include
-   * the portion of the otehr shape that covers them. In
+   * the portion of the other shape that covers them. In
    * other words, the cover section is removed from the original
    * path and leaves a blank space, rather than incorporating
    * the portion of the other shape
    *
-   * @param Array An array of path arrays
-   * @param Boolean Whether or not to join paths
-   * @param number This represents an offset from the original
+   * @param {array} paths - An array of path arrays
+   * @param {boolean} [join=false] - Whether or not to join paths
+   * @param {number} [offset=0] - This represents an offset from the original
    * path that can be used to adjust at what point an intersection
    * occurs.
-   * @param Boolean Set to true if the Paths are
+   * @param {boolean} [continuous=false] - Set to true if the Paths are
    * quadrilaterals where each shares 1 side in succession. This
    * can be used to achieve an outlined path effect with overlaps
    *
-   * @returns Array An array of paths
+   * @returns {array} - An array of Path arrays
    **/
   layeredPaths(paths, join = false, offset = 0, continuous = false) {
 
@@ -2875,9 +2871,9 @@ class PathHelper {
    * is being subtracted from the original path (as opposed to
    * removing it as in layeredPaths).
    *
-   * @param Array An array of path arrays
+   * @param {array} paths - An array of path arrays
    *
-   * @returns Array An array of path objects either labeled as "group"
+   * @returns {array} - An array of path objects either labeled as "group"
    * if it contains more than one path or "path" if it contains a single
    * path. It is important to group pieces of the same original shape/path
    * together so that if a fill is applied later all pieces of the same original
@@ -2944,12 +2940,12 @@ class PathHelper {
    *
    * INTENDED TO BE PRIVATE METHOD OF CLASS
    *
-   * @param Array An array containing 2 point Arrays that define the x/y position of the
+   * @param {array} line - An array containing 2 point Arrays that define the x/y position of the
    * line's start and end points
-   * @param Array An array containing 2 or more point Arrays defining a path.
-   * @param number An optional threshold value for a distance below which two points
+   * @param {array} path - An array containing 2 or more point Arrays defining a path.
+   * @param {number} [threshold=0.001] - An optional threshold value for a distance below which two points
    * should be considered coincident and not intersecting.
-   * @returns An array of zero, one or two line arrays
+   * @returns {array} - An array of zero, one or two line arrays
    **/
   linePathSplit(line, path, threshold = 0.001) {
 
@@ -3065,11 +3061,11 @@ class PathHelper {
    *
    * INTENDED TO BE PRIVATE METHOD OF CLASS
    *
-   * @param Array An array containing 2 point Arrays that define the x/y position of the
+   * @param {array} line - An array containing 2 point Arrays that define the x/y position of the
    * line's start and end points
-   * @param Array An array of paths. Each path should represent a closed convex
+   * @param {array} paths - An array of paths. Each path should represent a closed convex
    * shape.
-   * @returns An array of zero, one or two lines that represent the portion of the
+   * @returns {array} - An array of zero, one or two lines that represent the portion of the
    * input line that do not intersect with or are not covered by any of the input paths
    **/
   linePathsSplit(line, paths) {
@@ -3127,10 +3123,10 @@ class PathHelper {
   /**
    * Perform a Boolean addition (union) of two closed paths
    *
-   * @param Array An array of points defining a closed shape
-   * @param Array An array of points defining a closed shape
+   * @param {array} shapeA - An array of points defining a closed shape
+   * @param {array} shapeB - An array of points defining a closed shape
    *
-   * @returns Array An array of points representing Shape B added to Shape A.
+   * @returns {array} - An array of points representing Shape B added to Shape A.
    * If Shape B does not overlap Shape A, then Shape A will be returned unchanged.
    **/
   booleanAdd(shapeA, shapeB) {
@@ -3162,10 +3158,10 @@ class PathHelper {
   /**
    * Remove segments of Shape A that are inside of Shape B
    *
-   * @param Array An array of points defining a closed shape
-   * @param Array An array of points defining a closed shape
+   * @param {array} shapeA - An array of points defining a closed shape
+   * @param {array} shapeB - An array of points defining a closed shape
    *
-   * @returns Array A multidimensional array of paths from Shape A
+   * @returns {array} - A multidimensional array of paths from Shape A
    * that are outside of Shape B
    **/
   booleanAddComparison(shapeA, shapeB) {
@@ -3207,10 +3203,10 @@ class PathHelper {
   /**
    * Perform a Boolean subtraction (difference) of two closed paths
    *
-   * @param Array An array of points defining a closed shape
-   * @param Array An array of points defining a closed shape
+   * @param {array} shapeA - An array of points defining a closed shape
+   * @param {array} shapeB - An array of points defining a closed shape
    *
-   * @returns Array An array of points representing Shape B removed from Shape A.
+   * @returns {array} - An array of points representing Shape B removed from Shape A.
    * If Shape B does not overlap Shape A, then Shape A will be returned unchanged.
    **/
   booleanSubtract(shapeA, shapeB) {
@@ -3242,10 +3238,10 @@ class PathHelper {
   /**
    * Remove segments of Shape B that are outside of Shape A
    *
-   * @param Array An array of points defining a closed shape
-   * @param Array An array of points defining a closed shape
+   * @param {array} shapeA - An array of points defining a closed shape
+   * @param {array} shapeB - An array of points defining a closed shape
    *
-   * @returns Array A multidimensional array of paths from Shape A
+   * @returns {array} - A multidimensional array of paths from Shape A
    * that are outside of Shape B
    **/
   booleanSubtractComparison(shapeA, shapeB, invert = false) {
@@ -3313,11 +3309,12 @@ class PathHelper {
   /**
    * Perform a Boolean intersection of two closed paths
    *
-   * @param Array An array of points defining a closed shape
-   * @param Array An array of points defining a closed shape
+   * @param {array} shapeA - An array of points defining a closed shape
+   * @param {array} shapeB - An array of points defining a closed shape
    *
-   * @returns Array An array of points representing the overlapping region(s) of Shape A and Shape B.
-   * If there is no overlap an empty shape should be returned
+   * @returns {array} - An array of points representing the overlapping
+   * region(s) of Shape A and Shape B. If there is no overlap an empty
+   * shape should be returned
    **/
   booleanIntersect(shapeA, shapeB) {
 
@@ -3348,10 +3345,10 @@ class PathHelper {
   /**
    * Remove segments of Shape B that are outside of Shape A
    *
-   * @param Array An array of points defining a closed shape
-   * @param Array An array of points defining a closed shape
+   * @param {array} shapeA - An array of points defining a closed shape
+   * @param {array} shapeB - An array of points defining a closed shape
    *
-   * @returns Array A multidimensional array of paths from Shape A
+   * @returns {array} - A multidimensional array of paths from Shape A
    * that are outside of Shape B
    **/
   booleanIntersectionComparison(shapeA, shapeB) {
@@ -3401,10 +3398,10 @@ class PathHelper {
    * Calculate the intersection points of Shape A with Shape B,
    * and insert these intersection points in Shape A (in order)
    *
-   * @param Array An array of points defining a closed shape
-   * @param Array An array of points defining a closed shape
+   * @param {array} shapeA - An array of points defining a closed shape
+   * @param {array} shapeB - An array of points defining a closed shape
    *
-   * @returns Array An array of points representing Shape A with
+   * @returns {array} - An array of points representing Shape A with
    * the intersection points of Shape B added
    **/
   shapeIntersections(shapeA, shapeB) {

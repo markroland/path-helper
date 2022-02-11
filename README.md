@@ -1110,21 +1110,86 @@ Crop paths to a rectangle.
 **DEPRECATED**: This has been replaced by the more generalized `cropToShape` method
 and will be removed in the future.
 
-### Other:
+### knockout
 
- - knockout
- - fill
- - layeredPaths
- - subtractPaths
- - linePathSplit (for layeredPaths)
- - linePathsSplit (for layeredPaths)
- - booleanAdd
- - booleanAddComparison
- - booleanSubtract
- - booleanSubtractComparison
- - booleanIntersection
- - booleanIntersectionComparison
- - shapeIntersections
+Remove portions of paths that are inside of another shape.
+This may also be considered a Boolean Exclusive Or (XOR)
+
+### fill
+
+Fill a convex shape (polygon) with straight lines
+
+### layeredPaths
+
+Layer paths according to their stacking order
+The lowest index (0) of "paths" will be on the bottom
+of the stack. Subsequent paths (1, 2, 3...) will
+knock out (subtract) any portions of previous paths
+that they cover.
+
+**Important:** *Shapes that are knocked-out do not include
+the portion of the other shape that covers them. In
+other words, the cover section is removed from the original
+path and leaves a blank space, rather than incorporating
+the portion of the other shape*
+
+### subtractPaths
+
+Subtract paths from one another. The lowest index
+The lowest index (0) of "paths" will be on the bottom
+of the stack. Subsequent paths (1, 2, 3...) will
+knock out (subtract) any portions of previous paths
+that they cover.
+
+**Important:** *This is very similar to layeredPaths, except
+that this method incorporates the path of the shape that
+is being subtracted from the original path (as opposed to
+removing it as in layeredPaths).*
+
+### linePathSplit (PRIVATE)
+
+Take a line segment and a path of a closed shape and return
+the portion of that line that is not intersected by the shape
+
+### linePathsSplit (PRIVATE)
+
+Take a line segment and multiple paths representing a closed
+convex polygon and return the portion of that line that is
+not intersected by any of the shapes (paths)
+
+### booleanAdd
+
+Perform a Boolean addition (union) of two closed paths
+
+### booleanAddComparison (PRIVATE)
+
+Remove segments of Shape A that are inside of Shape B.
+This is a helper method for `booleanAdd`.
+
+### booleanSubtract
+
+Perform a Boolean subtraction (difference) of two closed paths
+
+### booleanSubtractComparison (PRIVATE)
+
+Remove segments of Shape B that are outside of Shape A.
+This is a helper method for `booleanSubtract`.
+
+### booleanIntersection
+
+Perform a Boolean intersection of two closed paths
+
+### booleanIntersectionComparison (PRIVATE)
+
+Remove segments of Shape B that are outside of Shape A.
+This is a helper method for `booleanIntersection`.
+
+### shapeIntersections
+
+Calculate the intersection points of Shape A with Shape B,
+and insert these intersection points in Shape A (in order).
+
+This is a helper method for the Boolean shape operations.
 
 To Do:
 ------
