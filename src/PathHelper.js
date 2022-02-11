@@ -1990,6 +1990,68 @@ class PathHelper {
   }
 
   /**
+   * PolyPoint from http://www.jeffreythompson.org/collision-detection/poly-point.php
+   * Threshold has been added so that points very close to the border of the
+   * polygon can be selecteive counted as in or out
+   * @param {array} vertices - Vertices of Polygon
+   * @param {number} px - X Position of Point
+   * @param {number} py - Y Position of Point
+   * @param {number} [threshold=-0.00001] - The Threshold at which to consider a point near the border as either
+   * inside or outside.
+   * @returns {boolean} - True if the point is inside the Polygon, false otherwise
+   **/
+  pointInPolygon(vertices, px, py, threshold = -0.00001) {
+
+    let collision = false;
+
+    // go through each of the vertices, plus
+    // the next vertex in the list
+    let next = 0;
+    for (let current=0; current<vertices.length; current++) {
+
+      // get next vertex in list
+      // if we've hit the end, wrap around to 0
+      next = current+1;
+      if (next == vertices.length) {
+        next = 0;
+      }
+
+      // get the PVectors at our current position
+      // this makes our if statement a little cleaner
+      let vc = vertices[current];
+      let vn = vertices[next];
+
+      // compare position, flip 'collision' variable back and forth
+      let within_vertical_band = (vc.y >= py && vn.y < py) || (vc.y < py && vn.y >= py);
+      let jordan_curve_theorem = (vn.x-vc.x) * (py-vc.y) / (vn.y-vc.y) + vc.x;
+      if (within_vertical_band && px < jordan_curve_theorem) {
+        collision = !collision;
+      }
+
+      // If the point is within the threshold of a border, then
+      // return right away. If the threshold is positive, then be
+      // more permissive for counting the point as inside the polyon.
+      // If the threshold is negative, then be less permissive with
+      // including the point in the polygon
+      let on_line = this.pointOnLineSegment(
+        [px, py],
+        [[vc.x, vc.y], [vn.x, vn.y]],
+        Math.abs(threshold)
+      );
+      if (on_line) {
+        if (threshold > 0) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+
+    }
+
+    return collision;
+  }
+
+  /**
    * Calculate the intersection points (0, 1 or 2) between a line and a circle
    * @param {array} p1 - A Point array defining the start of a line segment
    * @param {array} p2 - A Point array defining the end of a line segment
@@ -2558,69 +2620,6 @@ class PathHelper {
     }
 
     return new_paths;
-  }
-
-  /**
-   * PolyPoint from http://www.jeffreythompson.org/collision-detection/poly-point.php
-   * Threshold has been added so that points very close to the border of the
-   * polygon can be selecteive counted as in or out
-   * @param Array Vertices of Polygon
-   * @param number X Position of Point
-   * @param number Y Position of Point
-   * @param number The Threshold at which to consider a point near the border as either
-   * inside or outside.
-   *
-   * @returns Boolean True if the point is inside the Polygon, false otherwise
-   **/
-  pointInPolygon(vertices, px, py, threshold = -0.00001) {
-
-    let collision = false;
-
-    // go through each of the vertices, plus
-    // the next vertex in the list
-    let next = 0;
-    for (let current=0; current<vertices.length; current++) {
-
-      // get next vertex in list
-      // if we've hit the end, wrap around to 0
-      next = current+1;
-      if (next == vertices.length) {
-        next = 0;
-      }
-
-      // get the PVectors at our current position
-      // this makes our if statement a little cleaner
-      let vc = vertices[current];
-      let vn = vertices[next];
-
-      // compare position, flip 'collision' variable back and forth
-      let within_vertical_band = (vc.y >= py && vn.y < py) || (vc.y < py && vn.y >= py);
-      let jordan_curve_theorem = (vn.x-vc.x) * (py-vc.y) / (vn.y-vc.y) + vc.x;
-      if (within_vertical_band && px < jordan_curve_theorem) {
-        collision = !collision;
-      }
-
-      // If the point is within the threshold of a border, then
-      // return right away. If the threshold is positive, then be
-      // more permissive for counting the point as inside the polyon.
-      // If the threshold is negative, then be less permissive with
-      // including the point in the polygon
-      let on_line = this.pointOnLineSegment(
-        [px, py],
-        [[vc.x, vc.y], [vn.x, vn.y]],
-        Math.abs(threshold)
-      );
-      if (on_line) {
-        if (threshold > 0) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-
-    }
-
-    return collision;
   }
 
   /**

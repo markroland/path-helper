@@ -1060,6 +1060,12 @@ PH.pointOnLineSegment(
 // Output is true
 ```
 
+### pointInPolygon
+
+Determine if a point is inside of a polygon. This is taken from
+Jeffrey Thompson's excellent eBook on
+[Collission Detection](http://www.jeffreythompson.org/collision-detection/line-circle.php).
+
 ### lineCircleIntersect
 
 Calculate the intersection points between a line and a circle. The
@@ -1107,7 +1113,6 @@ and will be removed in the future.
 ### Other:
 
  - knockout
- - pointInPolygon
  - fill
  - layeredPaths
  - subtractPaths
