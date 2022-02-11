@@ -1033,9 +1033,26 @@ PH.pointOnLineSegment(
 // Output is true
 ```
 
+### lineCircleIntersect
+
+Calculate the intersection points between a line and a circle. The
+response is an array with 0, 1 or 2 Point array elements representing the
+locations of intersections.
+
+```js
+PH.lineCircleIntersect([-1, -1], [1, 1], [[0,0], 1]);
+```
+
+**Expected Output:**
+```js
+[
+    [0.7071, 0.7071],
+    [-0.7071, -0.7071]
+]
+```
+
 ### Other:
 
- - lineCircleIntersect
  - solveQuadratic
  - circleInterceptPoints
  - cropToCircle (Deprecated: Try cropToShape instead)
@@ -1064,6 +1081,7 @@ To Do:
  - Add optional rotation center point parameter to rotatePath
  - Generalize joinPaths to not include dimensions
  - Evaluate need for both cleanPath and simplify
+ - Update lineCircleIntersect to work for a circle at any location
 
 
 License

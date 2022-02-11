@@ -1902,6 +1902,13 @@ class PathHelper {
 
   /**
    * Calculate the intersection points (0, 1 or 2) between a line and a circle
+   * @param {array} p1 - A Point array defining the start of a line segment
+   * @param {array} p2 - A Point array defining the end of a line segment
+   * @param {array} circle - An array defining a circle. The first parameter should
+   * be the circle's position, represented as a Point array, and the secord
+   * parameter should be the circle's radius.
+   * @returns {array} An array with 0, 1 or 2 Point array elements representing the
+   * locations of intersections.
    */
   lineCircleIntersect(p1, p2, circle) {
 
