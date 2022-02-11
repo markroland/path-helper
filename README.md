@@ -494,6 +494,26 @@ PH.getLineLineCollision(
 {x:  0, y: 1}
 ```
 
+### lineSlopeIntercept
+
+Calculate the slope and y-intercept of the line passing between two points.
+In the return object, `m` represents slope and `b` represents the y-intercept.
+
+```js
+PH.lineSlopeIntercept([1, 2], [2, 3]);
+// Output is {m: 1, b: 1}
+```
+
+### solveQuadratic
+
+Solve the Quadratic Equation. For real values only.
+Standard Quadratic Equation: ax^2 + bx + c = 0
+
+```js
+PH.solveQuadratic(2, 4, -4);
+// Output is [0.7321, -2.7321]
+```
+
 ### distance
 
 Calculate the distance between two points in 2D or 3D space
@@ -644,16 +664,6 @@ connect them using a circular arc.
 ### arc
 
 Compose a circular arc centered around a known point with a known radius
-
-### lineSlopeIntercept
-
-Calculate the slope and y-intercept of the line passing between two points.
-In the return object, `m` represents slope and `b` represents the y-intercept.
-
-```js
-PH.lineSlopeIntercept([1, 2], [2, 3]);
-// Output is {m: 1, b: 1}
-```
 
 ### centerPaths
 
@@ -1053,7 +1063,6 @@ PH.lineCircleIntersect([-1, -1], [1, 1], [[0,0], 1]);
 
 ### Other:
 
- - solveQuadratic
  - circleInterceptPoints
  - cropToCircle (Deprecated: Try cropToShape instead)
  - cropToRectangle (Deprecated: Try cropToShape instead)

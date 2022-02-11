@@ -466,6 +466,50 @@ class PathHelper {
   }
 
   /**
+   * Returns objet representing Line equation.
+   * @param {array} p1 - A Point array
+   * @param {array} p2 - A Point array
+   * @returns {object} Returns an object with parameter "m" representing
+   * the slope and a parameter "b" representing the Y intercept.
+   **/
+  lineSlopeIntercept(p1, p2) {
+    let m = (p2[1] - p1[1]) / (p2[0] - p1[0]);
+    let b = p1[1] - m * p1[0];
+    return {"m": m, "b": b};
+  }
+
+  /**
+   * Solve the Quadratic Equation. For real values only
+   *
+   * Standard Quadratic Equation: ax^2 + bx + c = 0
+   *
+   * @param {number} a - Parameter `a` of the standard quadratic equation
+   * @param {number} b - Parameter `b` of the standard quadratic equation
+   * @param {number} c - Parameter `c` of the standard quadratic equation
+   * @returns {array} A 2-element array containing real solutions of x or
+   * and empty array for non-real solutions of x
+   */
+  solveQuadratic(a, b, c) {
+
+    let discriminant = Math.pow(b, 2) - 4 * a * c;
+
+    // One real and equal answer
+    if (discriminant === 0) {
+      let x = -b / (2 * a);
+      return [x];
+    }
+
+    // Two real and different answers
+    if (discriminant > 0) {
+      let x1 = (-b + Math.sqrt(discriminant)) / (2 * a);
+      let x2 = (-b - Math.sqrt(discriminant)) / (2 * a);
+      return [x1, x2];
+    }
+
+    return [];
+  }
+
+  /**
    * Calculate the distance between two points in 2D or 3D space
    * @param {array} p1 - A Point array containing two values for x and y. End Point of Line A
    * @param {array} p2 - A Point array containing two values for x and y. Start Point of Line B
@@ -995,19 +1039,6 @@ class PathHelper {
       ]);
     }
     return path;
-  }
-
-  /**
-   * Returns objet representing Line equation.
-   * @param {array} p1 - A Point array
-   * @param {array} p2 - A Point array
-   * @returns {object} Returns an object with parameter "m" representing
-   * the slope and a parameter "b" representing the Y intercept.
-   **/
-  lineSlopeIntercept(p1, p2) {
-    let m = (p2[1] - p1[1]) / (p2[0] - p1[0]);
-    let b = p1[1] - m * p1[0];
-    return {"m": m, "b": b};
   }
 
   /**
@@ -1944,29 +1975,6 @@ class PathHelper {
     }
 
     return intersections;
-  }
-
-  /**
-   * Solve the Quadratic Equation. For real values only
-   */
-  solveQuadratic(a, b, c) {
-
-    let discriminant = Math.pow(b, 2) - 4 * a * c;
-
-    // One real and equal answer
-    if (discriminant === 0) {
-      let x = -b / (2 * a);
-      return [x];
-    }
-
-    // Two real and different answers
-    if (discriminant > 0) {
-      let x1 = (-b + Math.sqrt(discriminant)) / (2 * a);
-      let x2 = (-b - Math.sqrt(discriminant)) / (2 * a);
-      return [x1, x2];
-    }
-
-    return [];
   }
 
   /**
