@@ -14,6 +14,15 @@ Generate documentation:
 jsdoc src -d docs
 ```
 
+Testing
+-------
+
+Unit Testing is being developed with [Jest](https://jestjs.io). Run with:
+
+```sh
+npm run test
+```
+
 Common Data Types
 -----------------
 

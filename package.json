@@ -4,7 +4,7 @@
   "description": "Utility functions for working with points, paths and geometry.",
   "main": "src/PathHelper.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/markroland/path-helper#readme",
   "devDependencies": {
+    "jest": "^27.5.1",
     "jsdoc": "^3.6.10"
   }
 }
