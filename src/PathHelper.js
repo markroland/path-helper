@@ -3214,12 +3214,12 @@ class PathHelper {
         }
       }
 
+      if (join) {
+        final_paths = this.joinPaths(final_paths)
+      }
+
       // Add the paths of the shape onto the final output paths
       final_paths = final_paths.concat(paths_of_i)
-    }
-
-    if (join) {
-      final_paths = this.joinPaths(final_paths)
     }
 
     return final_paths;
