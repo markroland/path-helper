@@ -966,7 +966,7 @@ class PathHelper {
     // that are outside of the other shape
     let newShape = [];
     newShape = newShape.concat(this.booleanIntersectionComparison(newA, shapeB));
-    newShape = newShape.concat(this.booleanIntersectionComparison(newB, shapeA, true));
+    newShape = newShape.concat(this.booleanIntersectionComparison(newB, shapeA));
 
     // Join all of the path segments into a continuous path
     newShape = this.joinPaths(newShape);
@@ -1013,6 +1013,7 @@ class PathHelper {
       } else {
         path.push(shapeA[i]);
       }
+
       // Add last point if end of loop... I'm not convinced this is correct
       if (i == i_max - 1) {
         path.push(shapeA[i+1]);
