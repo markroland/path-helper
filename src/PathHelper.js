@@ -1051,12 +1051,25 @@ class PathHelper {
       // with all segments of Shape B
       let segment_intersections = [];
       for (let j = 0; j < shapeB.length-1; j++) {
+
+        // Test for point on line first
+        let on_line = this.pointOnLineSegment(
+          shapeB[j],
+          [shapeA[i], shapeA[i+1]],
+          0.00001
+        );
+        if (on_line) {
+          segment_intersections.push(shapeB[j]);
+          continue;
+        }
+
         let intersect = this.getLineLineCollision(
           {x: shapeA[i][0], y: shapeA[i][1]},
           {x: shapeA[i+1][0], y: shapeA[i+1][1]},
           {x: shapeB[j][0], y: shapeB[j][1]},
           {x: shapeB[j+1][0], y: shapeB[j+1][1]}
         );
+
         if (intersect) {
           segment_intersections.push([
             intersect.x,
