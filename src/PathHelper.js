@@ -341,13 +341,14 @@ class PathHelper {
    * @returns {number} - The distance between the two points
    */
   distance(p1, p2) {
-    if (p1.length == 2) {
-      p1.push(0);
+
+    // 3D Distance calculation
+    if (p1.length == 3 && p2.length == 3) {
+      return Math.sqrt(Math.pow(p2[0] - p1[0], 2) + Math.pow(p2[1] - p1[1], 2) + Math.pow(p2[2] - p1[2], 2));
     }
-    if (p2.length == 2) {
-      p2.push(0);
-    }
-    return Math.sqrt(Math.pow(p2[0] - p1[0], 2) + Math.pow(p2[1] - p1[1], 2) + Math.pow(p2[2] - p1[2], 2));
+
+    // 2D Distance calculation
+    return Math.sqrt(Math.pow(p2[0] - p1[0], 2) + Math.pow(p2[1] - p1[1], 2));
   }
 
   /*************************************/
