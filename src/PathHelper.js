@@ -3216,7 +3216,7 @@ class PathHelper {
       }
 
       if (join) {
-        final_paths = this.joinPaths(final_paths)
+        paths_of_i = this.joinPaths(paths_of_i)
       }
 
       // Add the paths of the shape onto the final output paths
