@@ -2269,9 +2269,10 @@ class PathHelper {
     cleanedPath.push(path[0]);
 
     // Subsequent positions must greater than the minimum distance to be added
+    let self = this;
     path.forEach(function(point, index) {
       var last_point = cleanedPath[cleanedPath.length - 1];
-      var step_distance = this.distance(point, last_point);
+      var step_distance = self.distance(point, last_point);
       if (step_distance > threshold) {
         cleanedPath.push(point);
       }
