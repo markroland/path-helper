@@ -41,6 +41,21 @@ class PathHelper {
   }
 
   /**
+   * Simplify the precision of floating point numbers in a Paths array
+   * @param {array} paths - An array of Path arrays
+   * @returns {array} - An array of Path arrays
+   **/
+  pathsToFixed(paths, precision = 2) {
+    return paths.map(function(path){
+      return path.map(function(point) {
+        return point.map(function(number) {
+          return parseFloat(number.toFixed(precision));
+        });
+      });
+    });
+  }
+
+  /**
    * Get the values from a single column in the input array
    * @param {array} arr - The input array
    * @param {number} n - The array offset to isolate
