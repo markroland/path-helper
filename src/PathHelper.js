@@ -3162,10 +3162,15 @@ class PathHelper {
    * @param {boolean} [continuous=false] - Set to true if the Paths are
    * quadrilaterals where each shares 1 side in succession. This
    * can be used to achieve an outlined path effect with overlaps
+   * @param {boolean} [use_bbox=false] - Use a path's bounding box to test
+   * intersection prior to testing every segment
    *
    * @returns {array} - An array of Path arrays
    **/
-  layeredPaths(paths, join = false, offset = 0, continuous = false) {
+  layeredPaths(paths, join = false, offset = 0, continuous = false, use_bbox = false) {
+
+    // Start performance timer
+    const t0 = performance.now();
 
     // Final paths for plotting
     let final_paths = [];
@@ -3200,6 +3205,59 @@ class PathHelper {
         let offset_paths = [];
         for (let c = 0; c < comparison_shapes.length; c++) {
           comparison_shapes[c] = this.offsetPath(comparison_shapes[c], offset);
+        }
+      }
+
+      // Use path bounding boxes to rule out non-intersecting shapes
+      let bbox_ignore_count = 0;
+      if (use_bbox) {
+
+        // Get bounding box of path under investigation
+        const path_i_bbox = this.boundingBox(paths[i]);
+
+        // Create a path from the bounding box
+        let path_i_bbox_path = [
+          [path_i_bbox[0][0], path_i_bbox[1][0]],
+          [path_i_bbox[0][1], path_i_bbox[1][0]],
+          [path_i_bbox[0][1], path_i_bbox[1][1]],
+          [path_i_bbox[0][0], path_i_bbox[1][1]]
+        ];
+        path_i_bbox_path.push(path_i_bbox_path[0]);
+
+        // Loop through paths to be compared
+        let filtered_shapes = [];
+        for (const comparison_shape of comparison_shapes) {
+
+          const comparison_shape_bbox = this.boundingBox(comparison_shape);
+
+          // Create a path from the bounding box
+          const comparison_shape_bbox_path = [
+            [comparison_shape_bbox[0][0], comparison_shape_bbox[1][0]],
+            [comparison_shape_bbox[0][1], comparison_shape_bbox[1][0]],
+            [comparison_shape_bbox[0][1], comparison_shape_bbox[1][1]],
+            [comparison_shape_bbox[0][0], comparison_shape_bbox[1][1]]
+          ];
+          comparison_shape_bbox_path.push(comparison_shape_bbox_path[0]);
+
+          // Test if the bounding box paths intersect
+          const bbox_intersections = this.shapeIntersections(path_i_bbox_path, comparison_shape_bbox_path);
+
+          // Use the comparison_shape if intersections have been detected
+          if (bbox_intersections.length != path_i_bbox_path.length) {
+            filtered_shapes.push(comparison_shape);
+          } else {
+            bbox_ignore_count++;
+          }
+        }
+
+        // Replace the comparison_shapes from before the filtering with those identified during filtering
+        comparison_shapes = filtered_shapes;
+
+        // If there are no shapes to compare, then add the shape under analysis can be added
+        // to the final output paths with no further analysis needed
+        if (comparison_shapes.length == 0) {
+          final_paths.push(paths[i]);
+          continue;
         }
       }
 
@@ -3238,6 +3296,10 @@ class PathHelper {
       // Add the paths of the shape onto the final output paths
       final_paths = final_paths.concat(paths_of_i)
     }
+
+    // Stop performance timer and display results
+    const t1 = performance.now();
+    console.log('layeredPaths took ' + (t1 - t0).toFixed(1) +  ' milliseconds');
 
     return final_paths;
   }
