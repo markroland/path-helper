@@ -1782,25 +1782,74 @@ class PathHelper {
    * @returns {array} A Path array
    **/
   smoothPath(path, size = 3) {
-    let newData = [];
-    newData.push(path[0]);
+
+    // Return the original path if the Path is shorter than the smoothing size
     if (path.length < size) {
       return path;
     }
-    let range = (size - 1)/2;
+
+    // Identify closed paths where the first and last points
+    // are coincident
+    let closed_path = false;
+    if (this.pointEquals(path[0], path[path.length-1])) {
+      closed_path = true;
+    }
+
+    // Init new path
+    let new_path = [];
+
+    // Build convolution kernel for smoothing
     let v = 1 / size;
     const kernel = new Array(size).fill(v);
-    for (let p = range; p < path.length-range; p++) {
-      let sum = [0,0];
-      for (let k = -range; k <= range; k++) {
-        // Sum X and Y components
-        sum[0] += path[p+k][0] * kernel[k+range];
-        sum[1] += path[p+k][1] * kernel[k+range];
-      }
-      newData.push(sum);
+
+    // Set the window index range
+    let range = (size - 1)/2;
+
+    let i_min = 0;
+    let i_max = path.length - 1;
+
+    // First point won't have a bend
+    if (!closed_path) {
+      i_min += range;
+      i_max = path.length - range;
+
+      new_path.push(path[0]);
     }
-    newData.push(path[path.length-1]);
-    return newData;
+
+    // Loop through path
+    for (let i = i_min; i < i_max; i++) {
+
+      // Initialize the X/Y component summations
+      let sum = [0,0];
+
+      // Loop through smoothing window
+      for (let k = -range; k <= range; k++) {
+
+        let index = i + k;
+        if (closed_path) {
+          index = ((path.length - 1) + (i + k)) % (path.length - 1);
+        } else {
+          if (index < 0 || index > path.length - 1) {
+            continue;
+          }
+        }
+
+        // Sum X and Y components
+        sum[0] += path[index][0] * kernel[k+range];
+        sum[1] += path[index][1] * kernel[k+range];
+      }
+
+      new_path.push(sum);
+    }
+
+    // Last point won't have a bend
+    if (!closed_path) {
+      new_path.push(path[path.length - 1]);
+    } else {
+      new_path.push(new_path[0]);
+    }
+
+    return new_path;
   }
 
   /**
