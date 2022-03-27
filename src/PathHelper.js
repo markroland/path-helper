@@ -544,11 +544,11 @@ class PathHelper {
   centerPaths(paths) {
 
     let x;
-    let x_min = 0;
-    let x_max = 0;
+    let x_min;
+    let x_max;
     let y;
-    let y_min = 0;
-    let y_max = 0;
+    let y_min;
+    let y_max;
 
     // Get the most extreme points (bounds) from all paths
     for (let i = 0; i < paths.length; i++) {
@@ -557,12 +557,12 @@ class PathHelper {
       let x_coordinates = this.arrayColumn(paths[i], 0);
 
       x = Math.min(...x_coordinates);
-      if (x < x_min) {
+      if (typeof x_min == "undefined" || x < x_min) {
         x_min = x;
       }
 
       x = Math.max(...x_coordinates);
-      if (x > x_max) {
+      if (typeof x_max == "undefined" || x > x_max) {
         x_max = x;
       }
 
@@ -570,12 +570,12 @@ class PathHelper {
       let y_coordinates = this.arrayColumn(paths[i], 1);
 
       y = Math.min(...y_coordinates);
-      if (y < y_min) {
+      if (typeof y_min == "undefined" || y < y_min) {
         y_min = y;
       }
 
       y = Math.max(...y_coordinates);
-      if (y > y_max) {
+      if (typeof y_max == "undefined" || y > y_max) {
         y_max = y;
       }
     }
