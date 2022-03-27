@@ -1782,25 +1782,74 @@ class PathHelper {
    * @returns {array} A Path array
    **/
   smoothPath(path, size = 3) {
-    let newData = [];
-    newData.push(path[0]);
+
+    // Return the original path if the Path is shorter than the smoothing size
     if (path.length < size) {
       return path;
     }
-    let range = (size - 1)/2;
+
+    // Identify closed paths where the first and last points
+    // are coincident
+    let closed_path = false;
+    if (this.pointEquals(path[0], path[path.length-1])) {
+      closed_path = true;
+    }
+
+    // Init new path
+    let new_path = [];
+
+    // Build convolution kernel for smoothing
     let v = 1 / size;
     const kernel = new Array(size).fill(v);
-    for (let p = range; p < path.length-range; p++) {
-      let sum = [0,0];
-      for (let k = -range; k <= range; k++) {
-        // Sum X and Y components
-        sum[0] += path[p+k][0] * kernel[k+range];
-        sum[1] += path[p+k][1] * kernel[k+range];
-      }
-      newData.push(sum);
+
+    // Set the window index range
+    let range = (size - 1)/2;
+
+    let i_min = 0;
+    let i_max = path.length - 1;
+
+    // First point won't have a bend
+    if (!closed_path) {
+      i_min += range;
+      i_max = path.length - range;
+
+      new_path.push(path[0]);
     }
-    newData.push(path[path.length-1]);
-    return newData;
+
+    // Loop through path
+    for (let i = i_min; i < i_max; i++) {
+
+      // Initialize the X/Y component summations
+      let sum = [0,0];
+
+      // Loop through smoothing window
+      for (let k = -range; k <= range; k++) {
+
+        let index = i + k;
+        if (closed_path) {
+          index = ((path.length - 1) + (i + k)) % (path.length - 1);
+        } else {
+          if (index < 0 || index > path.length - 1) {
+            continue;
+          }
+        }
+
+        // Sum X and Y components
+        sum[0] += path[index][0] * kernel[k+range];
+        sum[1] += path[index][1] * kernel[k+range];
+      }
+
+      new_path.push(sum);
+    }
+
+    // Last point won't have a bend
+    if (!closed_path) {
+      new_path.push(path[path.length - 1]);
+    } else {
+      new_path.push(new_path[0]);
+    }
+
+    return new_path;
   }
 
   /**
@@ -1822,22 +1871,45 @@ class PathHelper {
       sharpness = 0;
     }
 
+    // Identify closed paths where the first and last points
+    // are coincident
+    let closed_path = false;
+    if (this.pointEquals(path[0], path[path.length-1])) {
+      closed_path = true;
+    }
+
     // Map Sharpness to bend
     // Bend should range from >= 0.5 to < 1 so that
     // the path can be C2 continuous
     // Where 0.5 is the broadest bend and 1 is no bend
     let bend = this.map(sharpness, 0, 1, 0.5, 1);
 
-    // Loop through all points
-    // First point won't have a bend
+    // Init new path
     let new_path = [];
-    new_path.push(path[0]);
-    for (let i = 1; i < path.length - 1; i++) {
+
+    let i_min = 0;
+
+    // First point won't have a bend
+    if (!closed_path) {
+      new_path.push(path[0]);
+      i_min += 1;
+    }
+
+    for (let i = i_min; i < path.length - 1; i++) {
+
+      let p1_index = i - 1;
+      let p2_index = i;
+      let p3_index = i + 1;
+      if (closed_path) {
+        p1_index = ((path.length - 1) + (i - 1)) % (path.length - 1);
+        p2_index = i;
+        p3_index = ((path.length - 1) + (i + 1)) % (path.length - 1);
+      }
 
       // Create variables that are easier to read
-      let op_p1 = path[i-1];
-      let op_p2 = path[i];
-      let op_p3 = path[i+1];
+      let op_p1 = path[p1_index];
+      let op_p2 = path[p2_index];
+      let op_p3 = path[p3_index];
 
       // Calculate points at which the bezier should start/end
       let p1_bend = [
@@ -1869,7 +1941,11 @@ class PathHelper {
     }
 
     // Last point won't have a bend
-    new_path.push(path[path.length - 1]);
+    if (!closed_path) {
+      new_path.push(path[path.length - 1]);
+    } else {
+      new_path.push(new_path[0]);
+    }
 
     return new_path;
   }
@@ -1883,16 +1959,39 @@ class PathHelper {
    */
   radiusCorners(path, radius, bezier_segments = 20) {
 
-    // Loop through all points
-    // First point won't have a bend
+    // Identify closed paths where the first and last points
+    // are coincident
+    let closed_path = false;
+    if (this.pointEquals(path[0], path[path.length-1])) {
+      closed_path = true;
+    }
+
+    // Init new path
     let new_path = [];
-    new_path.push(path[0]);
-    for (let i = 1; i < path.length - 1; i++) {
+
+    let i_min = 0;
+
+    // First point won't have a bend
+    if (!closed_path) {
+      new_path.push(path[0]);
+      i_min += 1;
+    }
+
+    for (let i = i_min; i < path.length - 1; i++) {
+
+      let p1_index = i - 1;
+      let p2_index = i;
+      let p3_index = i + 1;
+      if (closed_path) {
+        p1_index = ((path.length - 1) + (i - 1)) % (path.length - 1);
+        p2_index = i;
+        p3_index = ((path.length - 1) + (i + 1)) % (path.length - 1);
+      }
 
       // Create variables that are easier to read
-      let p1 = path[i-1];
-      let p2 = path[i];
-      let p3 = path[i+1];
+      let p1 = path[p1_index];
+      let p2 = path[p2_index];
+      let p3 = path[p3_index];
 
       // Calculate points at which the bezier should start/end
       let distance_p1_p2 = this.distance(p1, p2);
@@ -1920,7 +2019,11 @@ class PathHelper {
     }
 
     // Last point won't have a bend
-    new_path.push(path[path.length - 1]);
+    if (!closed_path) {
+      new_path.push(path[path.length - 1]);
+    } else {
+      new_path.push(new_path[0]);
+    }
 
     return new_path;
   }
