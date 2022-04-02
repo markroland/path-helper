@@ -2148,7 +2148,7 @@ class PathHelper {
       }
       new_path.push(path[j])
     }
-    if (new_path.length > 1) {
+    if (new_path.length >= 1) {
       new_paths.push(new_path);
     }
     return new_paths;
@@ -2168,7 +2168,7 @@ class PathHelper {
     let new_paths = [];
     for (let i = 0; i < paths.length; i++) {
       let temp_paths = this.decimatePath(paths[i], odds);
-      if (temp_paths.length > 1) {
+      if (temp_paths.length >= 1) {
         new_paths = new_paths.concat(temp_paths);
       }
     }
