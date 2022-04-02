@@ -1163,6 +1163,13 @@ in a pattern that could negatively impact the desired image. This uses the
 [Fisher-Yates algorithm](https://dev.to/codebubb/how-to-shuffle-an-array-in-javascript-2ikj)
 for shuffling.
 
+### removeShortPaths
+
+Remove any path from a Paths array if the distance (total length) of the path
+is below a certain distance. This can be useful if an algorithm produces many
+short segments that may not be necessary. It can be used to increase plotter
+efficiency and reduce stress on the servo motor.
+
 ### simplify
 
 Simplify a path by removing points that do not significantly alter

@@ -2436,6 +2436,23 @@ class PathHelper {
   }
 
   /**
+   * Remove any path shorter than the threshold length
+   * @param {array} paths - An array of Paths.
+   * @param {number} [threshold=0.01] - The distance below which
+   * a path should be removed from the input paths.
+   * @returns {array} - An array of Path arrays
+   **/
+  removeShortPaths(paths, threshold = 0.01) {
+    let self = this;
+    return paths.filter(function(path) {
+      if (self.pathLength(path) >= threshold) {
+        return true;
+      }
+      return false;
+    });
+  }
+
+  /**
    * Simplify a path by removing points that do not significantly alter
    * the path's shape
    * @param {array} path - A Path array
