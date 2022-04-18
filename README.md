@@ -209,7 +209,9 @@ PH.arrayMax([10, 2, 4.5, 7, 2.3, -1.2, -2.7]);
 
 ### getRndInteger
 
-Get a random Integer (whole number) between two values (inclusive)
+Get a random Integer (whole number) between two values (inclusive).
+This can take an optional Psudeo-Random Number Generator (PRNG) function as a final parameter,
+which can help with the creation of deterministic results.
 
 ```js
 PH.getRndInteger(1, 10);
@@ -218,7 +220,9 @@ PH.getRndInteger(1, 10);
 
 ### getRandom
 
-Get a random Number between two values (inclusive)
+Get a random Number between two values (inclusive).
+This can take an optional Psudeo-Random Number Generator (PRNG) function as a final parameter,
+which can help with the creation of deterministic results.
 
 ```js
 PH.getRandom(1, 3);
@@ -227,7 +231,9 @@ PH.getRandom(1, 3);
 
 ### getGaussianRandom
 
-Get a random number between 0 and 1 within a Gaussian Distribution probability
+Get a random number between 0 and 1 within a Gaussian Distribution probability.
+This can take an optional Psudeo-Random Number Generator (PRNG) function as a final parameter,
+which can help with the creation of deterministic results.
 
 ```js
 PH.getGaussianRandom();

@@ -154,20 +154,30 @@ class PathHelper {
    * Reference: https://www.w3schools.com/js/js_random.asp
    * @param {number} min - The lower bound of acceptable values
    * @param {number} max - The upper bound of acceptable values
+   * @param {function} prng - An optional Psuedo-random number generator function
    * @return {number} - A randomly selected number
    */
-  getRndInteger(min, max) {
-    return Math.floor(Math.random() * (max - min + 1) + min);
+  getRndInteger(min, max, prng = null) {
+    if (typeof prng == 'function') {
+      return Math.floor(prng() * (max - min + 1) + min);
+    } else {
+      return Math.floor(Math.random() * (max - min + 1) + min);
+    }
   }
 
   /**
    * Get a Random Number between two values (inclusive)
    * @param {number} min - The lower bound of acceptable values
    * @param {number} max - The upper bound of acceptable values
+   * @param {function} prng - An optional Psuedo-random number generator function
    * @return {number} - A randomly selected number
    */
-  getRandom(min, max) {
-    return Math.random() * (max - min) + min;
+  getRandom(min, max, prng = null) {
+    if (typeof prng == 'function') {
+      return prng() * (max - min) + min;
+    } else {
+      return Math.random() * (max - min) + min;
+    }
   }
 
   /**
@@ -176,11 +186,25 @@ class PathHelper {
    * Currently unverified
    * @param {number} [u=0] - Should be left at zero
    * @param {number} [v=0] - Should be left at zero
+   * @param {function} prng - An optional Psuedo-random number generator function
    * @return {number} - A randomly selected number
    */
-  getGaussianRandom(u = 0, v = 0) {
-    while(u === 0) u = Math.random(); // Converting [0,1) to (0,1)
-    while(v === 0) v = Math.random();
+  getGaussianRandom(u = 0, v = 0, prng = null) {
+    // Converting [0,1) to (0,1)
+    while(u === 0) {
+      if (typeof prng == 'function') {
+        u = prng();
+      } else {
+        u = Math.random();
+      }
+    }
+    while(v === 0) {
+      if (typeof prng == 'function') {
+        v = prng();
+      } else {
+        v = Math.random();
+      }
+    }
     let num = Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
     num = num / 10.0 + 0.5; // Translate to 0 -> 1
     if (num > 1 || num < 0) {
