@@ -107,6 +107,7 @@ let i = PH.info(path);
 {
     "min": [-1, -1],
     "max": [1, 1],
+    "points": 4,
     "range": [2, 2],
     "center": [0, 0]
 }

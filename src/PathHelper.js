@@ -18,7 +18,8 @@ class PathHelper {
   info(path) {
     let results = {
       "min": this.getMin(path),
-      "max": this.getMax(path)
+      "max": this.getMax(path),
+      "points": path.length
     };
     results.range = [
       results.max[0] - results.min[0],
