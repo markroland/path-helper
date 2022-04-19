@@ -1743,6 +1743,65 @@ class PathHelper {
   }
 
   /**
+   * Expand a Path
+   * @param {array} path - A Path array
+   * @param {function} fn - A function used to modify the input path
+   * @returns {array} - A Path array
+   **/
+  superimposeFunction(base_path, fn) {
+
+    if (typeof fn != "function") {
+      throw 'fn parameter must be a function';
+    }
+
+    let path = [];
+
+    // Calculate total distance of base path
+    let total_distance = 0.0;
+    for (let i = 0; i < base_path.length-1; i++) {
+      let segment = [base_path[i], base_path[i+1]];
+      let distance = this.distance(segment[0], segment[1]);
+      total_distance += distance;
+    }
+
+    // Loop through base path
+    let position = 0.0;
+    const i_max = base_path.length-1;
+    for (let i = 0; i <= i_max; i++) {
+
+      // Define the current and next point
+      let p1, p2;
+      if (i == i_max) {
+        p1 = base_path[i];
+        p2 = base_path[i-1];
+      } else {
+        p1 = base_path[i];
+        p2 = base_path[i+1];
+      }
+
+      // Calculate the distance between the 2 points
+      if (i > 0) {
+        position += this.distance(p1, p2);
+      }
+
+      // Call modification function
+      let y = fn(position / total_distance);
+
+      // Calculate perpendicular offset from line
+      let delta_y = p2[1] - p1[1];
+      let delta_x = p2[0] - p1[0];
+      let theta = Math.atan2(delta_y, delta_x);
+
+      path.push([
+        p1[0] + y * Math.cos(theta + Math.PI/2),
+        p1[1] + y * Math.sin(theta + Math.PI/2)
+      ]);
+    }
+
+    return path;
+  }
+
+  /**
    * Add noise to a path
    * @param {array} path - The source path
    * @param {number} max_segment_length - The maximum distance allowed between points. If a segment

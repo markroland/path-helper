@@ -957,6 +957,11 @@ PH.extendLine([0, 0], [1, 1], 0.2, 0.2);
 ]
 ```
 
+### superimposeFunction
+
+Superimpose a function onto a path. For example, add a Sine Wave function onto any
+input path.
+
 ### noisify
 
 Add random noise to a path. This can make lines appear more organic or hand-drawn.
