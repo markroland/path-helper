@@ -905,7 +905,9 @@ PH.expandPath([[0, 0], [0, 1]], 0.2, 0.2, "open");
 
 Create a path that runs parallel to the input path. This handles
 closed paths (end point coincident with start point) as well as
-open paths. The path must contain 3 or more points.
+open paths. The path must contain 3 or more points. An optional third parameter
+can be set to "true" in order to eliminate knots/kinks when the offset
+line overlaps with itself.
 
 ```js
 PH.offsetPath([[0, 0], [0, 0.5], [0, 1]], 0.2);
@@ -918,6 +920,11 @@ PH.offsetPath([[0, 0], [0, 0.5], [0, 1]], 0.2);
     [-0.2, 0.5]
 ]
 ```
+
+### removeKnots
+
+Remove parts of a path where it intersects with itself creating a loop/knot.
+This serves as a help function in offsetPath to support wide offset values.
 
 ### offsetAngle (PRIVATE)
 
@@ -1107,6 +1114,8 @@ Output: -------- -------- --
 ### decimatePaths
 
 This applies the same logic as `decimatePath` to multiple Path arrays.
+
+### morph
 
 ### joinPaths
 
