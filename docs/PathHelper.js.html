@@ -38,6 +38,18 @@ class PathHelper {
   /*************************************/
 
   /**
+   * Class constructor
+   * @param {function} prng - A Psuedo-Random Number Generator (PRNG).
+   * This can be set to use a different random number generator than
+   * Math.random(). This is very useful for creating consistent,
+   * deterministic results from a PRNG that uses an initial seed value.
+   * @returns null
+   **/
+  constructor(prng = null) {
+    this.prng = prng;
+  }
+
+  /**
    * Get information about a 2D path
    * @param {array} path - A path
    * @returns {object} An object with information about the object
@@ -189,6 +201,8 @@ class PathHelper {
   getRndInteger(min, max, prng = null) {
     if (typeof prng == 'function') {
       return Math.floor(prng() * (max - min + 1) + min);
+    } else if (typeof this.prng == 'function') {
+      return Math.floor(this.prng() * (max - min + 1) + min);
     } else {
       return Math.floor(Math.random() * (max - min + 1) + min);
     }
@@ -204,6 +218,8 @@ class PathHelper {
   getRandom(min, max, prng = null) {
     if (typeof prng == 'function') {
       return prng() * (max - min) + min;
+    } else if (typeof this.prng == 'function') {
+      return this.prng() * (max - min) + min;
     } else {
       return Math.random() * (max - min) + min;
     }
@@ -224,14 +240,14 @@ class PathHelper {
       if (typeof prng == 'function') {
         u = prng();
       } else {
-        u = Math.random();
+        u = this.getRandom(0, 1, this.prng);
       }
     }
     while(v === 0) {
       if (typeof prng == 'function') {
         v = prng();
       } else {
-        v = Math.random();
+        v = this.getRandom(0, 1, this.prng);
       }
     }
     let num = Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
@@ -1602,11 +1618,9 @@ class PathHelper {
    * @param {array} path - An array of points. Must contain at least 3 points.
    * @param {number} offset - the offset distance of the path. A negative number
    * represents an "inside" offset for an acute angle ACB
-   * @param {boolean} [prevent_knots=false] - Remove segments of the offset that
-   * intersect with themselve in order to support wider offset values
    * @returns {array} A multidimensional path array of points
    **/
-  offsetPath(path, offset, prevent_knots = false) {
+  offsetPath(path, offset) {
 
     if (path.length &lt; 3) {
       throw 'Input path must contain 3 or more points';
@@ -1662,97 +1676,7 @@ class PathHelper {
       console.log(offset_path);
     }
 
-    // Remove "knots" from the path
-    if (prevent_knots) {
-      offset_path = this.removeKnots(offset_path);
-    }
-
     return offset_path;
-  }
-
-  /**
-   * Remove parts of a path where it intersects with itself creating a loop/knot.
-   * @param {array} path - An array of points. Must contain at least 3 points.
-   * @returns {array} A Path array
-   **/
-  removeKnots(path) {
-
-    if (path.length &lt; 3) {
-      throw 'Input path must contain 3 or more points';
-    }
-
-    let last_intersect_index = 0;
-
-    // Initialize the final path with 2 segments (3 points)
-    // These could be co-linear but can't have a singular intersection point.
-    // Co-linearal overlap isn't being tested as it's unlikely to occur.
-    let final_path = path.slice(0, 3);
-
-    // Loop through all points of the input path starting with the last point
-    // of the "final_path"
-    for (let i = 2; i &lt; path.length-1; i++) {
-
-      // The "previous_path" is 1 segment short of the "segment" value
-      // The endpoint of previous_path should NOT match the beginning
-      // point of segment because that could result in an intersection "hit"
-      // and this is not what we want at a "hinge" point in the line
-      // let previous_path = path.slice(0, i);
-      let previous_path = path.slice(last_intersect_index, i);
-      const segment = [path[i], path[i+1]];
-
-      for (let j = last_intersect_index; j &lt; previous_path.length - 1; j++) {
-
-        // Check for an intersection between the segment being analyzed
-        // and each segment of the previous path
-        let intersection = this.getLineLineCollision(
-          {"x": segment[0][0], "y": segment[0][1]},
-          {"x": segment[1][0], "y": segment[1][1]},
-          {"x": previous_path[j][0], "y": previous_path[j][1]},
-          {"x": previous_path[j+1][0], "y": previous_path[j+1][1]}
-        );
-
-        if (intersection == false) {
-
-          // No intersection, so add point
-          final_path.push(path[i]);
-          continue;
-
-        } else {
-
-          // Intersection found
-
-          // Reset final paths to go up to the point previous
-          // to the intersection
-          final_path = previous_path.slice(0, j+1);
-
-          // Add intersection point
-          final_path.push([
-            intersection.x,
-            intersection.y
-          ]);
-
-          // Add end of segment
-          final_path.push(path[i+2]);
-
-          // Set index for next loop. This may not be necessary
-          last_intersect_index = i + 1;
-
-          // Add the remainder of the original path to the cleaned path
-          final_path = final_path.concat(path.slice(i+3));
-
-          // Analyze this new path for knots.
-          // TODO: I believe This could be made more efficient by passing in an
-          // position index of where to start further intersection analyze.
-          // Without this the analysis starts over from the beginning of the path
-          final_path = this.removeKnots(final_path);
-
-          return final_path;
-        }
-      }
-    }
-
-    // Return the original path if no intersections were found
-    return final_path;
   }
 
   /**
@@ -2343,7 +2267,7 @@ class PathHelper {
     let new_paths = [];
     let new_path = [];
     for (let j = 0; j &lt; path.length; j++) {
-      if (Math.random() &lt; odds) {
+      if (this.getRandom(0, 1, this.prng) &lt; odds) {
         if (new_path.length > 1) {
           new_paths.push(new_path);
         }
@@ -2631,7 +2555,7 @@ class PathHelper {
    */
   shufflePaths(paths) {
     for (let i = paths.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
+      const j = Math.floor(this.getRandom(0, 1, this.prng) * (i + 1));
       const temp = paths[i];
       paths[i] = paths[j];
       paths[j] = temp;
@@ -3910,7 +3834,7 @@ if (typeof exports === "object") {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Fri Apr 22 2022 22:07:18 GMT-0700 (Pacific Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Fri Apr 22 2022 22:19:41 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

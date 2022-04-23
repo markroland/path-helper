@@ -10,6 +10,18 @@ class PathHelper {
   /*************************************/
 
   /**
+   * Class constructor
+   * @param {function} prng - A Psuedo-Random Number Generator (PRNG).
+   * This can be set to use a different random number generator than
+   * Math.random(). This is very useful for creating consistent,
+   * deterministic results from a PRNG that uses an initial seed value.
+   * @returns null
+   **/
+  constructor(prng = null) {
+    this.prng = prng;
+  }
+
+  /**
    * Get information about a 2D path
    * @param {array} path - A path
    * @returns {object} An object with information about the object
@@ -161,6 +173,8 @@ class PathHelper {
   getRndInteger(min, max, prng = null) {
     if (typeof prng == 'function') {
       return Math.floor(prng() * (max - min + 1) + min);
+    } else if (typeof this.prng == 'function') {
+      return Math.floor(this.prng() * (max - min + 1) + min);
     } else {
       return Math.floor(Math.random() * (max - min + 1) + min);
     }
@@ -176,6 +190,8 @@ class PathHelper {
   getRandom(min, max, prng = null) {
     if (typeof prng == 'function') {
       return prng() * (max - min) + min;
+    } else if (typeof this.prng == 'function') {
+      return this.prng() * (max - min) + min;
     } else {
       return Math.random() * (max - min) + min;
     }
@@ -196,14 +212,14 @@ class PathHelper {
       if (typeof prng == 'function') {
         u = prng();
       } else {
-        u = Math.random();
+        u = this.getRandom(0, 1, this.prng);
       }
     }
     while(v === 0) {
       if (typeof prng == 'function') {
         v = prng();
       } else {
-        v = Math.random();
+        v = this.getRandom(0, 1, this.prng);
       }
     }
     let num = Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
@@ -1574,11 +1590,9 @@ class PathHelper {
    * @param {array} path - An array of points. Must contain at least 3 points.
    * @param {number} offset - the offset distance of the path. A negative number
    * represents an "inside" offset for an acute angle ACB
-   * @param {boolean} [prevent_knots=false] - Remove segments of the offset that
-   * intersect with themselve in order to support wider offset values
    * @returns {array} A multidimensional path array of points
    **/
-  offsetPath(path, offset, prevent_knots = false) {
+  offsetPath(path, offset) {
 
     if (path.length < 3) {
       throw 'Input path must contain 3 or more points';
@@ -2315,7 +2329,7 @@ class PathHelper {
     let new_paths = [];
     let new_path = [];
     for (let j = 0; j < path.length; j++) {
-      if (Math.random() < odds) {
+      if (this.getRandom(0, 1, this.prng) < odds) {
         if (new_path.length > 1) {
           new_paths.push(new_path);
         }
@@ -2603,7 +2617,7 @@ class PathHelper {
    */
   shufflePaths(paths) {
     for (let i = paths.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
+      const j = Math.floor(this.getRandom(0, 1, this.prng) * (i + 1));
       const temp = paths[i];
       paths[i] = paths[j];
       paths[j] = temp;

@@ -82,6 +82,9 @@ to keep the examples concise.
 let PH = new PathHelper();
 ```
 
+Note: A custom Psuedo-Random Number Generator (PRNG) can be set as a class parameter.
+This is useful for creating consistent, deterministic results as required by most NFTs art.
+
 ---------------------------------------------------------------------------------------
 ### General Operations
 *The following methods provide general help with interacting with Path data in JavaScript*
