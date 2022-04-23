@@ -46,7 +46,8 @@ class PathHelper {
   info(path) {
     let results = {
       "min": this.getMin(path),
-      "max": this.getMax(path)
+      "max": this.getMax(path),
+      "points": path.length
     };
     results.range = [
       results.max[0] - results.min[0],
@@ -66,6 +67,21 @@ class PathHelper {
    **/
   deepCopy(a) {
     return JSON.parse(JSON.stringify(a));
+  }
+
+  /**
+   * Simplify the precision of floating point numbers in a Paths array
+   * @param {array} paths - An array of Path arrays
+   * @returns {array} - An array of Path arrays
+   **/
+  pathsToFixed(paths, precision = 2) {
+    return paths.map(function(path){
+      return path.map(function(point) {
+        return point.map(function(number) {
+          return parseFloat(number.toFixed(precision));
+        });
+      });
+    });
   }
 
   /**
@@ -167,20 +183,30 @@ class PathHelper {
    * Reference: https://www.w3schools.com/js/js_random.asp
    * @param {number} min - The lower bound of acceptable values
    * @param {number} max - The upper bound of acceptable values
+   * @param {function} prng - An optional Psuedo-random number generator function
    * @return {number} - A randomly selected number
    */
-  getRndInteger(min, max) {
-    return Math.floor(Math.random() * (max - min + 1) + min);
+  getRndInteger(min, max, prng = null) {
+    if (typeof prng == 'function') {
+      return Math.floor(prng() * (max - min + 1) + min);
+    } else {
+      return Math.floor(Math.random() * (max - min + 1) + min);
+    }
   }
 
   /**
    * Get a Random Number between two values (inclusive)
    * @param {number} min - The lower bound of acceptable values
    * @param {number} max - The upper bound of acceptable values
+   * @param {function} prng - An optional Psuedo-random number generator function
    * @return {number} - A randomly selected number
    */
-  getRandom(min, max) {
-    return Math.random() * (max - min) + min;
+  getRandom(min, max, prng = null) {
+    if (typeof prng == 'function') {
+      return prng() * (max - min) + min;
+    } else {
+      return Math.random() * (max - min) + min;
+    }
   }
 
   /**
@@ -189,11 +215,25 @@ class PathHelper {
    * Currently unverified
    * @param {number} [u=0] - Should be left at zero
    * @param {number} [v=0] - Should be left at zero
+   * @param {function} prng - An optional Psuedo-random number generator function
    * @return {number} - A randomly selected number
    */
-  getGaussianRandom(u = 0, v = 0) {
-    while(u === 0) u = Math.random(); // Converting [0,1) to (0,1)
-    while(v === 0) v = Math.random();
+  getGaussianRandom(u = 0, v = 0, prng = null) {
+    // Converting [0,1) to (0,1)
+    while(u === 0) {
+      if (typeof prng == 'function') {
+        u = prng();
+      } else {
+        u = Math.random();
+      }
+    }
+    while(v === 0) {
+      if (typeof prng == 'function') {
+        v = prng();
+      } else {
+        v = Math.random();
+      }
+    }
     let num = Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
     num = num / 10.0 + 0.5; // Translate to 0 -> 1
     if (num > 1 || num &lt; 0) {
@@ -369,13 +409,14 @@ class PathHelper {
    * @returns {number} - The distance between the two points
    */
   distance(p1, p2) {
-    if (p1.length == 2) {
-      p1.push(0);
+
+    // 3D Distance calculation
+    if (p1.length == 3 &amp;&amp; p2.length == 3) {
+      return Math.sqrt(Math.pow(p2[0] - p1[0], 2) + Math.pow(p2[1] - p1[1], 2) + Math.pow(p2[2] - p1[2], 2));
     }
-    if (p2.length == 2) {
-      p2.push(0);
-    }
-    return Math.sqrt(Math.pow(p2[0] - p1[0], 2) + Math.pow(p2[1] - p1[1], 2) + Math.pow(p2[2] - p1[2], 2));
+
+    // 2D Distance calculation
+    return Math.sqrt(Math.pow(p2[0] - p1[0], 2) + Math.pow(p2[1] - p1[1], 2));
   }
 
   /*************************************/
@@ -556,11 +597,11 @@ class PathHelper {
   centerPaths(paths) {
 
     let x;
-    let x_min = 0;
-    let x_max = 0;
+    let x_min;
+    let x_max;
     let y;
-    let y_min = 0;
-    let y_max = 0;
+    let y_min;
+    let y_max;
 
     // Get the most extreme points (bounds) from all paths
     for (let i = 0; i &lt; paths.length; i++) {
@@ -569,12 +610,12 @@ class PathHelper {
       let x_coordinates = this.arrayColumn(paths[i], 0);
 
       x = Math.min(...x_coordinates);
-      if (x &lt; x_min) {
+      if (typeof x_min == "undefined" || x &lt; x_min) {
         x_min = x;
       }
 
       x = Math.max(...x_coordinates);
-      if (x > x_max) {
+      if (typeof x_max == "undefined" || x > x_max) {
         x_max = x;
       }
 
@@ -582,12 +623,12 @@ class PathHelper {
       let y_coordinates = this.arrayColumn(paths[i], 1);
 
       y = Math.min(...y_coordinates);
-      if (y &lt; y_min) {
+      if (typeof y_min == "undefined" || y &lt; y_min) {
         y_min = y;
       }
 
       y = Math.max(...y_coordinates);
-      if (y > y_max) {
+      if (typeof y_max == "undefined" || y > y_max) {
         y_max = y;
       }
     }
@@ -994,7 +1035,7 @@ class PathHelper {
     // that are outside of the other shape
     let newShape = [];
     newShape = newShape.concat(this.booleanIntersectionComparison(newA, shapeB));
-    newShape = newShape.concat(this.booleanIntersectionComparison(newB, shapeA, true));
+    newShape = newShape.concat(this.booleanIntersectionComparison(newB, shapeA));
 
     // Join all of the path segments into a continuous path
     newShape = this.joinPaths(newShape);
@@ -1041,6 +1082,7 @@ class PathHelper {
       } else {
         path.push(shapeA[i]);
       }
+
       // Add last point if end of loop... I'm not convinced this is correct
       if (i == i_max - 1) {
         path.push(shapeA[i+1]);
@@ -1078,12 +1120,25 @@ class PathHelper {
       // with all segments of Shape B
       let segment_intersections = [];
       for (let j = 0; j &lt; shapeB.length-1; j++) {
+
+        // Test for point on line first
+        let on_line = this.pointOnLineSegment(
+          shapeB[j],
+          [shapeA[i], shapeA[i+1]],
+          0.00001
+        );
+        if (on_line) {
+          segment_intersections.push(shapeB[j]);
+          continue;
+        }
+
         let intersect = this.getLineLineCollision(
           {x: shapeA[i][0], y: shapeA[i][1]},
           {x: shapeA[i+1][0], y: shapeA[i+1][1]},
           {x: shapeB[j][0], y: shapeB[j][1]},
           {x: shapeB[j+1][0], y: shapeB[j+1][1]}
         );
+
         if (intersect) {
           segment_intersections.push([
             intersect.x,
@@ -1547,9 +1602,11 @@ class PathHelper {
    * @param {array} path - An array of points. Must contain at least 3 points.
    * @param {number} offset - the offset distance of the path. A negative number
    * represents an "inside" offset for an acute angle ACB
+   * @param {boolean} [prevent_knots=false] - Remove segments of the offset that
+   * intersect with themselve in order to support wider offset values
    * @returns {array} A multidimensional path array of points
    **/
-  offsetPath(path, offset) {
+  offsetPath(path, offset, prevent_knots = false) {
 
     if (path.length &lt; 3) {
       throw 'Input path must contain 3 or more points';
@@ -1605,7 +1662,97 @@ class PathHelper {
       console.log(offset_path);
     }
 
+    // Remove "knots" from the path
+    if (prevent_knots) {
+      offset_path = this.removeKnots(offset_path);
+    }
+
     return offset_path;
+  }
+
+  /**
+   * Remove parts of a path where it intersects with itself creating a loop/knot.
+   * @param {array} path - An array of points. Must contain at least 3 points.
+   * @returns {array} A Path array
+   **/
+  removeKnots(path) {
+
+    if (path.length &lt; 3) {
+      throw 'Input path must contain 3 or more points';
+    }
+
+    let last_intersect_index = 0;
+
+    // Initialize the final path with 2 segments (3 points)
+    // These could be co-linear but can't have a singular intersection point.
+    // Co-linearal overlap isn't being tested as it's unlikely to occur.
+    let final_path = path.slice(0, 3);
+
+    // Loop through all points of the input path starting with the last point
+    // of the "final_path"
+    for (let i = 2; i &lt; path.length-1; i++) {
+
+      // The "previous_path" is 1 segment short of the "segment" value
+      // The endpoint of previous_path should NOT match the beginning
+      // point of segment because that could result in an intersection "hit"
+      // and this is not what we want at a "hinge" point in the line
+      // let previous_path = path.slice(0, i);
+      let previous_path = path.slice(last_intersect_index, i);
+      const segment = [path[i], path[i+1]];
+
+      for (let j = last_intersect_index; j &lt; previous_path.length - 1; j++) {
+
+        // Check for an intersection between the segment being analyzed
+        // and each segment of the previous path
+        let intersection = this.getLineLineCollision(
+          {"x": segment[0][0], "y": segment[0][1]},
+          {"x": segment[1][0], "y": segment[1][1]},
+          {"x": previous_path[j][0], "y": previous_path[j][1]},
+          {"x": previous_path[j+1][0], "y": previous_path[j+1][1]}
+        );
+
+        if (intersection == false) {
+
+          // No intersection, so add point
+          final_path.push(path[i]);
+          continue;
+
+        } else {
+
+          // Intersection found
+
+          // Reset final paths to go up to the point previous
+          // to the intersection
+          final_path = previous_path.slice(0, j+1);
+
+          // Add intersection point
+          final_path.push([
+            intersection.x,
+            intersection.y
+          ]);
+
+          // Add end of segment
+          final_path.push(path[i+2]);
+
+          // Set index for next loop. This may not be necessary
+          last_intersect_index = i + 1;
+
+          // Add the remainder of the original path to the cleaned path
+          final_path = final_path.concat(path.slice(i+3));
+
+          // Analyze this new path for knots.
+          // TODO: I believe This could be made more efficient by passing in an
+          // position index of where to start further intersection analyze.
+          // Without this the analysis starts over from the beginning of the path
+          final_path = this.removeKnots(final_path);
+
+          return final_path;
+        }
+      }
+    }
+
+    // Return the original path if no intersections were found
+    return final_path;
   }
 
   /**
@@ -1716,6 +1863,65 @@ class PathHelper {
   }
 
   /**
+   * Expand a Path
+   * @param {array} path - A Path array
+   * @param {function} fn - A function used to modify the input path
+   * @returns {array} - A Path array
+   **/
+  superimposeFunction(base_path, fn) {
+
+    if (typeof fn != "function") {
+      throw 'fn parameter must be a function';
+    }
+
+    let path = [];
+
+    // Calculate total distance of base path
+    let total_distance = 0.0;
+    for (let i = 0; i &lt; base_path.length-1; i++) {
+      let segment = [base_path[i], base_path[i+1]];
+      let distance = this.distance(segment[0], segment[1]);
+      total_distance += distance;
+    }
+
+    // Loop through base path
+    let position = 0.0;
+    const i_max = base_path.length-1;
+    for (let i = 0; i &lt;= i_max; i++) {
+
+      // Define the current and next point
+      let p1, p2;
+      if (i == i_max) {
+        p1 = base_path[i];
+        p2 = base_path[i-1];
+      } else {
+        p1 = base_path[i];
+        p2 = base_path[i+1];
+      }
+
+      // Calculate the distance between the 2 points
+      if (i > 0) {
+        position += this.distance(p1, p2);
+      }
+
+      // Call modification function
+      let y = fn(position / total_distance);
+
+      // Calculate perpendicular offset from line
+      let delta_y = p2[1] - p1[1];
+      let delta_x = p2[0] - p1[0];
+      let theta = Math.atan2(delta_y, delta_x);
+
+      path.push([
+        p1[0] + y * Math.cos(theta + Math.PI/2),
+        p1[1] + y * Math.sin(theta + Math.PI/2)
+      ]);
+    }
+
+    return path;
+  }
+
+  /**
    * Add noise to a path
    * @param {array} path - The source path
    * @param {number} max_segment_length - The maximum distance allowed between points. If a segment
@@ -1780,25 +1986,74 @@ class PathHelper {
    * @returns {array} A Path array
    **/
   smoothPath(path, size = 3) {
-    let newData = [];
-    newData.push(path[0]);
+
+    // Return the original path if the Path is shorter than the smoothing size
     if (path.length &lt; size) {
       return path;
     }
-    let range = (size - 1)/2;
+
+    // Identify closed paths where the first and last points
+    // are coincident
+    let closed_path = false;
+    if (this.pointEquals(path[0], path[path.length-1])) {
+      closed_path = true;
+    }
+
+    // Init new path
+    let new_path = [];
+
+    // Build convolution kernel for smoothing
     let v = 1 / size;
     const kernel = new Array(size).fill(v);
-    for (let p = range; p &lt; path.length-range; p++) {
-      let sum = [0,0];
-      for (let k = -range; k &lt;= range; k++) {
-        // Sum X and Y components
-        sum[0] += path[p+k][0] * kernel[k+range];
-        sum[1] += path[p+k][1] * kernel[k+range];
-      }
-      newData.push(sum);
+
+    // Set the window index range
+    let range = (size - 1)/2;
+
+    let i_min = 0;
+    let i_max = path.length - 1;
+
+    // First point won't have a bend
+    if (!closed_path) {
+      i_min += range;
+      i_max = path.length - range;
+
+      new_path.push(path[0]);
     }
-    newData.push(path[path.length-1]);
-    return newData;
+
+    // Loop through path
+    for (let i = i_min; i &lt; i_max; i++) {
+
+      // Initialize the X/Y component summations
+      let sum = [0,0];
+
+      // Loop through smoothing window
+      for (let k = -range; k &lt;= range; k++) {
+
+        let index = i + k;
+        if (closed_path) {
+          index = ((path.length - 1) + (i + k)) % (path.length - 1);
+        } else {
+          if (index &lt; 0 || index > path.length - 1) {
+            continue;
+          }
+        }
+
+        // Sum X and Y components
+        sum[0] += path[index][0] * kernel[k+range];
+        sum[1] += path[index][1] * kernel[k+range];
+      }
+
+      new_path.push(sum);
+    }
+
+    // Last point won't have a bend
+    if (!closed_path) {
+      new_path.push(path[path.length - 1]);
+    } else {
+      new_path.push(new_path[0]);
+    }
+
+    return new_path;
   }
 
   /**
@@ -1820,22 +2075,45 @@ class PathHelper {
       sharpness = 0;
     }
 
+    // Identify closed paths where the first and last points
+    // are coincident
+    let closed_path = false;
+    if (this.pointEquals(path[0], path[path.length-1])) {
+      closed_path = true;
+    }
+
     // Map Sharpness to bend
     // Bend should range from >= 0.5 to &lt; 1 so that
     // the path can be C2 continuous
     // Where 0.5 is the broadest bend and 1 is no bend
     let bend = this.map(sharpness, 0, 1, 0.5, 1);
 
-    // Loop through all points
-    // First point won't have a bend
+    // Init new path
     let new_path = [];
-    new_path.push(path[0]);
-    for (let i = 1; i &lt; path.length - 1; i++) {
+
+    let i_min = 0;
+
+    // First point won't have a bend
+    if (!closed_path) {
+      new_path.push(path[0]);
+      i_min += 1;
+    }
+
+    for (let i = i_min; i &lt; path.length - 1; i++) {
+
+      let p1_index = i - 1;
+      let p2_index = i;
+      let p3_index = i + 1;
+      if (closed_path) {
+        p1_index = ((path.length - 1) + (i - 1)) % (path.length - 1);
+        p2_index = i;
+        p3_index = ((path.length - 1) + (i + 1)) % (path.length - 1);
+      }
 
       // Create variables that are easier to read
-      let op_p1 = path[i-1];
-      let op_p2 = path[i];
-      let op_p3 = path[i+1];
+      let op_p1 = path[p1_index];
+      let op_p2 = path[p2_index];
+      let op_p3 = path[p3_index];
 
       // Calculate points at which the bezier should start/end
       let p1_bend = [
@@ -1867,7 +2145,11 @@ class PathHelper {
     }
 
     // Last point won't have a bend
-    new_path.push(path[path.length - 1]);
+    if (!closed_path) {
+      new_path.push(path[path.length - 1]);
+    } else {
+      new_path.push(new_path[0]);
+    }
 
     return new_path;
   }
@@ -1881,16 +2163,39 @@ class PathHelper {
    */
   radiusCorners(path, radius, bezier_segments = 20) {
 
-    // Loop through all points
-    // First point won't have a bend
+    // Identify closed paths where the first and last points
+    // are coincident
+    let closed_path = false;
+    if (this.pointEquals(path[0], path[path.length-1])) {
+      closed_path = true;
+    }
+
+    // Init new path
     let new_path = [];
-    new_path.push(path[0]);
-    for (let i = 1; i &lt; path.length - 1; i++) {
+
+    let i_min = 0;
+
+    // First point won't have a bend
+    if (!closed_path) {
+      new_path.push(path[0]);
+      i_min += 1;
+    }
+
+    for (let i = i_min; i &lt; path.length - 1; i++) {
+
+      let p1_index = i - 1;
+      let p2_index = i;
+      let p3_index = i + 1;
+      if (closed_path) {
+        p1_index = ((path.length - 1) + (i - 1)) % (path.length - 1);
+        p2_index = i;
+        p3_index = ((path.length - 1) + (i + 1)) % (path.length - 1);
+      }
 
       // Create variables that are easier to read
-      let p1 = path[i-1];
-      let p2 = path[i];
-      let p3 = path[i+1];
+      let p1 = path[p1_index];
+      let p2 = path[p2_index];
+      let p3 = path[p3_index];
 
       // Calculate points at which the bezier should start/end
       let distance_p1_p2 = this.distance(p1, p2);
@@ -1918,7 +2223,11 @@ class PathHelper {
     }
 
     // Last point won't have a bend
-    new_path.push(path[path.length - 1]);
+    if (!closed_path) {
+      new_path.push(path[path.length - 1]);
+    } else {
+      new_path.push(new_path[0]);
+    }
 
     return new_path;
   }
@@ -2043,7 +2352,7 @@ class PathHelper {
       }
       new_path.push(path[j])
     }
-    if (new_path.length > 1) {
+    if (new_path.length >= 1) {
       new_paths.push(new_path);
     }
     return new_paths;
@@ -2063,7 +2372,7 @@ class PathHelper {
     let new_paths = [];
     for (let i = 0; i &lt; paths.length; i++) {
       let temp_paths = this.decimatePath(paths[i], odds);
-      if (temp_paths.length > 1) {
+      if (temp_paths.length >= 1) {
         new_paths = new_paths.concat(temp_paths);
       }
     }
@@ -2282,9 +2591,10 @@ class PathHelper {
     cleanedPath.push(path[0]);
 
     // Subsequent positions must greater than the minimum distance to be added
+    let self = this;
     path.forEach(function(point, index) {
       var last_point = cleanedPath[cleanedPath.length - 1];
-      var step_distance = this.distance(point, last_point);
+      var step_distance = self.distance(point, last_point);
       if (step_distance > threshold) {
         cleanedPath.push(point);
       }
@@ -2327,6 +2637,23 @@ class PathHelper {
       paths[j] = temp;
     }
     return paths;
+  }
+
+  /**
+   * Remove any path shorter than the threshold length
+   * @param {array} paths - An array of Paths.
+   * @param {number} [threshold=0.01] - The distance below which
+   * a path should be removed from the input paths.
+   * @returns {array} - An array of Path arrays
+   **/
+  removeShortPaths(paths, threshold = 0.01) {
+    let self = this;
+    return paths.filter(function(path) {
+      if (self.pathLength(path) >= threshold) {
+        return true;
+      }
+      return false;
+    });
   }
 
   /**
@@ -3159,10 +3486,15 @@ class PathHelper {
    * @param {boolean} [continuous=false] - Set to true if the Paths are
    * quadrilaterals where each shares 1 side in succession. This
    * can be used to achieve an outlined path effect with overlaps
+   * @param {boolean} [use_bbox=false] - Use a path's bounding box to test
+   * intersection prior to testing every segment
    *
    * @returns {array} - An array of Path arrays
    **/
-  layeredPaths(paths, join = false, offset = 0, continuous = false) {
+  layeredPaths(paths, join = false, offset = 0, continuous = false, use_bbox = false) {
+
+    // Start performance timer
+    const t0 = performance.now();
 
     // Final paths for plotting
     let final_paths = [];
@@ -3200,6 +3532,59 @@ class PathHelper {
         }
       }
 
+      // Use path bounding boxes to rule out non-intersecting shapes
+      let bbox_ignore_count = 0;
+      if (use_bbox) {
+
+        // Get bounding box of path under investigation
+        const path_i_bbox = this.boundingBox(paths[i]);
+
+        // Create a path from the bounding box
+        let path_i_bbox_path = [
+          [path_i_bbox[0][0], path_i_bbox[1][0]],
+          [path_i_bbox[0][1], path_i_bbox[1][0]],
+          [path_i_bbox[0][1], path_i_bbox[1][1]],
+          [path_i_bbox[0][0], path_i_bbox[1][1]]
+        ];
+        path_i_bbox_path.push(path_i_bbox_path[0]);
+
+        // Loop through paths to be compared
+        let filtered_shapes = [];
+        for (const comparison_shape of comparison_shapes) {
+
+          const comparison_shape_bbox = this.boundingBox(comparison_shape);
+
+          // Create a path from the bounding box
+          const comparison_shape_bbox_path = [
+            [comparison_shape_bbox[0][0], comparison_shape_bbox[1][0]],
+            [comparison_shape_bbox[0][1], comparison_shape_bbox[1][0]],
+            [comparison_shape_bbox[0][1], comparison_shape_bbox[1][1]],
+            [comparison_shape_bbox[0][0], comparison_shape_bbox[1][1]]
+          ];
+          comparison_shape_bbox_path.push(comparison_shape_bbox_path[0]);
+
+          // Test if the bounding box paths intersect
+          const bbox_intersections = this.shapeIntersections(path_i_bbox_path, comparison_shape_bbox_path);
+
+          // Use the comparison_shape if intersections have been detected
+          if (bbox_intersections.length != path_i_bbox_path.length) {
+            filtered_shapes.push(comparison_shape);
+          } else {
+            bbox_ignore_count++;
+          }
+        }
+
+        // Replace the comparison_shapes from before the filtering with those identified during filtering
+        comparison_shapes = filtered_shapes;
+
+        // If there are no shapes to compare, then add the shape under analysis can be added
+        // to the final output paths with no further analysis needed
+        if (comparison_shapes.length == 0) {
+          final_paths.push(paths[i]);
+          continue;
+        }
+      }
+
       // Loop through sides of shape under evaluation
       for (let point = 0; point &lt; paths[i].length-1; point++) {
 
@@ -3228,13 +3613,17 @@ class PathHelper {
         }
       }
 
+      if (join) {
+        paths_of_i = this.joinPaths(paths_of_i)
+      }
+
       // Add the paths of the shape onto the final output paths
       final_paths = final_paths.concat(paths_of_i)
     }
 
-    if (join) {
-      final_paths = this.joinPaths(final_paths)
-    }
+    // Stop performance timer and display results
+    const t1 = performance.now();
+    console.log('layeredPaths took ' + (t1 - t0).toFixed(1) +  ' milliseconds');
 
     return final_paths;
   }
@@ -3521,7 +3910,7 @@ if (typeof exports === "object") {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Fri Feb 11 2022 09:39:43 GMT-0800 (Pacific Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Fri Apr 22 2022 22:07:18 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>
