@@ -1590,9 +1590,11 @@ class PathHelper {
    * @param {array} path - An array of points. Must contain at least 3 points.
    * @param {number} offset - the offset distance of the path. A negative number
    * represents an "inside" offset for an acute angle ACB
+   * @param {boolean} [prevent_knots=false] - Remove segments of the offset that
+   * intersect with themselve in order to support wider offset values
    * @returns {array} A multidimensional path array of points
    **/
-  offsetPath(path, offset) {
+  offsetPath(path, offset, prevent_knots = false) {
 
     if (path.length < 3) {
       throw 'Input path must contain 3 or more points';
