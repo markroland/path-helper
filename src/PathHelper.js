@@ -1702,7 +1702,7 @@ class PathHelper {
         if (intersection == false) {
 
           // No intersection, so add point
-          final_path.push(path[i]);
+          final_path.push(path[i+1]);
           continue;
 
         } else {
