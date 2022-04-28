@@ -1283,6 +1283,12 @@ Take a line segment and multiple paths representing a closed
 convex polygon and return the portion of that line that is
 not intersected by any of the shapes (paths)
 
+### projectShapeShadow
+
+Determine the "shadow" of an input shape at a certain translation
+vector. This has been proven for closed-path convex regular polygons.
+This has not been tested for other shapes.
+
 To Do:
 ------
 
