@@ -956,7 +956,7 @@ class PathHelper {
 
       if (!invert) {
 
-        if (this.pointInPolygon(shapeB_vertices, mid_point[0], mid_point[1])) {
+        if (this.pointInPolygon(shapeB_vertices, mid_point[0], mid_point[1], 0.00001)) {
           path.push(shapeA[i]);
           if (path.length > 1) {
             paths.push(path);
@@ -972,7 +972,7 @@ class PathHelper {
 
       } else {
 
-        if (!this.pointInPolygon(shapeB_vertices, mid_point[0], mid_point[1])) {
+        if (!this.pointInPolygon(shapeB_vertices, mid_point[0], mid_point[1], -0.00001)) {
           path.push(shapeA[i]);
           if (path.length > 1) {
             paths.push(path);
