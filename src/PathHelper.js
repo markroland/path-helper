@@ -956,7 +956,7 @@ class PathHelper {
 
       if (!invert) {
 
-        if (this.pointInPolygon(shapeB_vertices, mid_point[0], mid_point[1])) {
+        if (this.pointInPolygon(shapeB_vertices, mid_point[0], mid_point[1], 0.00001)) {
           path.push(shapeA[i]);
           if (path.length > 1) {
             paths.push(path);
@@ -972,7 +972,7 @@ class PathHelper {
 
       } else {
 
-        if (!this.pointInPolygon(shapeB_vertices, mid_point[0], mid_point[1])) {
+        if (!this.pointInPolygon(shapeB_vertices, mid_point[0], mid_point[1], -0.00001)) {
           path.push(shapeA[i]);
           if (path.length > 1) {
             paths.push(path);
@@ -3875,6 +3875,154 @@ class PathHelper {
     }
 
     return segments;
+  }
+
+  /**
+   * Project a shadow from a closed-path shape.
+   * Note: This has only been verified for regular convex polygons
+   * Keyword: sciography
+   * @param {array} path - An array containing 3 or more point Arrays defining a closed path.
+   * @param {array} translation - An array of an x and y coordinate that defines the direction
+   * the shadow will fall
+   * @returns {object} An object with attributes "perimeter" and "lines". The perimeter represents
+   * the entirety of the shadowed shape - including the input shape itself. "shadow" contains the
+   * outline of the shape with the input path removed. "lines" contains the projection
+   * lines used during analysis and is useful for visual debugging.
+   **/
+  projectShapeShadow(path, translation) {
+
+    // Translate the input path
+    let path_B = this.translatePath(path, translation);
+
+    let projections = [];
+    let perimeter = [];
+
+    // Reformat vertices for use with pointInPolygon()
+    let vertices = [];
+    for (let v = 0; v < path.length-1; v++) {
+      vertices.push({x: path[v][0], y: path[v][1]});
+    }
+
+    // Set a flag for tracking whether the previous point of the input
+    // shape was in shadow or not
+    let occluded = false;
+
+    // This uses the loop label so that multiple loops may be navigated
+    loop1:
+    for (let i = 0; i < path.length - 0; i++) {
+
+      // Define a projection line that goes from the point of interest (path[i])
+      // to a point at the end of the translation vector
+      let line = [
+        path[i],
+        [
+          path[i][0] + translation[0],
+          path[i][1] + translation[1]
+        ]
+      ];
+
+      // If the line's endpoint is inside path then no need to check
+      // for segment intersections. Add the path point to the perimeter
+      // A very small threshold is required to prevent visual errors
+      if (this.pointInPolygon(vertices, line[1][0], line[1][1], -0.00000001)) {
+
+        // If the "occluded" flag hasn't been set yet, then
+        // this is the first occlusion so the previous point
+        // needs to be added
+        if (!occluded) {
+          if (typeof path[i-1] !== 'undefined') {
+            perimeter.push(path[i-1]);
+          }
+        }
+
+        // Add current point
+        perimeter.push(path[i]);
+
+        // Set the "occluded" flag
+        occluded = true;
+
+        // Continue on to analyze next point of "i" loop
+        continue;
+      }
+
+      // Make a copy of the input path for analysis
+      // Remove the last point since it is the same as the
+      // first point in a closed path
+      let test_path = this.deepCopy(path);
+      test_path.pop();
+
+      // Analyze the current point of interest (point[i])
+      // against all points in the same path except the points
+      // directly proceeding it and following it, which
+      // will by their nature have coincident points
+      loop2:
+      for (let j = 0; j < test_path.length - 2; j++) {
+
+        // Identify the next segment to analyze. Use the
+        // modulos operator to loop around a closed path
+        let index_1 = (i+j+1) % (test_path.length);
+        let index_2 = (i+j+2) % (test_path.length);
+        let segment = [
+          test_path[index_1],
+          test_path[index_2]
+        ];
+
+        // Test for intersection
+        let intersection = this.getLineLineCollision(
+          {"x": segment[0][0], "y": segment[0][1]},
+          {"x": segment[1][0], "y": segment[1][1]},
+          {"x": line[0][0], "y": line[0][1]},
+          {"x": line[1][0], "y": line[1][1]}
+        );
+
+        // If there is no intersection then the point is in shadow
+        if (intersection !== false) {
+
+          // If the "occluded" flag hasn't been set yet, then
+          // this is the first occlusion so the previous point
+          // needs to be added
+          if (!occluded) {
+            if (typeof path[i-1] !== 'undefined') {
+              perimeter.push(path[i-1]);
+            }
+          }
+
+          // Always add current point
+          perimeter.push(path[i]);
+
+          // Set the "occluded" flag
+          occluded = true;
+
+          // For a closed regular, convex polygon, only one intersection
+          // can happen, so continue to next point of "i" loop
+          continue loop1;
+        }
+      }
+
+      // Add the last point if going from occluded to non-occluded
+      if (occluded) {
+        perimeter.push(path[i]);
+      }
+
+      // Add projected endpoint
+      perimeter.push(line[1]);
+
+      // Reset flag
+      occluded = false;
+
+      // This will only be reached if there were no intersections
+      projections.push(line);
+    }
+
+    // Remove the part of the shadow perimeter that is "under" the input shape
+    // to isolate the visible shadow
+    let shadow = this.booleanSubtract(perimeter, path)[0];
+
+    return {
+      "perimeter": perimeter,
+      "shadow": shadow,
+      "lines": projections
+    }
   }
 
 }
