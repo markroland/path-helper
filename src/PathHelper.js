@@ -3611,7 +3611,8 @@ class PathHelper {
 
     // Stop performance timer and display results
     const t1 = performance.now();
-    console.log('layeredPaths took ' + (t1 - t0).toFixed(1) +  ' milliseconds');
+
+    // console.log('layeredPaths took ' + (t1 - t0).toFixed(1) +  ' milliseconds');
 
     return final_paths;
   }
