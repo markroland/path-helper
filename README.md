@@ -10,8 +10,17 @@ Documentation
 Code is documented using [JSDoc](https://jsdoc.app/) syntax and is compiled using the [NPM jsdoc](https://www.npmjs.com/package/jsdoc) package.
 
 Generate documentation:
-```
+```sh
 jsdoc src -d docs
+```
+
+Demo (BETA)
+-----------
+
+This is a new expiremental feature. This will start a local web server where class methods can be demonstrated.
+
+```sh
+npm run demo
 ```
 
 Testing
@@ -394,6 +403,14 @@ PH.polygon(4, 1.0, Math.PI/4);
         0.7071067811865474
     ]
 ]
+```
+
+### ellipse
+
+Create an ellipse (oval) centered at the origin. Specify the width, height, and number of segments.
+
+```js
+PH.ellipse(4, 2, 60);
 ```
 
 ### star

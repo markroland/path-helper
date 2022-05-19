@@ -433,6 +433,30 @@ class PathHelper {
   }
 
   /**
+   * Draw an Ellipse
+   * @param {number} a - The distance from the center to the major axis (length)
+   * @param {number} b - The distance from the center to the minor axis (height)
+   * @param {number} [segments=60] - The number of segments that make up the path
+   * @return {array} A Path Array
+   **/
+  ellipse(a, b, segments = 60) {
+
+    let path = [];
+
+    for (let i = 0; i < segments; i++) {
+      let theta = i/segments * 2 * Math.PI;
+      path.push([
+        a * Math.cos(theta),
+        b * Math.sin(theta)
+      ]);
+    }
+
+    path.push(path[0]);
+
+    return path;
+  }
+
+  /**
    * Create a regular star polygon centered at the origin
    * @param {number} [star_points=5] - The number of points to the star
    * @param {number} [outer_radius=1.0] - The distance from the center to the outer points
