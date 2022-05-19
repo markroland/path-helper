@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Path Helper Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script type="text/javascript" src="/PathHelper.js"></script>
+  <style>
+    body {
+      height: 100vh;
+      display: flex;
+      background-color: #CCC;
+      overflow: hidden;
+    }
+
+    .container{
+      width: 90%;
+      margin: auto;
+    }
+
+    canvas#my-canvas {
+      display: block;
+      margin: 0 auto;
+      /*width: 100%;*/
+      background-color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <canvas id="my-canvas"></canvas>
+  </div>
+
+  <script>
+
+    // Configs
+    const width = 576;
+    const height = 384;
+    const fps = 12;
+    const max_cycles = 10;
+
+    // Global vars
+    let loop = 0;
+    let cycle = 0;
+    const speed = 1000 / fps;
+
+    // Set up Canvas
+    const canvas = document.getElementById('my-canvas');
+    canvas.setAttribute('width', width);
+    canvas.setAttribute('height', height);
+
+    function demo1() {
+
+      // Create new class object
+      const PH = new PathHelper();
+
+      // Draw a 6-sided polygon of radius 100
+      let path = PH.polygon(6, 100);
+
+      // Center path
+      path = PH.translatePath(path, [width/2, height/2]);
+
+      // Draw the path to the canvas
+      draw(path);
+    }
+
+    function init() {
+      if (canvas.getContext) {
+
+        // Animation Option 1
+        // window.requestAnimationFrame(demo1);
+
+        // Animation Option 2
+        return setInterval(demo1, speed);
+
+      } else {
+        console.log('Canvas not found');
+      }
+    }
+
+    function draw(path) {
+
+      // Get Canvas Context
+      // Setting alpha false is a performance optimization
+      var ctx = canvas.getContext('2d', { alpha: false });
+
+      // Clear canvas
+      if (loop == 0) {
+
+        // Option 1: Fill with transparent black (<body> color?)
+        // ctx.clearRect(0, 0, width, height);
+
+        // Option 2: Fill with a color
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+
+      // Draw path
+      if (path.length > 0) {
+        ctx.beginPath();
+        ctx.moveTo(path[0][0], path[0][1]);
+        for (let p = 1; p < loop; p++) {
+          ctx.lineTo(path[p][0], path[p][1]);
+        }
+        ctx.stroke();
+      }
+
+      // Increment loop
+      loop++;
+
+      // Reset cycle
+      if (loop > path.length) {
+        loop = 0;
+        cycle++;
+        if (cycle > max_cycles) {
+          console.log('Finished');
+          clearInterval(refreshIntervalId);
+        }
+      }
+
+      // Debugging
+      // console.log(cycle);
+
+      // Animation Option 1
+      // window.requestAnimationFrame(draw);
+    }
+
+    let refreshIntervalId = init();
+
+  </script>
+
+</body>
+</html>
