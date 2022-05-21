@@ -1875,7 +1875,7 @@ class PathHelper {
   }
 
   /**
-   * Expand a Path
+   * Superimpose a function on a path
    * @param {array} path - A Path array
    * @param {function} fn - A function used to modify the input path
    * @returns {array} - A Path array
