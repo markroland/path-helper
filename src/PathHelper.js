@@ -1137,7 +1137,7 @@ class PathHelper {
         let on_line = this.pointOnLineSegment(
           shapeB[j],
           [shapeA[i], shapeA[i+1]],
-          0.00001
+          0.000001
         );
         if (on_line) {
           segment_intersections.push(shapeB[j]);
