@@ -241,6 +241,11 @@ class PathHelper {
    * @return {number} - The mapped value
    */
   map (value, in_min, in_max, out_min, out_max) {
+
+    if (in_min == in_max) {
+      return out_min;
+    }
+
     // Shift negative values up into positive range
     if (in_min < 0 || in_max < 0) {
       in_max = in_max + -in_min;
