@@ -1749,7 +1749,9 @@ class PathHelper {
           ]);
 
           // Add end of segment
-          final_path.push(path[i+2]);
+          if (i+2 < path.length) {
+            final_path.push(path[i+2]);
+          }
 
           // Set index for next loop. This may not be necessary
           last_intersect_index = i + 1;
