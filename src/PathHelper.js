@@ -397,8 +397,8 @@ class PathHelper {
 
   /**
    * Calculate the distance between two points in 2D or 3D space
-   * @param {array} p1 - A Point array containing two values for x and y. End Point of Line A
-   * @param {array} p2 - A Point array containing two values for x and y. Start Point of Line B
+   * @param {array} p1 - A Point array containing two values for x and y.
+   * @param {array} p2 - A Point array containing two values for x and y.
    * @returns {number} - The distance between the two points
    */
   distance(p1, p2) {
