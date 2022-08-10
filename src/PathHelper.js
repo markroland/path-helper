@@ -3873,7 +3873,12 @@ class PathHelper {
       // Calculate the intersection(s) between the line
       // and the current path. This will produce 0, 1 or 2
       // intersections for convex polygons
-      segments = this.linePathSplit(line, paths[i])
+      try {
+        segments = this.linePathSplit(line, paths[i])
+      } catch(e) {
+        console.log(e);
+        return segments;
+      }
 
       // Initialize an empty array to store subsegments of the
       // segments.
