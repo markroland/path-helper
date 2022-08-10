@@ -730,16 +730,22 @@ class PathHelper {
   /**
    * Reflect a Path (array of points) about an axis (X or Y)
    * @param {array} path - The path to be reflected
-   * @param {string} axis=("x"|"y") - The axis over which to reflect "x" or "Y")
-   * @param {number} offset - NOT IMPLEMENTED. An optional Axis offset value. The origin is the default
+   * @param {string} axis=("x"|"y") - The axis over which to reflect "x" or "Y"). Note this is currently implemented for the wrong axis!
+   * @param {number} offset - An optional Axis offset value. The origin is the default
    * @returns {array} A Path array
    */
   reflectPath(path, axis, offset = 0.0) {
     return path.map(function(point){
       if (axis == "x") {
-        return [point[0] * -1, point[1]];
+        return [
+          -(point[0] - offset) + offset,
+          point[1]
+        ];
       } else if (axis == "y") {
-        return [point[0], point[1] * -1];
+        return [
+          point[0],
+          -(point[1] - offset) + offset,
+        ];
       } else {
         return point;
       }
