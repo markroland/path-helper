@@ -365,6 +365,15 @@ PH.distance([0, 0, 0], [1, 1, 1]);
 // Output is 1.7320508075688772
 ```
 
+### angle
+
+Calculate the angle between 3 points
+
+```js
+PH.angle([1, 0], [0, 0], [1, 1]);
+// Output is 0.7853981633974483
+```
+
 ---------------------------------------------------------------------------------------
 ### Shapes
 *The following methods help create basic shapes, curves, etc.*
