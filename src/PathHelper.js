@@ -456,6 +456,20 @@ class PathHelper {
     return angle;
   }
 
+  /**
+   * Calculate the Menger curvature formed by 3 points
+   * https://en.wikipedia.org/wiki/Menger_curvature
+   * @param {array} p1 - A Point array containing two values for x and y for the starting point.
+   * @param {array} p2 - A Point array containing two values for x and y for the mid point.
+   * @param {array} p3 - A Point array containing two values for x and y for the ending point.
+   * @returns {number} - The curvature
+   */
+  curvature(p1, p2, p3) {
+    let angle = this.angle(p1, p2, p3);
+    let curvature = (2 * Math.sin(angle)) / this.distance(p1, p3);
+    return curvature;
+  }
+
   /*************************************/
   // Shapes
   /*************************************/

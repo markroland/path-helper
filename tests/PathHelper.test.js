@@ -16,3 +16,8 @@ test('angle', () => {
   expect(PH.angle([1, 0], [0, 0], [1, 1])).toBeCloseTo(Math.PI/4, 6);
 });
 
+test('curvature', () => {
+  let radius = Math.sqrt(2)/2;
+  let curvature = 1/radius;
+  expect(PH.curvature([1, 0], [0, 0], [1, 1])).toBeCloseTo(curvature, 6);
+});

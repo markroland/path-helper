@@ -374,6 +374,15 @@ PH.angle([1, 0], [0, 0], [1, 1]);
 // Output is 0.7853981633974483
 ```
 
+### curvature
+
+Calculate the curvature of 3 points
+
+```js
+PH.curvature([1, 0], [0, 0], [1, 1]);
+// Output is 0.7071067811865476
+```
+
 ---------------------------------------------------------------------------------------
 ### Shapes
 *The following methods help create basic shapes, curves, etc.*
