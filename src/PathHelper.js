@@ -610,7 +610,7 @@ class PathHelper {
     for (let s = 0; s <= segments; s++) {
       path.push([
         position[0] + radius * Math.cos(theta_offset + s/segments * theta),
-        position[0] + radius * Math.sin(theta_offset + s/segments * theta)
+        position[1] + radius * Math.sin(theta_offset + s/segments * theta)
       ]);
     }
     return path;
