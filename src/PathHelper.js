@@ -1292,6 +1292,22 @@ class PathHelper {
   }
 
   /**
+   * Determine if a Path is closed, i.e. the last point is coincident with the starting point
+   * @param {array} A path containing at least three points
+   * @param {number} [threshold=0] -  A maximum distance points can be apart and considered equal
+   * @returns {boolean} True if the path is closed, false otherwise
+   */
+  closedPath(path, threshold = 0.0001) {
+    if (path.length < 3) {
+      return false;
+    }
+    if (this.pointEquals(path[path.length-1], path[0], 0.0001)) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
    * Calculate the location where two lines (p1-to-p2 and p3-to-p4) intersect
    * Copied from https://editor.p5js.org/mwburke/sketches/h1ec1s6LG
    * @param {array} p1 - Starting point of Line A

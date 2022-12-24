@@ -810,6 +810,32 @@ PH.pointEquals(A, B, 0.01);
 // Output is True
 ```
 
+### closedPath
+
+Determine if a Path is closed, meaning that the ending point coincides with
+the starting point. This supports an optional `threshold` parameter that
+can be set to specify a maximum distance that the points can be apart and
+still considered coincident.
+
+```js
+let path = [
+    [0, 0],
+    [1, 0]
+];
+PH.closedPath(path);
+// Output is False
+
+let path = [
+    [0, 0],
+    [1, 0],
+    [1, 1],
+    [0, 1],
+    [0, 0]
+];
+PH.closedPath(path);
+// Output is True
+```
+
 ### intersect_point
 
 Calculate the location where two lines intersect.
