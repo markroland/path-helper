@@ -25,11 +25,11 @@ test('curvature', () => {
 test('closedPath_true', () => {
 
   let path = [
-      [0, 0],
-      [1, 0],
-      [1, 1],
-      [0, 1],
-      [0, 0]
+    [0, 0],
+    [1, 0],
+    [1, 1],
+    [0, 1],
+    [0, 0]
   ];
   PH.closedPath(path);
 
@@ -39,12 +39,45 @@ test('closedPath_true', () => {
 test('closedPath_false', () => {
 
   let path = [
-      [0, 0],
-      [1, 0],
-      [1, 1],
-      [0, 1]
+    [0, 0],
+    [1, 0],
+    [1, 1],
+    [0, 1]
   ];
   PH.closedPath(path);
 
   expect(PH.closedPath(path)).toStrictEqual(false);
+});
+
+test('matrixMultiply', () => {
+
+  let a = [
+    [2, 0, 0],
+    [0, 2, 0],
+    [0, 0, 2]
+  ];
+
+  let b = [
+    [1],
+    [2],
+    [3]
+  ];
+
+  let c = [[1, 2, 3]];
+
+  expect(PH.matrixMultiply(a,b)).toStrictEqual([ [ 2 ], [ 4 ], [ 6 ] ]);
+  expect(PH.matrixMultiply(c,a)).toStrictEqual([ [ 2, 4, 6 ] ]);
+});
+
+test('shearPath', () => {
+
+  let path = [
+    [0, 0],
+    [0, 1],
+    [1, 1],
+    [1, 0]
+  ];
+
+  expect(PH.shearPath(path, "horizontal", 1)).toStrictEqual([ [ 0, 0 ], [ 1, 1 ], [ 2, 1 ], [ 1, 0 ] ]);
+  expect(PH.shearPath(path, "vertical", 1)).toStrictEqual([ [ 0, 0 ], [ 0, 1 ], [ 1, 2 ], [ 1, 1 ] ]);
 });

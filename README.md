@@ -333,6 +333,32 @@ PH.crossProduct(a, b);
 // Output is [-1, 5, -7]
 ```
 
+### dotProduct
+
+Calculate the dot product of two matrices
+
+```js
+let a = [-2, 1, 1];
+let b = [ 3, 2, 1];
+PH.dotProduct(a, b);
+// Output is -3
+```
+
+### matrixMultiply
+
+Multiply two matrices
+
+```js
+let a = [[1, 2, 3]];
+let b = [
+    [2, 0, 0],
+    [0, 2, 0],
+    [0, 0, 2]
+];
+PH.matrixMultiply(a, b);
+// Output is [ [ 2, 4, 6 ] ]
+```
+
 ### lineSlopeIntercept
 
 Calculate the slope and y-intercept of the line passing between two points.
@@ -685,6 +711,30 @@ Reflect a Path about an axis (X or Y)
 ```js
 PH.reflectPath([[1, 1], [2, 2]], "x");
 // Expected output is [[-1, 1], [-2, 2]]
+```
+
+### shearPath
+
+Shear (or skew) a Path in a direction, "horizontal" or "vertical", by a slope value.
+
+```js
+let path = [
+    [0, 0],
+    [0, 1],
+    [1, 1],
+    [1, 0]
+];
+PH.shearPath(path, "horizontal", 1);
+```
+
+**Expected Output:**
+```js
+[
+    [0, 0],
+    [1, 1],
+    [2, 1],
+    [1, 0]
+]
 ```
 
 ### distortPath
