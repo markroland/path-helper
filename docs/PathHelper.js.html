@@ -74,6 +74,7 @@ class PathHelper {
 
   /**
    * Create a deep copy of a JavaScript array/object
+   * @todo Look into structuredClone
    * @param {array|object} a - The thing to be copied
    * @returns {array|object} An independent copy of the input value
    **/
@@ -664,7 +665,7 @@ class PathHelper {
 
   /**
    * Compose an arc centered at a position
-   * @param {array} posotion - A Point array defining a position [x,y]
+   * @param {array} position - A Point array defining a position [x,y]
    * @param {number} radius - The radius of the arc from the position
    * @param {number} theta - The number of radians to rotate through the circular arc
    * @param {number} theta_offset - A radian offset from which to start the arc
