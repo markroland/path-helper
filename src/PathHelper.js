@@ -1039,10 +1039,7 @@ class PathHelper {
   booleanAddComparison(shapeA, shapeB) {
     let paths = [];
 
-    let shapeB_vertices = [];
-    for (let v = 0; v < shapeB.length-1; v++) {
-      shapeB_vertices.push({x: shapeB[v][0], y: shapeB[v][1]});
-    }
+    let shapeB_vertices = this.#formatVertices(shapeB);
 
     let path = [];
     let i_max = shapeA.length-1;
@@ -1120,10 +1117,7 @@ class PathHelper {
     let paths = [];
 
     // Extract and reformat vertices from shapeB for use with this.pointInPolygon
-    let shapeB_vertices = [];
-    for (let v = 0; v < shapeB.length-1; v++) {
-      shapeB_vertices.push({x: shapeB[v][0], y: shapeB[v][1]});
-    }
+    let shapeB_vertices = this.#formatVertices(shapeB);
 
     // Loop through all segments of Shape A and determine if they are inside
     // or outside of Shape B
@@ -1227,10 +1221,7 @@ class PathHelper {
     let paths = [];
 
     // Extract and reformat vertices from shapeB for use with this.pointInPolygon
-    let shapeB_vertices = [];
-    for (let v = 0; v < shapeB.length-1; v++) {
-      shapeB_vertices.push({x: shapeB[v][0], y: shapeB[v][1]});
-    }
+    let shapeB_vertices = this.#formatVertices(shapeB);
 
     // Loop through all segments of Shape A and determine if they are inside
     // or outside of Shape B
@@ -3025,10 +3016,7 @@ class PathHelper {
     let path = [];
 
     // Reformat vertices of cropShape for use with pointInPolygon()
-    let vertices = [];
-    for (let v = 0; v < cropShape.length-1; v++) {
-      vertices.push({x: cropShape[v][0], y: cropShape[v][1]});
-    }
+    let vertices = this.#formatVertices(cropShape);
 
     // Loop through all paths
     for (let i = 0; i < candidate_paths.length; i++) {
@@ -3894,10 +3882,7 @@ class PathHelper {
     let b = line[1];
 
     // Test if endpoints are inside the shape being tested against
-    let vertices = [];
-    for (let v = 0; v < path.length-1; v++) {
-      vertices.push({x: path[v][0], y: path[v][1]});
-    }
+    let vertices = this.#formatVertices(path);
     let point_a_inside = this.pointInPolygon(vertices, a[0], a[1]);
     let point_b_inside = this.pointInPolygon(vertices, b[0], b[1]);
 
@@ -4086,10 +4071,7 @@ class PathHelper {
     let perimeter = [];
 
     // Reformat vertices for use with pointInPolygon()
-    let vertices = [];
-    for (let v = 0; v < path.length-1; v++) {
-      vertices.push({x: path[v][0], y: path[v][1]});
-    }
+    let vertices = this.#formatVertices(path);
 
     // Set a flag for tracking whether the previous point of the input
     // shape was in shadow or not
@@ -4213,6 +4195,22 @@ class PathHelper {
     }
   }
 
+  /*************************************/
+  // Private Class Methods
+  /*************************************/
+
+  /**
+   * Convert data for usage in PathHelp.pointInPolygon
+   * @param {array} path - A Path array
+   * @returns {array} An Array of the same points formatted as an object (i.e. {x: 0, y: 0})
+   **/
+  #formatVertices(path) {
+    let vertices = [];
+    for (let v = 0; v < path.length-1; v++) {
+      vertices.push({x: path[v][0], y: path[v][1]});
+    }
+    return vertices;
+  }
 }
 
 // Add module support for CommonJS format in Node (via `require`)
