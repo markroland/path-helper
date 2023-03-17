@@ -535,6 +535,22 @@ class PathHelper {
   }
 
   /**
+   * Draw a Rectangle
+   * @param {number} width - The width of the rectangle
+   * @param {number} height - The heighth of the rectangle
+   * @returns {array} A Path Array
+   **/
+  rectangle(width, height) {
+    return [
+      [-width/2, -height/2],
+      [ width/2, -height/2],
+      [ width/2,  height/2],
+      [-width/2,  height/2],
+      [-width/2, -height/2]
+    ];
+  }
+
+  /**
    * Draw an Ellipse
    * @param {number} a - The distance from the center to the major axis (length)
    * @param {number} b - The distance from the center to the minor axis (height)

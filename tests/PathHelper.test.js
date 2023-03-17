@@ -81,3 +81,17 @@ test('shearPath', () => {
   expect(PH.shearPath(path, "horizontal", 1)).toStrictEqual([ [ 0, 0 ], [ 1, 1 ], [ 2, 1 ], [ 1, 0 ] ]);
   expect(PH.shearPath(path, "vertical", 1)).toStrictEqual([ [ 0, 0 ], [ 0, 1 ], [ 1, 2 ], [ 1, 1 ] ]);
 });
+
+test('rectangle', () => {
+
+  const output = [
+    [-0.5, -0.25],
+    [ 0.5, -0.25],
+    [ 0.5,  0.25],
+    [-0.5,  0.25],
+    [-0.5, -0.25]
+  ];
+  PH.rectangle(1, 0.5);
+
+  expect(PH.rectangle(1, 0.5)).toStrictEqual(output);
+});

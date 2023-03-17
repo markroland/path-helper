@@ -449,6 +449,14 @@ PH.polygon(4, 1.0, Math.PI/4);
 ]
 ```
 
+### rectangle
+
+Create a rectangle centered at the origin. Specify the width and height.
+
+```js
+PH.rectangle(1, 0.5);
+```
+
 ### ellipse
 
 Create an ellipse (oval) centered at the origin. Specify the width, height, and number of segments.
