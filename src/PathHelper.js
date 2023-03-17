@@ -2110,15 +2110,26 @@ class PathHelper {
    * @param {number} [smooth_window=0] - An optional smoothing window value.
    * @param {number} [smooth_repeat=1] - An optional repetition of the smoothing window. Repeating a smaller
    * smoothing window more times keeps sharper angles while still smoothing straight lines.
+   * @param {boolean} [anchor_start=false] - Whether to freeze the first point or not. Default is based on legacy behavior.
+   * @param {boolean} [anchor_end=true] - Whether to freeze the last point or not. Default is based on legacy behavior.
    * @param {array} - A Path array
    */
-  noisify(path, max_segment_length, max_noise, gaussian = false, force_close = false, smooth_window = 0, smooth_repeat = 1) {
+  noisify(path, max_segment_length, max_noise, gaussian = false, force_close = false, smooth_window = 0, smooth_repeat = 1, anchor_start = false, anchor_end = true) {
 
     // Break full path into segments
     let path2 = this.dividePathComplete(path, max_segment_length);
 
-    let newpath = []
-    for (let i = 0; i < path2.length-1; i++) {
+    let newpath = [];
+
+    let i_min = 0;
+    if (anchor_start) {
+      newpath.push(path2[0]);
+      i_min = 1;
+    }
+
+    let i_max = path2.length-1;
+
+    for (let i = i_min; i < i_max; i++) {
 
       let noise;
 
@@ -2138,9 +2149,33 @@ class PathHelper {
     }
 
     // Add last point
-    newpath.push(path2[path2.length-1]);
+    if (anchor_end) {
+      newpath.push(path2[path2.length-1]);
+    } else {
 
-    // Force a close shape (end point equals start point)
+      let new_point = path2[path2.length-1];
+
+      let noise;
+
+      if (gaussian) {
+        noise = this.getGaussianRandom() * max_noise;
+      } else {
+        noise = this.getRandom(-max_noise, max_noise);
+      }
+
+      let i = path2.length-1;
+      let delta_y = path2[i][1] - path2[i-2][1];
+      let delta_x = path2[i][0] - path2[i-2][0];
+      let theta = Math.atan2(delta_y, delta_x);
+      new_point = [
+        path2[i][0] + noise * Math.cos(theta + Math.PI/2),
+        path2[i][1] + noise * Math.sin(theta + Math.PI/2)
+      ];
+
+      newpath.push(new_point);
+    }
+
+    // Force a closed shape (end point equals start point)
     if (force_close) {
       if (!this.pointEquals(newpath[0], newpath[newpath.length-1])) {
         newpath.push(newpath[0]);

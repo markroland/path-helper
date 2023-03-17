@@ -1107,6 +1107,10 @@ This accepts a number of parameters that impact the quality of the line:
    path after receiving noise. This creates smoother, wavier lines
  - `smooth_repeat`: Use this in conjunction with `smooth_window` in order to repeat
    the `smooth_window` multiple times, making the line even smoother.
+ - `anchor_start`: Set to true if you want the path's first point to keep its position.
+   Defaults to false to maintain legacy behavior.
+ - `anchor_end`: Set to true if you want the path's last point to keep its position.
+   Defaults to true to maintain legacy behavior.
 
 ### smoothPath
 
