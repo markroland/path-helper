@@ -183,12 +183,12 @@ class PathHelper {
 
   /**
    * Get a Random Number between two values (inclusive)
-   * @param {number} min - The lower bound of acceptable values
-   * @param {number} max - The upper bound of acceptable values
+   * @param {number} [min=0] - The lower bound of acceptable values
+   * @param {number} [max=1] - The upper bound of acceptable values
    * @param {function} prng - An optional Psuedo-random number generator function
    * @return {number} - A randomly selected number
    */
-  getRandom(min, max, prng = null) {
+  getRandom(min = 0, max = 1, prng = null) {
     if (typeof prng == 'function') {
       return prng() * (max - min) + min;
     } else if (typeof this.prng == 'function') {

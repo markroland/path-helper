@@ -237,7 +237,8 @@ PH.getRndInteger(1, 10);
 
 Get a random Number between two values (inclusive).
 This can take an optional Psudeo-Random Number Generator (PRNG) function as a final parameter,
-which can help with the creation of deterministic results.
+which can help with the creation of deterministic results. This has a default range of 0 to 1
+to match Math.random().
 
 ```js
 PH.getRandom(1, 3);
