@@ -2565,7 +2565,7 @@ class PathHelper {
       }
       new_path.push(path[j])
     }
-    if (new_path.length >= 1) {
+    if (new_path.length > 1) {
       new_paths.push(new_path);
     }
     return new_paths;
