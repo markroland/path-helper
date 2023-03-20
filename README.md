@@ -23,6 +23,8 @@ This is a new expiremental feature. This will start a local web server where cla
 npm run demo
 ```
 
+Open http://localhost:8000 in your browser.
+
 Testing
 -------
 

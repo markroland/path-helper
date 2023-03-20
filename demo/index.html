@@ -50,21 +50,6 @@
     canvas.setAttribute('width', width);
     canvas.setAttribute('height', height);
 
-    function demo1() {
-
-      // Create new class object
-      const PH = new PathHelper();
-
-      // Draw a 6-sided polygon of radius 100
-      let path = PH.polygon(6, 100);
-
-      // Center path
-      path = PH.translatePath(path, [width/2, height/2]);
-
-      // Draw the path to the canvas
-      draw(path);
-    }
-
     function init() {
       if (canvas.getContext) {
 
@@ -72,18 +57,20 @@
         // window.requestAnimationFrame(demo1);
 
         // Animation Option 2
-        return setInterval(demo1, speed);
+        // return setInterval(polygon, speed);
 
       } else {
         console.log('Canvas not found');
       }
     }
 
-    function draw(path) {
+    function draw(paths) {
 
       // Get Canvas Context
       // Setting alpha false is a performance optimization
       var ctx = canvas.getContext('2d', { alpha: false });
+
+      const show_points = false;
 
       // Clear canvas
       if (loop == 0) {
@@ -92,25 +79,50 @@
         // ctx.clearRect(0, 0, width, height);
 
         // Option 2: Fill with a color
-        ctx.fillStyle = 'white';
+        ctx.fillStyle = "white";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
 
-      // Draw path
-      if (path.length > 0) {
-        ctx.beginPath();
-        ctx.moveTo(path[0][0], path[0][1]);
-        for (let p = 1; p < loop; p++) {
-          ctx.lineTo(path[p][0], path[p][1]);
+      // Draw paths
+      for (let i = 0; i < paths.length; i++) {
+
+        const path = paths[i];
+
+        if (path.length > 0) {
+
+          if (show_points) {
+            ctx.fillStyle = 'rgba(0, 255, 0, 0.5)';
+            ctx.beginPath();
+            ctx.arc(path[0][0], path[0][1], 4, -0.5 * Math.PI, 0.5 * Math.PI);
+            ctx.fill();
+            ctx.fillStyle = 'rgb(0, 0, 255, 0.5)';
+            for (let i = 1; i < path.length - 1; i++) {
+              ctx.beginPath();
+              ctx.arc(path[i][0], path[i][1], 2, 0, 2 * Math.PI);
+              ctx.fill();
+            }
+            ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
+            ctx.beginPath();
+            ctx.arc(path[path.length - 1][0], path[path.length - 1][1], 4, 0.5 * Math.PI, -0.5 * Math.PI);
+            ctx.fill();
+          }
+
+          ctx.beginPath();
+          ctx.strokeStyle = 'black';
+          ctx.moveTo(path[0][0], path[0][1]);
+          let p_max = path.length;
+          for (let p = 1; p < p_max; p++) {
+            ctx.lineTo(path[p][0], path[p][1]);
+          }
+          ctx.stroke();
         }
-        ctx.stroke();
       }
 
       // Increment loop
       loop++;
 
       // Reset cycle
-      if (loop > path.length) {
+      if (loop > paths.length) {
         loop = 0;
         cycle++;
         if (cycle > max_cycles) {
@@ -128,6 +140,11 @@
 
     let refreshIntervalId = init();
 
+  </script>
+
+  <script type="text/javascript" src="/demos/polygon.js"></script>
+  <script>
+    polygon();
   </script>
 
 </body>

@@ -22,25 +22,31 @@ const port = 8000;
 // Handle requests for the root of the app
 app.get('/', (req, res) => {
 
-  // Read in HTML
-  let html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
-
-  // // Add sketch data to HTML
-  // html = html.replace("const sketches = []", "const sketches = " + JSON.stringify(sketches));
-
-  // // Add Commit hash to HTML (if hash available)
-  // const revision = require('child_process')
-  //   .execSync('git -C ' + __dirname + ' rev-parse --short HEAD')
-  //   .toString().trim();
-  // if (revision !== '') {
-  //   html = html.replace("const commit_hash = ''", "const commit_hash = '" + revision + "'");
-  // }
-
-  res.send(html);
-
   // Send unmodified file
-  // res.sendFile(path.join(__dirname, 'public/index.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 
+  // Example of dynamically modifying file contents prior to returning:
+
+  // // Read in HTML
+  // let html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
+
+  // // // Add sketch data to HTML
+  // // html = html.replace("const sketches = []", "const sketches = " + JSON.stringify(sketches));
+
+  // // // Add Commit hash to HTML (if hash available)
+  // // const revision = require('child_process')
+  // //   .execSync('git -C ' + __dirname + ' rev-parse --short HEAD')
+  // //   .toString().trim();
+  // // if (revision !== '') {
+  // //   html = html.replace("const commit_hash = ''", "const commit_hash = '" + revision + "'");
+  // // }
+
+  // res.send(html);
+});
+
+// Send unmodified file demo JS file
+app.get('/demos/*.js', (req, res) => {
+  res.sendFile(path.join(__dirname, '/demos/' + req.params[0] + '.js'));
 });
 
 // Serve class source file
