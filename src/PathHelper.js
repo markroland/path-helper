@@ -201,6 +201,7 @@ class PathHelper {
   /**
    * Get a Random number within a Gaussian Distribution probability
    * From Stack Overflow - https://stackoverflow.com/a/49434653
+   * Uses the Box-Muller transform (https://en.wikipedia.org/wiki/Box%E2%80%93Muller_transform)
    * Currently unverified
    * @param {number} [u=0] - Should be left at zero
    * @param {number} [v=0] - Should be left at zero
