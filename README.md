@@ -897,6 +897,28 @@ PH.closedPath(path);
 // Output is True
 ```
 
+### selfIntersectingPath
+
+Determine if a path intersects, or overlaps, with itself.
+
+### simplePolygon
+
+Determine if a path represents a shape that is a simple polygon, meaning that the path
+is a closed shape that does not intersect itself.
+
+### complexPolygon
+
+Determine if a path represents a shape that is a complex polygon, meaning that the path
+is a closed shape that intersects itself.
+
+### convexPolygon
+
+Determine if a path represents a shape that is a convex polygon.
+
+### concavePolygon
+
+Determine if a path represents a shape that is a concave polygon.
+
 ### intersect_point
 
 Calculate the location where two lines intersect.

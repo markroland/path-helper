@@ -1,6 +1,6 @@
 {
   "name": "@markroland/path-helper",
-  "version": "1.22.1",
+  "version": "1.23.0",
   "description": "Utility functions for working with points, paths and geometry.",
   "main": "src/PathHelper.js",
   "scripts": {

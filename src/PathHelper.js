@@ -1406,6 +1406,160 @@ class PathHelper {
   }
 
   /**
+   * Determine if a path intersects with itself.
+   * For the purpose of this method, closed paths - where the first and last
+   * points are coincident - are not considered to be self-interesecting.
+   * @param {array} path - A Path array
+   * @returns {boolean} True if the path intersects itself, false otherwise
+   **/
+  selfIntersectingPath(path) {
+
+    // Note: No need to test the final two segments since any existing
+    // intersections would have already been found and two consecutive
+    // segments (3 points) can't intersect
+    for (let i = 0; i < path.length - 2; i++) {
+
+      const segment = [
+        path[i],
+        path[i+1]
+      ];
+
+      // Check for an intersection between the segment being analyzed (segment)
+      // and each remaining segment (test_segment) of the path
+      for (let j = i + 2; j < path.length - 1; j++) {
+
+        const test_segment = [
+          path[j],
+          path[j+1]
+        ];
+
+        // Check for intersection
+        let intersection = this.getLineLineCollision(
+          {"x": segment[0][0], "y": segment[0][1]},
+          {"x": segment[1][0], "y": segment[1][1]},
+          {"x": test_segment[0][0], "y": test_segment[0][1]},
+          {"x": test_segment[1][0], "y": test_segment[1][1]}
+        );
+
+        // Return true as soon as any intersection is determined
+        if (intersection !== false) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Determine if a path is a simple polygon. A simple polygon
+   * is a closed path (first and last points are coincident) that
+   * does not intersect itself.
+   * @param {array} path - A Path array
+   * @returns {boolean} True if the path is a simple polygon, false otherwise
+   **/
+  simplePolygon(path) {
+
+    // Check that the path is closed and therefore a valid "shape"
+    if (!this.closedPath(path)) {
+      return false;
+    }
+
+    // Check that the path is not self-intersecting
+    if (this.selfIntersectingPath(path)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * Determine if a path is a complex polygon. A complex polygon
+   * is a closed path (first and last points are coincident) that
+   * intersects itself.
+   * @param {array} path - A Path array
+   * @returns {boolean} True if the path is a complex polygon, false otherwise
+   **/
+  complexPolygon(path) {
+
+    // Check that the path is closed and self-intersects
+    if (this.closedPath(path) && this.selfIntersectingPath(path)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Determine if a path is a convex polygon.
+   * @param {array} path - A Path array
+   * @returns {boolean} True if the path is a convex polygon, false otherwise
+   **/
+  convexPolygon(path) {
+
+    // Check that the shape is a simple polygon (closed and not self-intersecting)
+    if (!this.simplePolygon(path)) {
+      throw 'The Path is not a simple polygon.';
+      return false;
+    }
+
+    let this_sign = 0;
+    let last_sign = 0;
+    for (let i = 1; i < path.length; i++) {
+
+      //     (A: p1)
+      //       /
+      //      /
+      //     /________
+      //    (C: p2)   (B: p3)
+      const p1 = path[i-1];
+      const p2 = path[i];
+      const p3 = path[i+2];
+
+      let vector_a = [
+        p1[0] - p2[0],
+        p1[1] - p2[1],
+        0
+      ];
+      let vector_b = [
+        p3[0] - p2[0],
+        p3[1] - p2[1],
+        0
+      ];
+      let cross_product = this.crossProduct(vector_a, vector_b);
+
+      // Check the z-direction of the Cross Product
+      if (cross_product[2] > 0) {
+        this_sign = 1;
+      } else {
+        this_sign = -1;
+      }
+
+      // Check iterations after the first iteration
+      if (i > 1) {
+
+        // If the sign/direction has changed then the shape is not Convex
+        if (this_sign != last_sign) {
+          return false;
+        }
+      }
+
+      last_sign = this_sign;
+    }
+
+    return true;
+  }
+
+  /**
+   * Determine if a path is a concave polygon.
+   * @param {array} path - A Path array
+   * @returns {boolean} True if the path is a concave polygon, false otherwise
+   **/
+  concavePolygon(path) {
+    return !this.convexPolygon(path);
+  }
+
+  /**
    * Calculate the location where two lines (p1-to-p2 and p3-to-p4) intersect
    * Copied from https://editor.p5js.org/mwburke/sketches/h1ec1s6LG
    * @param {array} p1 - Starting point of Line A
@@ -1438,7 +1592,7 @@ class PathHelper {
    * @param {array} p1 - A point array containing two values for x and y. End Point of Line A
    * @param {array} p2 - A point array containing two values for x and y. Start Point of Line B
    * @param {array} p3 - A point array containing two values for x and y. End Point of Line B
-   * @returns Boolean True if the lines intersect, false otherwise
+   * @returns {} An intersection point object {x,y} if an intersection is found. False otherwise.
    */
   getLineLineCollision(p0, p1, p2, p3) {
 
