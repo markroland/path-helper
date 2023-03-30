@@ -1091,7 +1091,8 @@ to be a private method of the class.
 
 ### extendLine
 
-Extend the line segment between points A and B by an amount in either direction
+Extend the line segment between points A and B by an amount in either direction.
+This works for 2D and 3D points.
 
 ```
           A          B

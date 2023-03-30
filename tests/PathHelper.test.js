@@ -95,3 +95,31 @@ test('rectangle', () => {
 
   expect(PH.rectangle(1, 0.5)).toStrictEqual(output);
 });
+
+test('extendLine', () => {
+
+  const path = [
+    [0, 0],
+    [1, 1]
+  ];
+
+  let extended_path = PH.extendLine(path[0], path[1], 0, 1);
+
+  let distance = PH.distance(extended_path[0], extended_path[1]);
+
+  expect(distance).toBeCloseTo(2.414, 3);
+});
+
+test('extendLine3D', () => {
+
+  const path = [
+    [0, 0, 0],
+    [1, 1, 1]
+  ];
+
+  let extended_path = PH.extendLine(path[0], path[1], 0, 1);
+
+  let distance = PH.distance(extended_path[0], extended_path[1]);
+
+  expect(distance).toBeCloseTo(2.732, 3);
+});
