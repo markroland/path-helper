@@ -1399,7 +1399,7 @@ class PathHelper {
     if (path.length < 3) {
       return false;
     }
-    if (this.pointEquals(path[path.length-1], path[0], 0.0001)) {
+    if (this.pointEquals(path[path.length-1], path[0], threshold)) {
       return true;
     }
     return false;
