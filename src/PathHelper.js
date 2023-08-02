@@ -1949,8 +1949,10 @@ class PathHelper {
   /**
    * Offset a Path
    * @param {array} path - An array of points. Must contain at least 3 points.
-   * @param {number} offset - the offset distance of the path. A negative number
-   * represents an "inside" offset for an acute angle ACB
+   * @param {number|function} offset - the offset distance of the path. A negative number
+   * represents an "inside" offset for an acute angle ACB. A function can also be used
+   * where the input value is a number betweeen 0 and 1 representing the current point's
+   * array index as a percentage. The output of the function is a numerical offset value.
    * @param {boolean} [prevent_knots=false] - Remove segments of the offset that
    * intersect with themselve in order to support wider offset values
    * @returns {array} A multidimensional path array of points
@@ -1989,15 +1991,26 @@ class PathHelper {
     } else {
 
       // Open path
-      for (let i = 0; i <= source_path.length-3; i++) {
+      let i_max = source_path.length-3;
+      for (let i = 0; i <= i_max; i++) {
         let j = i + 1;
         let k = i + 2;
-        let offset_angle = this.offsetAngle(source_path[i], source_path[j], source_path[k], -offset);
+
+        // Determine the offset distance as a static value from the input or as a function
+        // of the path's distance (0.0 - 1.0)
+        let offset_dist;
+        if (typeof offset == "function") {
+          offset_dist = offset(i/i_max);
+        } else {
+          offset_dist = offset;
+        }
+
+        let offset_angle = this.offsetAngle(source_path[i], source_path[j], source_path[k], -offset_dist);
 
         if (i === 0) {
           offset_path.push(offset_angle[0]);
           offset_path.push(offset_angle[1]);
-        } else if (i === source_path.length-3) {
+        } else if (i === i_max) {
           offset_path.push(offset_angle[1]);
           offset_path.push(offset_angle[2]);
         } else {

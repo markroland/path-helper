@@ -1068,6 +1068,21 @@ PH.offsetPath([[0, 0], [0, 0.5], [0, 1]], 0.2);
 ]
 ```
 
+A function can also be used as the second parameter. The functions's input value is a
+number betweeen 0 and 1 representing the current point's array index as a percentage.
+The output of the function is a numerical offset value. For example an offset function could
+be:
+
+```js
+/**
+ * Function returns an offset value describing a parabola
+ **/
+function(val) {
+    const max_offset = 0.01;
+    return max_offset * (-Math.pow(2 * val - 1, 2) + 1);
+}
+````
+
 ### removeKnots
 
 Remove parts of a path where it intersects with itself creating a loop/knot.
