@@ -826,19 +826,33 @@ class PathHelper {
   }
 
   /**
-   * Rotate Path by angle theta around origin (0,0)
+   * Rotate Path by angle theta around a center point ([0,0] by default)
    * @param {array} path - A Path array
    * @param {number} theta - The number of radians to
    * rotate the path. Positive rotation is clockwise.
+   * @param {array[]} center - A Point array. The point around which to rotate.
    * @returns {array} A Path array
    **/
-  rotatePath(path, theta) {
+  rotatePath(path, theta, center = [0,0]) {
     return path.map(function(a){
-      return [
-        a[0] * Math.cos(theta) - a[1] * Math.sin(theta),
-        a[0] * Math.sin(theta) + a[1] * Math.cos(theta)
-      ];
-    });
+      return this.rotatePoint(a, theta, center);
+    }, this);
+  }
+
+  /**
+   * Rotate a point around another point
+   * Reference: https://danceswithcode.net/engineeringnotes/rotations_in_2d/rotations_in_2d.html
+   * @param {array} point - A Point array
+   * @param {number} theta - The number of radians to
+   * rotate the path. Positive rotation is clockwise.
+   * @param {array[]} center - A Point array. The point around which to rotate.
+   * @returns {array} A Point array
+   **/
+  rotatePoint(point, theta, center = [0,0]) {
+    return [
+      (point[0] - center[0]) * Math.cos(theta) - (point[1] - center[1]) * Math.sin(theta) + center[0],
+      (point[0] - center[0]) * Math.sin(theta) + (point[1] - center[1]) * Math.cos(theta) + center[1]
+    ];
   }
 
   /**

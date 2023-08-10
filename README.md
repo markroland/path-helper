@@ -693,7 +693,7 @@ PH.translatePath(path, [0.5, 0.5]);
 
 ### rotatePath
 
-Rotate a path around the origin using the [Rotation Matrix](https://en.wikipedia.org/wiki/Rotation_matrix).
+Rotate a path around a point using the [Rotation Matrix](https://en.wikipedia.org/wiki/Rotation_matrix).
 
 ```js
 let path = [
@@ -713,6 +713,21 @@ PH.rotatePath(path, 0.5 * Math.PI);
     [ 0,  1],
     [-1,  0]
 ]
+```
+
+### rotatePoint
+
+Rotate a point around another point using the [Rotation Matrix](https://en.wikipedia.org/wiki/Rotation_matrix).
+
+```js
+let a = [1, 0];
+let b = [0.5, 0];
+console.log(PH.rotatePoint(a, 0.5 * Math.PI, b));
+```
+
+**Expected Output:**
+```js
+[0.5, 0.5]
 ```
 
 ### reflectPath

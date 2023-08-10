@@ -82,6 +82,17 @@ test('shearPath', () => {
   expect(PH.shearPath(path, "vertical", 1)).toStrictEqual([ [ 0, 0 ], [ 0, 1 ], [ 1, 2 ], [ 1, 1 ] ]);
 });
 
+test('rotatePoint', () => {
+
+  const a = [1, 0];
+  const b = [0.5, 0];
+  const theta = 0.5 * Math.PI;
+
+  const c = [0.5, 0.5];
+
+  expect(PH.rotatePoint(a, theta, b)).toStrictEqual(c);
+});
+
 test('rectangle', () => {
 
   const output = [
