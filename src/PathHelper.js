@@ -699,7 +699,7 @@ class PathHelper {
    * @param {array} p1 - Control Point number 1. This is the start of the curve path.
    * @param {array} p2 - Control Point number 2. This is the control point nearest the start point p1.
    * @param {array} p3 - Control Point number 3. This is the control point nearest the end point p4.
-   * @param {array} p4 - Control Point number 3. This is the end of the curve path.
+   * @param {array} p4 - Control Point number 4. This is the end of the curve path.
    * @param {number} segments - The number of segments to use to represent the curve. A
    * higher number will create a smoother, high-resolution curve
    * @returns {array} A Path array
