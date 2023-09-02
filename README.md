@@ -1134,13 +1134,11 @@ This works for 2D and 3D points.
 PH.extendLine([0, 0], [1, 1], 0.2, 0.2);
 ```
 
-**Expected Output:**
-```js
-[
-    [-0.1414, -0.1414],
-    [ 1.1414,  1.1414]
-]
-```
+### extendPath
+
+Extend a multi-point path by one point in the same direction and with
+the same distance as the previous two points. A second optional "factor" parameter
+can be set to either decrease or increase the curvature of the path.
 
 ### superimposeFunction
 

@@ -160,3 +160,7 @@ test('extendLine3D', () => {
 
   expect(distance).toBeCloseTo(2.732, 3);
 });
+
+test('extendPath', () => {
+  // TBD
+});
