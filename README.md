@@ -732,10 +732,10 @@ console.log(PH.rotatePoint(a, 0.5 * Math.PI, b));
 
 ### reflectPath
 
-Reflect a Path about an axis (X or Y)
+Reflect a Path vertically or horizontally about an axis (X or Y)
 
 ```js
-PH.reflectPath([[1, 1], [2, 2]], "x");
+PH.reflectPath([[1, 1], [2, 2]], "x", 0.0);
 // Expected output is [[-1, 1], [-2, 2]]
 ```
 

@@ -69,6 +69,32 @@ test('matrixMultiply', () => {
   expect(PH.matrixMultiply(c,a)).toStrictEqual([ [ 2, 4, 6 ] ]);
 });
 
+test('reflectPath', () => {
+
+  const original_path = [
+    [0.5, 0.5],
+    [1.0, 1.0]
+  ];
+
+  let reflection_A = PH.reflectPath(original_path, "x", 0);
+  expect(reflection_A).toStrictEqual([ [ -0.5, 0.5 ], [ -1.0, 1.0 ] ]);
+
+  let reflection_B = PH.reflectPath(original_path, "horizontal", 0);
+  expect(reflection_B).toStrictEqual([ [ -0.5, 0.5 ], [ -1.0, 1.0 ] ]);
+
+  let reflection_C = PH.reflectPath(original_path, "horizontal", 0.5);
+  expect(reflection_C).toStrictEqual([ [ 0.5, 0.5 ], [ 0.0, 1.0 ] ]);
+
+  let reflection_D = PH.reflectPath(original_path, "y", 0);
+  expect(reflection_D).toStrictEqual([ [ 0.5, -0.5 ], [ 1.0, -1.0 ] ]);
+
+  let reflection_E = PH.reflectPath(original_path, "vertical", 0);
+  expect(reflection_E).toStrictEqual([ [ 0.5, -0.5 ], [ 1.0, -1.0 ] ]);
+
+  let reflection_F = PH.reflectPath(original_path, "vertical", 0.5);
+  expect(reflection_F).toStrictEqual([ [ 0.5, 0.5 ], [ 1.0, 0.0 ] ]);
+});
+
 test('shearPath', () => {
 
   let path = [
