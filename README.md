@@ -1171,7 +1171,23 @@ This accepts a number of parameters that impact the quality of the line:
 Smooth a path by performing a one dimensional convolution on the X
 and Y components of each point in the path. The `size` parameter defines
 the window size. A larger window size will produce a smoother, less
-defined path.
+defined path. There are different boundary treatments supported:
+
+- preserve: This is like "trim", except the input path's end points are appended.
+  This was the function's original behavior. This method can create relatively long
+  segments toward the end of the line that can look out of place.
+
+- trim: This drops the points that are near the ends and don't have a full smoothing
+  window. This method does not create or add additional path data. It will shorten the path.
+
+- weight: This duplicates the endpoints to accomodate the window size. It will shorten
+  the path, but not as much as the trim method. It can result in some curling toward
+  the endpoints since they are repeated.
+
+- extrapolate: This adds additional points that attempt to be at the same interval/distance
+  as segments at the end of the path and point in the same direction as the opposite side
+  of the window. This maintains the original length and solves the flat ending segemnts
+  of the "preserve" method.
 
 ### smoothCorners
 

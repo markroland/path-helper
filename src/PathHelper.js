@@ -2511,11 +2511,16 @@ class PathHelper {
    * Smooth a path
    * @param {array} path - A Path array
    * @param {number} size - The smoothing window size. This should be an odd number
-   * @param {string} [boundary="preserve"|"weight"|"extend"|"trim"] - Boundary algorithm.
-   * Crop - This drops the points that are near the ends and don't have a full smoothing window.
-   * End points are preserved.
-   * Original - This keeps the original points that are near the ends and don't have a full smoothing window.
-   * Weighted - This adds additional points at the endpoints so the smoothing window smoothes toward the endpoints.
+   * @param {string} [boundary="preserve"|"weight"|"extrapolate"|"trim"] - Boundary algorithm.
+   * preserve - This is like "trim", except the input path's end points are appended. This was the function's original behavior.
+   * This method can create relatively long segments toward the end of the line that can look out of place.
+   * trim - This drops the points that are near the ends and don't have a full smoothing window. This method
+   * does not create or add additional path data. It will shorten the path.
+   * weight - This duplicates the endpoints to accomodate the window size. It will shorten the path, but not as much
+   * as the trim method. It can result in some curling toward the endpoints since they are repeated.
+   * extrapolate - This adds additional points that attempt to be at the same interval/distance as segments at the end of the path
+   * and point in the same direction as the opposite side of the window. This maintains the original length and solves the
+   * flat ending segemnts of the "preserve" method.
    * @returns {array} A Path array
    **/
   smoothPath(path, size = 3, boundary = "preserve") {
@@ -2524,8 +2529,8 @@ class PathHelper {
       throw 'Smoothing window size should be greater than or equal to 3.';
     }
 
-    if (!["preserve", "weight", "extend", "trim"].includes(boundary)) {
-      throw '"boundary" parameter must be one of: preserve, weight, extend, trim';
+    if (!["preserve", "weight", "extrapolate", "trim"].includes(boundary)) {
+      throw '"boundary" parameter must be one of: preserve, weight, extrapolate, trim';
     }
 
     // Return the original path if the Path is shorter than the smoothing size
@@ -2548,7 +2553,7 @@ class PathHelper {
     const kernel = new Array(size).fill(v);
 
     // Set the window index range
-    let range = (size - 1)/2;
+    let range = (size - 1) / 2;
 
     if (boundary == "weight") {
       // Pad to fill the window size
@@ -2556,7 +2561,7 @@ class PathHelper {
       path = new Array(padding).fill(path[0]).concat(path);
       path = path.concat(new Array(padding).fill(path[path.length-1]));
 
-    } else if (boundary == "extend") {
+    } else if (boundary == "extrapolate") {
 
       const i_max = Math.floor(size/2);
 
@@ -2567,29 +2572,8 @@ class PathHelper {
         path[1]
       );
 
-      // Get direction of last segment
+      // Get direction from original path endpoint to smoothing window extent
       let first_segment_angle = Math.atan2(
-        path[0][1] - path[1][1],
-        path[0][0] - path[1][0]
-      );
-
-      // Method 2: Calculate the average direction (angle)
-      // based on average of previous points
-      // let sum_angle = 0;
-      // for (let i = 1; i <= i_max; i++) {
-      //   let loop_angle = Math.atan2(
-      //     path[0][1] - path[i][1],
-      //     path[0][0] - path[i][0]
-      //   );
-      //   if (loop_angle < Math.PI) {
-      //     loop_angle += Math.PI;
-      //   }
-      //   sum_angle += loop_angle;
-      // }
-      // first_segment_angle = (sum_angle / i_max);
-
-      // Method 3
-      first_segment_angle = Math.atan2(
         path[0][1] - path[i_max][1],
         path[0][0] - path[i_max][0]
       );
@@ -2611,30 +2595,8 @@ class PathHelper {
         path[path_last_index - 1]
       );
 
-      // Get direction of last segment
+      // Get direction from original path endpoint to smoothing window extent
       let last_segment_angle = Math.atan2(
-        path[path_last_index][1] - path[path_last_index - 1][1],
-        path[path_last_index][0] - path[path_last_index - 1][0]
-      );
-
-      // Method 2: Calculate the average direction (angle)
-      // based on average of previous points
-      // sum_angle = 0;
-      // for (let i = 1; i <= i_max; i++) {
-      //   let loop_angle = Math.atan2(
-      //     path[path_last_index - i][1] - path[path_last_index][1],
-      //     path[path_last_index - i][0] - path[path_last_index][0]
-      //   );
-
-      //   if (loop_angle < Math.PI) {
-      //     loop_angle += Math.PI;
-      //   }
-      //   sum_angle += loop_angle;
-      // }
-      // last_segment_angle = (sum_angle / i_max) + Math.PI;
-
-      // Method 3
-      last_segment_angle = Math.atan2(
         path[path_last_index][1] - path[path_last_index - i_max][1],
         path[path_last_index][0] - path[path_last_index - i_max][0]
       );
@@ -2648,29 +2610,20 @@ class PathHelper {
       }
     }
 
-    // Temp Debug
-    // return path;
-
     let i_min = 0;
     let i_max = path.length - 1;
 
-    // First point won't have a bend
+    // Adjust beginning of path
     if (!closed_path) {
       i_min += range;
       i_max = path.length - range;
 
       if (boundary == "preserve") {
         new_path.push(path[0]);
-      } else if (boundary == "extend") {
-        new_path = [];
-      } else {
-        // new_path = new_path.concat(
-        //   path.slice(0, Math.floor(size/2))
-        // );
       }
     }
 
-    // Loop through path
+    // Move smoothing window across path
     for (let i = i_min; i < i_max; i++) {
 
       // Initialize the X/Y component summations
@@ -2696,23 +2649,13 @@ class PathHelper {
       new_path.push(sum);
     }
 
-    // Last point won't have a bend
-    if (!closed_path) {
-
+    // Adjust end of path
+    if (closed_path) {
+      new_path.push(new_path[0]);
+    } else {
       if (boundary == "preserve") {
         new_path.push(path[path.length - 1]);
-      } else if (boundary == "extend" || boundary == "weight") {
-        // Do nothing
-        // console.log('do nothing');
-      } else {
-        if (size > 1) {
-          // new_path = new_path.concat(
-          //   path.slice(0, -Math.floor(size/2))
-          // );
-        }
       }
-    } else {
-      new_path.push(new_path[0]);
     }
 
     return new_path;
