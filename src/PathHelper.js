@@ -3621,17 +3621,22 @@ class PathHelper {
               }
             }
 
-            // Add the intersection points if two are found. This
-            // works for a convex cropShape, but doesn't account
-            // for a cropShape that may have concave parts, which
-            // could allow more than 2 intersections.
-            if (intersections.length == 2) {
-              path.push(
-                [intersections[0].x, intersections[0].y],
-                [intersections[1].x, intersections[1].y]
-              );
-            }
+            if (intersections.length > 0) {
 
+              // Sort by X-position to determine order of intersection
+              intersections.sort(
+                (a, b) => (a.x > b.x) ? 1 : -1
+              );
+
+              // Add the intersection points
+              let j_max = Math.floor(intersections.length / 2);
+              for (let j = 0; j < j_max; j++) {
+                paths.push([
+                  [intersections[j*2].x, intersections[j*2].y],
+                  [intersections[j*2 + 1].x, intersections[j*2 + 1].y]
+                ]);
+              }
+            }
           }
         }
       }

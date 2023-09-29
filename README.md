@@ -1413,7 +1413,8 @@ Consider using pointsToPaths2 instead.
 ### cropToShape
 
 Crop paths to a bounding shape. This supports a threshold value that can
-be used to handle points that are near the boundary of the crop shape.
+be used to handle points that are near the boundary of the crop shape. This should be
+able to handle concave and convex polygons.
 
 ### cropToCircle
 
