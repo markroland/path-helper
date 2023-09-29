@@ -1486,8 +1486,6 @@ This has not been tested for other shapes.
 To Do:
 ------
 
- - Add optional rotation center point parameter to scalePath
- - Add optional rotation center point parameter to rotatePath
  - Generalize joinPaths to not include dimensions
  - Evaluate need for both cleanPath and simplify
  - Update lineCircleIntersect to work for a circle at any location
