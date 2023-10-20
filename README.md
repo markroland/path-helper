@@ -1487,7 +1487,6 @@ To Do:
 ------
 
  - Generalize joinPaths to not include dimensions
- - Evaluate need for both cleanPath and simplify
  - Update lineCircleIntersect to work for a circle at any location
  - Improve or remove circleInterceptPoints
 
