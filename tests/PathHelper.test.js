@@ -2,6 +2,21 @@ const PathHelper = require('./../src/PathHelper.js');
 
 const PH = new PathHelper();
 
+test('pathsToFixed', () => {
+  let path = [
+    [
+      [0.0001, 0.1501],
+      [1.1645, 1.5762]
+    ]
+  ];
+  expect(PH.pathsToFixed(path, 2)).toStrictEqual([
+    [
+      [0, 0.15],
+      [1.16, 1.58]
+    ]
+  ]);
+});
+
 test('getMin', () => {
   let path = [
     [-2,  1],

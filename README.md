@@ -134,6 +134,30 @@ Create a deep copy of a JavaScript array/object.
 This is useful so that paths can be duplicated and then manipulated
 independently without any references.
 
+### pathsToFixed
+
+Simplify the precision of floating point numbers in a Paths array.
+
+```js
+let path = [
+    [
+        [0.0001, 0.1501],
+        [1.1645, 1.5762]
+    ]
+];
+let new_path = PH.pathsToFixed(path, 2);
+```
+
+**Expected Output:**
+```js
+[
+    [
+        [0, 0.15],
+        [1.16, 1.58]
+    ]
+]
+```
+
 ### arrayColumn
 
 Get the values from a single column in the input array
