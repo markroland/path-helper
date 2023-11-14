@@ -4645,6 +4645,55 @@ class PathHelper {
   }
 
   /*************************************/
+  // Effects
+  /*************************************/
+
+  /**
+   * Add a "jot" or small mark near the end of the path
+   * @param {array} path - A Path Array
+   * @param {number} offset - The distance of the jot from the end of the path
+   * @param {number} length - The length of the jot line
+   * @param {number} rotation - The angle in radians that the jot may rotate in
+   * either a positive or negative direction (i.e. rotation range is twice this value)
+   * @return {array} A Path Array
+   **/
+  jot(path, offset, length, rotation = 0) {
+
+    // Ensure path is long enough
+    if (path.length < 2) {
+      throw "Path must have 2 or more points."
+    }
+
+    // Get direction of last segment
+    let angle = Math.atan2(
+      path[path.length - 1][1] - path[path.length - 2][1],
+      path[path.length - 1][0] - path[path.length - 2][0]
+    );
+
+    // Create the jot path
+    let jot = [
+      [
+        offset * Math.cos(angle),
+        offset * Math.sin(angle)
+      ],
+      [
+        (offset + length) * Math.cos(angle),
+        (offset + length) * Math.sin(angle)
+      ]
+    ];
+
+    // Rotate
+    if (rotation > 0) {
+      jot = this.rotatePath(jot, this.getRandom(-rotation, rotation));
+    }
+
+    // Move to end of path
+    jot = this.translatePath(jot, path[path.length - 1]);
+
+    return jot;
+  }
+
+  /*************************************/
   // Private Class Methods
   /*************************************/
 

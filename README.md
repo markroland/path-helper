@@ -1483,6 +1483,12 @@ Determine the "shadow" of an input shape at a certain translation
 vector. This has been proven for closed-path convex regular polygons.
 This has not been tested for other shapes.
 
+### jot
+
+Add a "jot" or small mark near the end of the path. The offset
+distance from the end of the path, the length of the mark,
+and a rotation range can be set.
+
 To Do:
 ------
 
