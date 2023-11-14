@@ -70,6 +70,36 @@ class PathHelper {
   }
 
   /**
+   * Convert the points in a path from an array to an object
+   * @param {array} path - A Path array of Points with first element
+   * as the x component and second element as the y component
+   * @returns {array} A Path array of Point objects with "x" and "y"
+   * properties
+   **/
+  pathPointsArrayToObject(path) {
+    let new_path = [];
+    for (let point of path) {
+      new_path.push({x: point[0], y: point[1]});
+    }
+    return new_path;
+  }
+
+  /**
+   * Convert the points in a path from an object to an array
+   * @param {array} path - A Path array of Point objects with "x" and "y"
+   * properties
+   * @returns {array} path - A Path array of Points with first element
+   * as the x component and second element as the y component
+   **/
+  pathPointsObjectToArray(path) {
+    let new_path = [];
+    for (let point of path) {
+      new_path.push([point.x, point.y]);
+    }
+    return new_path;
+  }
+
+  /**
    * Get the values from a single column in the input array
    * @param {array} arr - The input array
    * @param {number} n - The array offset to isolate

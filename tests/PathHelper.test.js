@@ -17,6 +17,28 @@ test('pathsToFixed', () => {
   ]);
 });
 
+test('pathPointsArrayToObject', () => {
+  let path = [
+    [0.0001, 0.1501],
+    [1.1645, 1.5762]
+  ];
+  expect(PH.pathPointsArrayToObject(path)).toStrictEqual([
+    {x: 0.0001, y: 0.1501},
+    {x: 1.1645, y: 1.5762}
+  ]);
+});
+
+test('pathPointsObjectToArray', () => {
+  let path = [
+    {x: 0.0001, y: 0.1501},
+    {x: 1.1645, y: 1.5762}
+  ];
+  expect(PH.pathPointsObjectToArray(path)).toStrictEqual([
+    [0.0001, 0.1501],
+    [1.1645, 1.5762]
+  ]);
+});
+
 test('getMin', () => {
   let path = [
     [-2,  1],

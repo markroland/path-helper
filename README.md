@@ -158,6 +158,43 @@ let new_path = PH.pathsToFixed(path, 2);
 ]
 ```
 
+### pathPointsArrayToObject
+
+Convert the points in a path from an array to an object
+
+```js
+PH.pathPointsArrayToObject([
+    [0.0001, 0.1501],
+    [1.1645, 1.5762]
+]);
+```
+
+**Expected Output:**
+```js
+[
+    {x: 0.0001, y: 0.1501},
+    {x: 1.1645, y: 1.5762}
+]
+```
+
+### pathPointsObjectToArray
+
+Convert the points in a path from an object to an array
+
+```js
+PH.pathPointsObjectToArray([
+    {x: 0.0001, y: 0.1501},
+    {x: 1.1645, y: 1.5762}
+]);
+```
+
+**Expected Output:**
+```js
+[
+    [0.0001, 0.1501],
+    [1.1645, 1.5762]
+]
+```
 ### arrayColumn
 
 Get the values from a single column in the input array
