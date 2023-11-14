@@ -473,6 +473,15 @@ PH.distance([0, 0, 0], [1, 1, 1]);
 // Output is 1.7320508075688772
 ```
 
+### midpoint
+
+Calculate the point equidistance from two points
+
+```js
+PH.midpoint([0, 0], [1, 1]);
+// Output is [0.5, 0.5]
+```
+
 ### angle
 
 Calculate the angle between 3 points

@@ -57,6 +57,10 @@ test('clamp', () => {
   expect(PH.clamp(110, min, max)).toStrictEqual(max);
 });
 
+test('midpoint', () => {
+  expect(PH.midpoint([0, 0], [1, 1])).toStrictEqual([0.5, 0.5]);
+});
+
 test('angle', () => {
   expect(PH.angle([1, 0], [0, 0], [1, 1])).toBeCloseTo(Math.PI/4, 6);
 });

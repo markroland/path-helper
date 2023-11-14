@@ -498,6 +498,19 @@ class PathHelper {
   }
 
   /**
+   * Calculate the point equidistance from two points
+   * @param {array} p1 - A Point array containing two values for x and y.
+   * @param {array} p2 - A Point array containing two values for x and y.
+   * @returns {array} - A Point array
+   **/
+  midpoint(p1, p2) {
+    return [
+      this.lerp(p1[0], p2[0], 0.5),
+      this.lerp(p1[1], p2[1], 0.5)
+    ];
+  }
+
+  /**
    * Calculate the angle between 3 points
    *
    *    (A: p1)
