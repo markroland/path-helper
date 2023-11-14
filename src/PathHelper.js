@@ -288,7 +288,7 @@ class PathHelper {
   }
 
   /**
-   * Perform a linear interpolation between two value
+   * Perform a linear interpolation between two values
    * @param {number} beginning - The start of the scale
    * @param {number} end - The end of the scale
    * @param {number} percent - The percentage (0.0 to 1.0) to be selected along the input range
@@ -366,7 +366,7 @@ class PathHelper {
   }
 
   /*************************************/
-  // Mathematical Formulas
+  // Mathematical Formulas and Calculations
   /*************************************/
 
   /**
