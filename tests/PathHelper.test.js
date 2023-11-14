@@ -49,6 +49,14 @@ test('getMin', () => {
   expect(PH.getMin(path)).toStrictEqual([-2, -3]);
 });
 
+test('clamp', () => {
+  const min = 0;
+  const max = 100;
+  expect(PH.clamp(10, min, max)).toStrictEqual(10);
+  expect(PH.clamp(-10, min, max)).toStrictEqual(min);
+  expect(PH.clamp(110, min, max)).toStrictEqual(max);
+});
+
 test('angle', () => {
   expect(PH.angle([1, 0], [0, 0], [1, 1])).toBeCloseTo(Math.PI/4, 6);
 });

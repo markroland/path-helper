@@ -288,6 +288,21 @@ class PathHelper {
   }
 
   /**
+   * Clamp a value within a range of numbers. If the input
+   * value is below the acceptable minimum, then the passed in
+   * minimum value will be returned. If the input value is
+   * over the acceptable maximum, then the passed in maximum value
+   * will be returned.
+   * @param {number} value - an input number
+   * @param {number} min - Minimum acceptable value
+   * @param {number} max - Maximum acceptable value
+   * @returns {number} The clamped value
+   **/
+  clamp(value, min, max) {
+    return Math.min(Math.max(value, min), max);
+  }
+
+  /**
    * Perform a linear interpolation between two values
    * @param {number} beginning - The start of the scale
    * @param {number} end - The end of the scale

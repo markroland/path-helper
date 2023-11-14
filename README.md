@@ -326,6 +326,24 @@ PH.map(2, 0, 10, -5, 5);
 // Output is -3
 ```
 
+### Clamp
+
+Constrain a value within a range of numbers. If the input
+value is below the acceptable minimum, then the
+minimum value will be returned. If the input value is
+over the acceptable maximum, then the maximum value
+will be returned.
+
+```js
+PH.clamp(10, 0, 100);
+// Output is 10
+
+PH.clamp(-10, 0, 100);
+// Output is 0
+
+PH.clamp(110, 0, 100);
+// Output is 100
+```
 ### lerp
 
 Perform a linear interpolation between two values
