@@ -1407,9 +1407,6 @@ Join Paths together when their endpoints are within a minimum distance of each o
 This is a recursive algorithm that will keep consolidating paths until no paths
 are left within the threshold distance of each other.
 
-*Note: There are currently margin/boundary conditions in this method that are highly specific
-to another project*
-
 ```
         A          B C           D
 Input:  ------------ -------------
@@ -1580,7 +1577,6 @@ and a rotation range can be set.
 To Do:
 ------
 
- - Generalize joinPaths to not include dimensions
  - Update lineCircleIntersect to work for a circle at any location
  - Improve or remove circleInterceptPoints
 

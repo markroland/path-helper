@@ -3046,19 +3046,11 @@ class PathHelper {
    * Join Paths together when endpoints within threshold distance of each other
    * @param {array} paths - An array of Path arrays
    * @param {number} [threshold=0.01] - The distance threshold below which points should be considered the same location.
-   *   The value is based on the Standard unit of canvas center to canvas nearest edge.
-   *   In thise case 1 = 1.5" (Default of 0.01 = 0.015" ~ 1/64")
    * @param {number} [active_path_index=0] - The index position of the paths input that is being analyzed
    * @param {number} [iteration=0] - A counter of function call iterations. Useful for debugging and stopping the recursion
    * @returns {array} An array of paths
    **/
   joinPaths(paths, threshold = 0.01, active_path_index = 0, iteration = 0) {
-
-    // Set border parameters
-    let min_x = -5/3;
-    let max_x = 5/3;
-    let min_y = -1;
-    let max_y = 1;
 
     let debug = false;
 
@@ -3169,65 +3161,8 @@ class PathHelper {
       return paths;
     }
 
-    // Check to see if both ends of the current path terminate on
-    // the edge of the drawing area
-    let first_point = paths[path_index][0];
-    last_point = paths[path_index][paths[path_index].length - 1];
-    let on_border = false;
-    if (!on_border) {
-      distance = this.distance(last_point, [min_x, last_point[1]]);
-      if (distance < threshold) {
-        on_border = true;
-      }
-    }
-    if (!on_border) {
-      distance = this.distance(last_point, [max_x, last_point[1]]);
-      if (distance < threshold) {
-        on_border = true;
-      }
-    }
-    if (!on_border) {
-      distance = this.distance(last_point, [last_point[0], min_y]);
-      if (distance < threshold) {
-        on_border = true;
-      }
-    }
-    if (!on_border) {
-      distance = this.distance(last_point, [last_point[0], max_y]);
-      if (distance < threshold) {
-        on_border = true;
-      }
-    }
-
-    // Check the beginning of the path only if the end of the path is
-    // on the border
-    if (on_border) {
-      distance = this.distance(first_point, [min_x, first_point[1]]);
-      if (distance > threshold) {
-        on_border = false;
-      }
-    }
-    if (on_border) {
-      distance = this.distance(first_point, [max_x, first_point[1]]);
-      if (distance > threshold) {
-        on_border = false;
-      }
-    }
-    if (on_border) {
-      distance = this.distance(first_point, [first_point[0], min_y]);
-      if (distance > threshold) {
-        on_border = false;
-      }
-    }
-    if (on_border) {
-      distance = this.distance(first_point, [first_point[0], max_y]);
-      if (distance > threshold) {
-        on_border = false;
-      }
-    }
-
     // If the target path is closed or on the border go to next path
-    if (overlap_count === 0 || on_border) {
+    if (overlap_count === 0) {
       active_path_index++;
     }
 
