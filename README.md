@@ -1228,6 +1228,10 @@ Extend a multi-point path by one point in the same direction and with
 the same distance as the previous two points. A second optional "factor" parameter
 can be set to either decrease or increase the curvature of the path.
 
+### limitPathDistance
+
+Limit a path's length to a maximum distance
+
 ### superimposeFunction
 
 Superimpose a function onto a path. For example, add a Sine Wave function onto any

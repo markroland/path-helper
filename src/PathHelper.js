@@ -2414,6 +2414,45 @@ class PathHelper {
   }
 
   /**
+   * Limit a Path's length to a maximum distance
+   * @param {array} path - A Path array
+   * @param {number} maximum_distance - The maximum distance, or length, of the path
+   * @returns {array} A Path array that is trimmed to be the maximum distance. If no
+   * trimming is necessary then the original path is returned.
+   **/
+  limitPathDistance(path, maximum_distance) {
+
+    // Distance accumulator
+    let total_distance = 0;
+
+    // Start the path with the first point
+    let new_path = [
+      path[0]
+    ];
+
+    for (let i = 1; i < path.length; i++) {
+
+      // Get distance of current segment
+      let segment_distance = Math.hypot(path[i][0] - path[i-1][0], path[i][1] - path[i-1][1]);
+
+      // If the total distance is below the threshold, then and the point (segment)
+      // Otherwise, if it goes over determine by how much and shorten that segment
+      // so that it meets the maximum distance
+      if (total_distance + segment_distance < maximum_distance) {
+        new_path.push(path[i]);
+        total_distance += segment_distance;
+      } else {
+        let subtraction_amount = (total_distance + segment_distance) - maximum_distance;
+        let new_segment = this.extendLine(path[i-1], path[i], 0, -subtraction_amount);
+        new_path.push(new_segment[1]);
+        return new_path;
+      }
+    }
+
+    return new_path;
+  }
+
+  /**
    * Superimpose a function on a path
    * @param {array} path - A Path array
    * @param {function} fn - A function used to modify the input path
