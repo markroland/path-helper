@@ -236,7 +236,7 @@ class PathHelper {
    * @param {number} [u=0] - Should be left at zero
    * @param {number} [v=0] - Should be left at zero
    * @param {function} prng - An optional Psuedo-random number generator function
-   * @return {number} - A randomly selected number
+   * @return {number} - A randomly selected number between 0.0 and 1.0
    */
   getGaussianRandom(u = 0, v = 0, prng = null) {
     // Converting [0,1) to (0,1)
