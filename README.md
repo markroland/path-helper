@@ -1378,6 +1378,12 @@ a maximum distance. This can be used to "upsample" a path so that
 smoothing, adding noise, or other follow-up transformations may
 be applied in a more uniform manner.
 
+### dashPath
+
+Turn a solid line/path into a dashed line. A distance can be specified
+for the length of the dash and the length of the gap. An optional
+parameter can be set to return the gaps instead of the dashes.
+
 ### decimatePath
 
 Randomly remove portions of a path. This is controlled by an `odds`

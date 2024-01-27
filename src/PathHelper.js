@@ -3032,6 +3032,128 @@ class PathHelper {
   }
 
   /**
+   * Turn a solid line/path into a dashed line
+   * @todo This currently calculates dashes and gaps. This could probably be
+   * optimized to only calculate one as necessary based on the value of "return_gaps"
+   * @param {array} path - A Path array
+   * @param {number} dash - The length of each dash
+   * @param {number} gap - The distance between each dash
+   * @param {boolean} [return_gaps=false] - Set to true to
+   * receive the gaps instead of dashes as the output
+   * @returns {array} An array of Path arrays
+   **/
+  dashPath(path, dash, gap, return_gaps = false) {
+
+    // Initialize return value
+    let dashes = {
+      "dashes": [],
+      "gaps": []
+    };
+
+    // --- Step 1: Upsample
+
+    // Divide each segment so that it is subdivided by at least the minimum dash/gap
+    // This is important so that
+    let new_path = [];
+
+    // Determine the smallest increment required to satisfy a dash or gap
+    // The division is optional. It may or may not provide better precision.
+    let increment = Math.min(dash, gap) / 3;
+
+    for (let i = 0; i < path.length - 1; i++) {
+      let divided_segment = this.dividePathComplete([path[i], path[i+1]], increment);
+
+      // Remove last point of segment to avoid duplication with first point of next segment
+      divided_segment.pop();
+
+      new_path = new_path.concat(divided_segment);
+    }
+
+    // Add end point
+    new_path.push(path[path.length-1]);
+
+    // --- Step 2: Evaluate
+
+    // Initialize state to start with a filled in dash (not a gap)
+    let show = true;
+
+    // Set the distance remaining based on if the state is a dash or gap
+    let distance_remaining = show ? dash : gap;
+
+    // Start new dash/gap segment with the first point
+    let segment = [
+      new_path[0]
+    ];
+
+    // Loop through all points of the upsampled path to select the next point
+    // for the dash/gap segment
+    const i_max = new_path.length - 1;
+    for (let i = 0; i < i_max; i++) {
+
+      // Get distance from the last point in the current segment to next point on target path
+      let distance = this.distance(segment[segment.length - 1], new_path[i+1]);
+
+      // Reduce the distance remaining before path state change
+      distance_remaining -= distance;
+
+      if (distance_remaining > 0) {
+
+        // If more distance remains then add the point and continue to next loop iteration
+        segment.push(new_path[i+1]);
+
+      } else {
+
+        // If the distance is exceeded then calculate the point on the target path's
+        // segment where the distance is exactly met.
+
+        const new_segment = this.extendLine(
+          segment[segment.length - 1],
+          new_path[i+1],
+          0,
+          distance_remaining
+        );
+
+        // Add calculated point as the last point to the current state's segment
+        segment.push(new_segment[1]);
+
+        // Add the segment to the appropriate part of the return object
+        if (show) {
+          dashes.dashes.push(segment);
+        } else {
+          dashes.gaps.push(segment);
+        }
+
+        // Reset state for next iteration
+        // A) Start new segment with same point as last segment's end point
+        segment = [
+          new_segment[1]
+        ];
+
+        // B) Toggle dash/gap state
+        show = !show;
+
+        // C) Set the distance remaining based on if the state is a dash or gap
+        distance_remaining = show ? dash : gap;
+      }
+    }
+
+    // Add any remaining segments
+    if (segment.length > 0) {
+      if (show) {
+        dashes.dashes.push(segment);
+      } else {
+        dashes.gaps.push(segment);
+      }
+    }
+
+    if (return_gaps) {
+      return dashes.gaps;
+    }
+
+    return dashes.dashes;
+  }
+
+  /**
    * Randomly remove portions of a path
    *
    * @param {array} path - A Path array
