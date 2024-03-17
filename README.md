@@ -11,7 +11,7 @@ Code is documented using [JSDoc](https://jsdoc.app/) syntax and is compiled usin
 
 Generate documentation:
 ```sh
-jsdoc src -d docs
+npm run docs
 ```
 
 Demo (BETA)

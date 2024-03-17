@@ -4,6 +4,7 @@
   "description": "Utility functions for working with points, paths and geometry.",
   "main": "src/PathHelper.js",
   "scripts": {
+    "docs": "jsdoc ./src -d docs",
     "lint": "jshint ./src",
     "test": "jest",
     "demo": "node ./demo/index.js"
