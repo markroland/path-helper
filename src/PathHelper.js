@@ -1908,24 +1908,26 @@ class PathHelper {
     let delta_x = p2[0] - p1[0];
     let theta = Math.atan2(delta_y, delta_x);
 
+    const x1 = p1[0] + offset_amount * Math.cos(theta + Math.PI/2);
+    const y1 = p1[1] + offset_amount * Math.sin(theta + Math.PI/2);
+    const z1 = p1.length == 3 ? [p1[2]] : [];
+
     // Line A is a line perpendicular to the line AB, starting
     // at point A
     let line_A = [
       p1,
-      [
-        p1[0] + offset_amount * Math.cos(theta + Math.PI/2),
-        p1[1] + offset_amount * Math.sin(theta + Math.PI/2)
-      ]
+      [x1, y1, ...z1],
     ];
+
+    const x2 = p2[0] + offset_amount * Math.cos(theta + Math.PI/2);
+    const y2 = p2[1] + offset_amount * Math.sin(theta + Math.PI/2);
+    const z2 = p1.length == 3 ? [p2[2]] : [];
 
     // Line B is a line perpendicular to the line BA, starting
     // at point B
     let line_B = [
       p2,
-      [
-        p2[0] + offset_amount * Math.cos(theta + Math.PI/2),
-        p2[1] + offset_amount * Math.sin(theta + Math.PI/2)
-      ]
+      [x2, y2, ...z2],
     ];
 
     // Use the endpoints from Lines A and B to construct

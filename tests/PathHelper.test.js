@@ -213,3 +213,49 @@ test('extendLine3D', () => {
 test('extendPath', () => {
   // TBD
 });
+
+test('parallelPath3D', () => {
+
+  const path = [
+    [0, 0, 0],
+    [1, 1, 1]
+  ];
+
+  const parallel_path = PH.parallelPath(path[0], path[1], 1);
+
+  expect(parallel_path.length).toStrictEqual(2);
+  expect(parallel_path[0].length).toStrictEqual(3);
+  expect(parallel_path[1].length).toStrictEqual(3);
+
+  let distance = PH.distance(parallel_path[0], path[0]);
+
+  expect(distance).toBeCloseTo(1, 2);
+
+  distance = PH.distance(parallel_path[1], path[1]);
+
+  expect(distance).toBeCloseTo(1, 2);
+});
+
+test('parallelPath2D', () => {
+
+  const path = [
+    [0, 0],
+    [1, 1]
+  ];
+
+  const parallel_path = PH.parallelPath(path[0], path[1], 1);
+
+  expect(parallel_path.length).toStrictEqual(2);
+  expect(parallel_path[0].length).toStrictEqual(2);
+  expect(parallel_path[1].length).toStrictEqual(2);
+
+
+  let distance = PH.distance(parallel_path[0], path[0]);
+
+  expect(distance).toBeCloseTo(1, 2);
+
+  distance = PH.distance(parallel_path[1], path[1]);
+
+  expect(distance).toBeCloseTo(1, 2);
+});
+
