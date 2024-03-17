@@ -407,7 +407,7 @@ class PathHelper {
   dotProduct(a, b) {
     let dot_product = 0;
     for (let i = 0; i < a.length; i++) {
-      dot_product += a[i] * b[i]
+      dot_product += a[i] * b[i];
     }
     return dot_product;
   }
@@ -535,9 +535,7 @@ class PathHelper {
 
     // Use the Law of Cosines to calculate the angle ACB
     let acos_arg = (
-      (Math.pow(a, 2) + Math.pow(b, 2) - Math.pow(c, 2))
-      /
-      (2 * a * b)
+      (Math.pow(a, 2) + Math.pow(b, 2) - Math.pow(c, 2)) / (2 * a * b)
     );
 
     // Round to a high, but reasonable level of precision
@@ -1405,8 +1403,9 @@ class PathHelper {
       // Sort segment_intersections and insert in Shape A
       if (segment_intersections.length > 0) {
         let self = this;
+        // Note: Refactor this to pass in 'this' as second parameter to sort()
         segment_intersections.sort(function(a, b) {
-          return (self.distance(shapeA[i], a) > self.distance(shapeA[i], b) ? 1 : -1)
+          return (self.distance(shapeA[i], a) > self.distance(shapeA[i], b) ? 1 : -1);
         });
         newA = newA.concat(segment_intersections);
       }
@@ -1576,7 +1575,6 @@ class PathHelper {
     // Check that the shape is a simple polygon (closed and not self-intersecting)
     if (!this.simplePolygon(path)) {
       throw 'The Path is not a simple polygon.';
-      return false;
     }
 
     let this_sign = 0;
@@ -2301,7 +2299,7 @@ class PathHelper {
   #extendLine3D(A, B, deltaA, deltaB) {
 
     if (A.length != 3 || B.length != 3) {
-      throw "Points must have 3 dimensions."
+      throw "Points must have 3 dimensions.";
     }
 
     let vector = [
@@ -2408,7 +2406,7 @@ class PathHelper {
     let next_point = [
       path[last_index][0] + previous_distance * Math.cos(next_angle),
       path[last_index][1] + previous_distance * Math.sin(next_angle)
-    ]
+    ];
 
     new_path.push(next_point);
 
@@ -3176,7 +3174,7 @@ class PathHelper {
         new_path = [];
         continue;
       }
-      new_path.push(path[j])
+      new_path.push(path[j]);
     }
     if (new_path.length > 1) {
       new_paths.push(new_path);
@@ -4279,13 +4277,13 @@ class PathHelper {
           paths[i].pop();
         }
 
-        final_paths.push(paths[i])
+        final_paths.push(paths[i]);
         break;
       }
 
       // Get all shapes on "layers" above the current shape
-      let comparison_shapes = JSON.parse(JSON.stringify(paths))
-      comparison_shapes.splice(0, i+1)
+      let comparison_shapes = JSON.parse(JSON.stringify(paths));
+      comparison_shapes.splice(0, i+1);
 
       // Expand Shape
       if (offset > 0) {
@@ -4366,7 +4364,7 @@ class PathHelper {
         new_segments = this.linePathsSplit(
           [paths[i][point], paths[i][point+1]],
           comparison_shapes
-        )
+        );
 
         // Add the side's segments to an array for the whole shape
         // This could be concatenated to final_paths directly, but
@@ -4377,11 +4375,11 @@ class PathHelper {
       }
 
       if (join) {
-        paths_of_i = this.joinPaths(paths_of_i)
+        paths_of_i = this.joinPaths(paths_of_i);
       }
 
       // Add the paths of the shape onto the final output paths
-      final_paths = final_paths.concat(paths_of_i)
+      final_paths = final_paths.concat(paths_of_i);
     }
 
     // Stop performance timer and display results
@@ -4510,7 +4508,7 @@ class PathHelper {
         {x: b[0], y: b[1]},
         {x: c[0], y: c[1]},
         {x: d[0], y: d[1]}
-      )
+      );
 
       // Save found intersections to an array of intersections
       // to be further evaluated
@@ -4547,8 +4545,8 @@ class PathHelper {
       // into two segments.
 
       // Find greatest distance from an endpoint to the intersection
-      let dist1 = this.distance(a, intersections[0])
-      let dist2 = this.distance(intersections[0], b)
+      let dist1 = this.distance(a, intersections[0]);
+      let dist2 = this.distance(intersections[0], b);
 
       if (dist1 > dist2) {
         return [
@@ -4564,8 +4562,8 @@ class PathHelper {
 
       // Determine which intersection matches with which intersection to
       // split the line into two non-overlapping segments
-      let dist1 = this.distance(a, intersections[0])
-      let dist2 = this.distance(a, intersections[1])
+      let dist1 = this.distance(a, intersections[0]);
+      let dist2 = this.distance(a, intersections[1]);
       if (dist1 < threshold && dist2 < threshold) {
         return [
           [a,b]
@@ -4609,7 +4607,7 @@ class PathHelper {
       // and the current path. This will produce 0, 1 or 2
       // intersections for convex polygons
       try {
-        segments = this.linePathSplit(line, paths[i])
+        segments = this.linePathSplit(line, paths[i]);
       } catch(e) {
         console.log(e);
         return segments;
@@ -4648,7 +4646,7 @@ class PathHelper {
 
         // If segments is empty then the endpoints were completely
         // contained within a shape (overlapped and hidden from view)
-        return segments
+        return segments;
       }
     }
 
@@ -4797,7 +4795,7 @@ class PathHelper {
       "perimeter": perimeter,
       "shadow": shadow,
       "lines": projections
-    }
+    };
   }
 
   /*************************************/
@@ -4817,7 +4815,7 @@ class PathHelper {
 
     // Ensure path is long enough
     if (path.length < 2) {
-      throw "Path must have 2 or more points."
+      throw "Path must have 2 or more points.";
     }
 
     // Get direction of last segment
