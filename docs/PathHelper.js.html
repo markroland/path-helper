@@ -435,7 +435,7 @@ class PathHelper {
   dotProduct(a, b) {
     let dot_product = 0;
     for (let i = 0; i &lt; a.length; i++) {
-      dot_product += a[i] * b[i]
+      dot_product += a[i] * b[i];
     }
     return dot_product;
   }
@@ -563,9 +563,7 @@ class PathHelper {
 
     // Use the Law of Cosines to calculate the angle ACB
     let acos_arg = (
-      (Math.pow(a, 2) + Math.pow(b, 2) - Math.pow(c, 2))
-      /
-      (2 * a * b)
+      (Math.pow(a, 2) + Math.pow(b, 2) - Math.pow(c, 2)) / (2 * a * b)
     );
 
     // Round to a high, but reasonable level of precision
@@ -1433,8 +1431,9 @@ class PathHelper {
       // Sort segment_intersections and insert in Shape A
       if (segment_intersections.length > 0) {
         let self = this;
+        // Note: Refactor this to pass in 'this' as second parameter to sort()
         segment_intersections.sort(function(a, b) {
-          return (self.distance(shapeA[i], a) > self.distance(shapeA[i], b) ? 1 : -1)
+          return (self.distance(shapeA[i], a) > self.distance(shapeA[i], b) ? 1 : -1);
         });
         newA = newA.concat(segment_intersections);
       }
@@ -1604,7 +1603,6 @@ class PathHelper {
     // Check that the shape is a simple polygon (closed and not self-intersecting)
     if (!this.simplePolygon(path)) {
       throw 'The Path is not a simple polygon.';
-      return false;
     }
 
     let this_sign = 0;
@@ -1936,24 +1934,26 @@ class PathHelper {
     let delta_x = p2[0] - p1[0];
     let theta = Math.atan2(delta_y, delta_x);
 
+    const x1 = p1[0] + offset_amount * Math.cos(theta + Math.PI/2);
+    const y1 = p1[1] + offset_amount * Math.sin(theta + Math.PI/2);
+    const z1 = p1.length == 3 ? [p1[2]] : [];
+
     // Line A is a line perpendicular to the line AB, starting
     // at point A
     let line_A = [
       p1,
-      [
-        p1[0] + offset_amount * Math.cos(theta + Math.PI/2),
-        p1[1] + offset_amount * Math.sin(theta + Math.PI/2)
-      ]
+      [x1, y1, ...z1],
     ];
+
+    const x2 = p2[0] + offset_amount * Math.cos(theta + Math.PI/2);
+    const y2 = p2[1] + offset_amount * Math.sin(theta + Math.PI/2);
+    const z2 = p1.length == 3 ? [p2[2]] : [];
 
     // Line B is a line perpendicular to the line BA, starting
     // at point B
     let line_B = [
       p2,
-      [
-        p2[0] + offset_amount * Math.cos(theta + Math.PI/2),
-        p2[1] + offset_amount * Math.sin(theta + Math.PI/2)
-      ]
+      [x2, y2, ...z2],
     ];
 
     // Use the endpoints from Lines A and B to construct
@@ -2327,7 +2327,7 @@ class PathHelper {
   #extendLine3D(A, B, deltaA, deltaB) {
 
     if (A.length != 3 || B.length != 3) {
-      throw "Points must have 3 dimensions."
+      throw "Points must have 3 dimensions.";
     }
 
     let vector = [
@@ -2434,7 +2434,7 @@ class PathHelper {
     let next_point = [
       path[last_index][0] + previous_distance * Math.cos(next_angle),
       path[last_index][1] + previous_distance * Math.sin(next_angle)
-    ]
+    ];
 
     new_path.push(next_point);
 
@@ -3202,7 +3202,7 @@ class PathHelper {
         new_path = [];
         continue;
       }
-      new_path.push(path[j])
+      new_path.push(path[j]);
     }
     if (new_path.length > 1) {
       new_paths.push(new_path);
@@ -4305,13 +4305,13 @@ class PathHelper {
           paths[i].pop();
         }
 
-        final_paths.push(paths[i])
+        final_paths.push(paths[i]);
         break;
       }
 
       // Get all shapes on "layers" above the current shape
-      let comparison_shapes = JSON.parse(JSON.stringify(paths))
-      comparison_shapes.splice(0, i+1)
+      let comparison_shapes = JSON.parse(JSON.stringify(paths));
+      comparison_shapes.splice(0, i+1);
 
       // Expand Shape
       if (offset > 0) {
@@ -4392,7 +4392,7 @@ class PathHelper {
         new_segments = this.linePathsSplit(
           [paths[i][point], paths[i][point+1]],
           comparison_shapes
-        )
+        );
 
         // Add the side's segments to an array for the whole shape
         // This could be concatenated to final_paths directly, but
@@ -4403,11 +4403,11 @@ class PathHelper {
       }
 
       if (join) {
-        paths_of_i = this.joinPaths(paths_of_i)
+        paths_of_i = this.joinPaths(paths_of_i);
       }
 
       // Add the paths of the shape onto the final output paths
-      final_paths = final_paths.concat(paths_of_i)
+      final_paths = final_paths.concat(paths_of_i);
     }
 
     // Stop performance timer and display results
@@ -4536,7 +4536,7 @@ class PathHelper {
         {x: b[0], y: b[1]},
         {x: c[0], y: c[1]},
         {x: d[0], y: d[1]}
-      )
+      );
 
       // Save found intersections to an array of intersections
       // to be further evaluated
@@ -4573,8 +4573,8 @@ class PathHelper {
       // into two segments.
 
       // Find greatest distance from an endpoint to the intersection
-      let dist1 = this.distance(a, intersections[0])
-      let dist2 = this.distance(intersections[0], b)
+      let dist1 = this.distance(a, intersections[0]);
+      let dist2 = this.distance(intersections[0], b);
 
       if (dist1 > dist2) {
         return [
@@ -4590,8 +4590,8 @@ class PathHelper {
 
       // Determine which intersection matches with which intersection to
       // split the line into two non-overlapping segments
-      let dist1 = this.distance(a, intersections[0])
-      let dist2 = this.distance(a, intersections[1])
+      let dist1 = this.distance(a, intersections[0]);
+      let dist2 = this.distance(a, intersections[1]);
       if (dist1 &lt; threshold &amp;&amp; dist2 &lt; threshold) {
         return [
           [a,b]
@@ -4635,7 +4635,7 @@ class PathHelper {
       // and the current path. This will produce 0, 1 or 2
       // intersections for convex polygons
       try {
-        segments = this.linePathSplit(line, paths[i])
+        segments = this.linePathSplit(line, paths[i]);
       } catch(e) {
         console.log(e);
         return segments;
@@ -4674,7 +4674,7 @@ class PathHelper {
 
         // If segments is empty then the endpoints were completely
         // contained within a shape (overlapped and hidden from view)
-        return segments
+        return segments;
       }
     }
 
@@ -4823,7 +4823,7 @@ class PathHelper {
       "perimeter": perimeter,
       "shadow": shadow,
       "lines": projections
-    }
+    };
   }
 
   /*************************************/
@@ -4843,7 +4843,7 @@ class PathHelper {
 
     // Ensure path is long enough
     if (path.length &lt; 2) {
-      throw "Path must have 2 or more points."
+      throw "Path must have 2 or more points.";
     }
 
     // Get direction of last segment
@@ -4896,7 +4896,8 @@ class PathHelper {
 // Add module support for CommonJS format in Node (via `require`)
 if (typeof exports === "object") {
   module.exports = PathHelper;
-}</code></pre>
+}
+</code></pre>
         </article>
     </section>
 
@@ -4912,7 +4913,7 @@ if (typeof exports === "object") {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri Jan 26 2024 17:46:57 GMT-0800 (Pacific Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri Mar 22 2024 16:16:38 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>
