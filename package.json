@@ -3,6 +3,7 @@
   "version": "1.30.0",
   "description": "Utility functions for working with points, paths and geometry.",
   "main": "src/PathHelper.js",
+  "types": "src/PathHelper.d.ts",
   "scripts": {
     "test": "jest",
     "demo": "node ./demo/index.js"
