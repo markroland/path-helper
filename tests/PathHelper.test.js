@@ -49,6 +49,14 @@ test('getMin', () => {
   expect(PH.getMin(path)).toStrictEqual([-2, -3]);
 });
 
+test('map', () => {
+  expect(PH.map(2, 0, 10, -5, 5)).toStrictEqual(-3);
+  expect(PH.map(-1, 0, 10, -5, 5)).toStrictEqual(-6);
+  expect(PH.map(-1, 0, 10, -5, 5, true)).toStrictEqual(-5);
+  expect(PH.map(20, 0, 10, -5, 5)).toStrictEqual(15);
+  expect(PH.map(20, 0, 10, -5, 5, true)).toStrictEqual(5);
+});
+
 test('clamp', () => {
   const min = 0;
   const max = 100;

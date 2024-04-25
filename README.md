@@ -328,7 +328,8 @@ PH.getGaussianRandom();
 
 ### map
 
-Map a value from one scale to another scale
+Map a value from one scale to another scale. This accepts an optional fifth boolean parameter
+to clamp the result to the output scale.
 
 ```js
 PH.map(2, 0, 10, -5, 5);

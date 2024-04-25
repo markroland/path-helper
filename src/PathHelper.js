@@ -270,9 +270,11 @@ class PathHelper {
    * @param {number} in_max - The maximum value on the current scale
    * @param {number} out_min - The minimum value on the new scale
    * @param {number} out_max - The maximum value on the new scale
+   * @param {boolean} [clamp=false] - Clamp the output to the min/max value.
+   * Defaults to false for backward compatibility.
    * @return {number} - The mapped value
    */
-  map (value, in_min, in_max, out_min, out_max) {
+  map (value, in_min, in_max, out_min, out_max, clamp = false) {
 
     if (in_min == in_max) {
       return out_min;
@@ -284,7 +286,14 @@ class PathHelper {
       value = value + -in_min;
       in_min = in_min + -in_min;
     }
-    return out_min + (out_max - out_min) * ((value - in_min) / (in_max - in_min));
+
+    let new_value = out_min + (out_max - out_min) * ((value - in_min) / (in_max - in_min));
+
+    if (clamp) {
+      new_value = this.clamp(new_value, out_min, out_max);
+    }
+
+    return new_value;
   }
 
   /**
