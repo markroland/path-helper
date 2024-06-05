@@ -603,7 +603,7 @@ class PathHelper {
   /**
    * Draw a Rectangle
    * @param {number} width - The width of the rectangle
-   * @param {number} height - The heighth of the rectangle
+   * @param {number} height - The height of the rectangle
    * @returns {array} A Path Array
    **/
   rectangle(width, height) {
