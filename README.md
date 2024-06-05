@@ -408,6 +408,19 @@ PH.greatestCommonDivisor(50, 30);
 // Output is 10
 ```
 
+### sign
+
+Get the sign of the number: +1 for positive, -1 for negative and 0 for zero.
+
+```js
+PH.sign(23)
+// Output is 1
+PH.sign(-12)
+// Output is -1
+PH.sign(0)
+// Output is 0
+```
+
 ---------------------------------------------------------------------------------------
 ### Mathematical Formulas
 *The following methods perform general mathematical operations*
@@ -564,6 +577,15 @@ Create an ellipse (oval) centered at the origin. Specify the width, height, and 
 
 ```js
 PH.ellipse(4, 2, 60);
+```
+
+### superellipse
+
+Create a superellipse, also known as a Lamé curve, centered at the origin. Specify the width, height, and number of segments.
+A squircle is a special case when the width and height are the same.
+
+```js
+PH.superellipse(4, 2, 60);
 ```
 
 ### star

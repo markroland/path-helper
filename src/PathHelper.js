@@ -389,6 +389,15 @@ class PathHelper {
     return this.greatestCommonDivisor(b, a % b);
   }
 
+  /**
+   * Get the sign of a number
+   * @param {number} val - The input value
+   * @returns {number} Returns +1 if the number is positive, -1 if the number is negative, and 0 if zero
+   */
+  sign(val) {
+    return (val == 0) ? 0 : val / Math.abs(val);
+  }
+
   /*************************************/
   // Mathematical Formulas and Calculations
   /*************************************/
@@ -637,6 +646,26 @@ class PathHelper {
 
     path.push(path[0]);
 
+    return path;
+  }
+
+  /**
+   * Draw a Superellipse, also known as a Lamé curve.
+   * The Squircle is a special case when width == height
+   * @param {number} width
+   * @param {number} height
+   * @param float n
+   * @param {number} [segments=60] - The number of segments that make up the path
+   * @return {array} A Path Array
+   **/
+  superellipse(width, height, segments = 60) {
+    let path = [];
+    for (let i = 0; i <= segments; i++) {
+      let theta = (i / segments) * 2 * Math.PI;
+      x = Math.pow(Math.abs(Math.cos(theta)), (2/segments)) * a * this.sign(Math.cos(theta));
+      y = Math.pow(Math.abs(Math.sin(theta)), (2/segments)) * b * this.sign(Math.sin(theta));
+      path.push([x,y]);
+    }
     return path;
   }
 
