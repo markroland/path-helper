@@ -1183,6 +1183,16 @@ parallel or in a taper. Optionally close the path with an end cap.
 PH.expandPath([[0, 0], [0, 1]], 0.2, 0.2, "open");
 ```
 
+### varyPath
+
+Vary the width (stroke) of a path. This works by applying a noisy offset to the
+path to create an envelope and then increasing the path offset incrementally to fill in
+the envelope.
+
+```js
+PathHelp.varyPath([[0, 0], [1, 0]], 0.003, 0.050, 0.010)
+```
+
 ### offsetPath
 
 Create a path that runs parallel to the input path. This handles

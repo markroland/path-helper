@@ -2061,6 +2061,101 @@ class PathHelper {
   }
 
   /**
+   * Vary the width of an input path.
+   * @param {array} path - A path array
+   * @param {number} stroke_width - The stroke width
+   * @param {number} max_offset - The maximum stroke offset
+   * @param {number} period - The distance between envelope points. Minimum value should be close to stroke.
+   * Maximum value depends on path. Lowever value creates more variation.
+   * @param {number} [smoothing_window=7] - Set the smoothing window to an odd number between 3 and about 9
+   * @param {boolean} [clamp_endpoints=true] - A "true" value requires the offset at the endpoints to be zero
+   * @param {boolean} [simplify_distance=null] - Set a distance value to reduce the point count in the output path.
+   * A greater distance may decrease smoothness of output. A recommended value is a small multiple (2 - 5) of the stroke width
+   * @returns {array} A Path array
+   **/
+  varyPath(path, stroke_width, max_offset, period, smoothing_window = 7, clamp_endpoints = true, simplify_distance = null) {
+
+    // Require the smoothing window to be greater than 3
+    if (smoothing_window < 3) {
+      smoothing_window = 3;
+    };
+
+    // Start output path with input path
+    let output_path = path;
+
+    // Subdivide the path into smaller segments
+    const segment_length = stroke_width;
+    let dividedPath = this.dividePathComplete(path, segment_length);
+
+    // Create an offset envelope to vary the width different amounts throughout the length
+    // of the path. This uses an input path of a straight line 1 unit long in the x direction.
+    let envelope = this.noisify(
+      [[0,0], [1, 0]],
+      period,
+      max_offset,
+      false,
+      false,
+      0,
+      1,
+      true,
+      true
+    );
+
+    if (clamp_endpoints) {
+      // Set the offset value to zero at the beginning and end of the envelope
+      // for the whole window size. This ensures the endpoints taper smoothly
+      for (let i = 0; i < smoothing_window; i++) {
+        envelope[i][1] = 0;
+        envelope[envelope.length - (i + 1)][1] = 0;
+      }
+    }
+
+    // Smooth out the envelope repeatedly
+    for (let i = 0; i < 5; i++) {
+      envelope = this.smoothPath(envelope, smoothing_window, "extrapolate");
+    }
+
+    // Determine iterations required to have a solid
+    // line from the path to max envelope offset (y value)
+    const envelopeInfo = this.info(envelope);
+    const envelopeMax = Math.max(
+      Math.abs(envelopeInfo.max[1]),
+      Math.abs(envelopeInfo.min[1])
+    );
+    const requiredIterations = Math.ceil(envelopeMax / stroke_width);
+
+    // Draw each offset layer, concatenating on to the previous output path
+    // for one continuous back-and-forth stroke
+    for (let i = 1; i <= requiredIterations; i++) {
+
+      let offset_factor = i / requiredIterations;
+
+      // Create offset line above input path
+      let top_path = this.offsetPath(dividedPath, function(x) {
+        let i = Math.floor(x * (envelope.length - 1));
+        return offset_factor * envelope[i][1];
+      });
+      top_path.pop();
+      top_path = top_path.reverse();
+      output_path = output_path.concat(top_path);
+
+      // Create offset line below input path
+      let bottom_path = this.offsetPath(dividedPath, function(x) {
+        let i = Math.floor(x * (envelope.length - 1));
+        return -(offset_factor * envelope[i][1]);
+      });
+      bottom_path.pop();
+      output_path = output_path.concat(bottom_path);
+    }
+
+    if (simplify_distance > 0) {
+      output_path = this.simplify(output_path, simplify_distance);
+    }
+
+    return output_path;
+  }
+
+  /**
    * Offset a Path
    * @param {array} path - An array of points. Must contain at least 3 points.
    * @param {number|function} offset - the offset distance of the path. A negative number
