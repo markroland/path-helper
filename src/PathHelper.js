@@ -2092,10 +2092,22 @@ class PathHelper {
       source_path.pop();
 
       // Loop through points and calculate the offset for the next 2 line segments
-      for (let i = 0; i < source_path.length; i++) {
+      let i_max = source_path.length;
+      for (let i = 0; i < i_max; i++) {
         let j = (i + 1) % source_path.length;
         let k = (i + 2) % source_path.length;
-        let offset_angle = this.offsetAngle(source_path[i], source_path[j], source_path[k], -offset);
+
+        // Determine the offset distance as a static value from the input or as a function
+        // of the path's distance (0.0 - 1.0)
+        let offset_dist;
+        if (typeof offset == "function") {
+          offset_dist = offset(i/i_max);
+        } else {
+          offset_dist = offset;
+        }
+
+        let offset_angle = this.offsetAngle(source_path[i], source_path[j], source_path[k], -offset_dist);
+
         offset_path.push(offset_angle[1]);
       }
 
@@ -2134,7 +2146,7 @@ class PathHelper {
     }
 
     if (isNaN(offset_path[offset_path.length-1][0])) {
-      console.log("NaN Error");
+      console.log("NaN Error in PathHelper.offsetPath()");
       console.log(offset_path);
     }
 
