@@ -1629,7 +1629,6 @@ and a rotation range can be set.
 To Do:
 ------
 
- - Update lineCircleIntersect to work for a circle at any location
  - Improve or remove circleInterceptPoints
 
 License
