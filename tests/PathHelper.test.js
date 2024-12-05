@@ -222,6 +222,33 @@ test('extendPath', () => {
   // TBD
 });
 
+test('lineCircleIntersect', () => {
+
+  const line = [
+    [0, 0],
+    [1, 1]
+  ];
+
+  const circle_params = [
+    [0.3, 0],
+    0.5
+  ];
+
+  let intersections = PH.lineCircleIntersect(line[0], line[1], circle_params);
+
+  // Expect an array of intersection points
+  expect(Array.isArray(intersections)).toBe(true);
+
+  // Only proceed if there are intersections
+  if (intersections) {
+
+    // Check x and y coordinates separately
+    expect(intersections[0][0]).toBeCloseTo(0.4702, 4);
+    expect(intersections[0][1]).toBeCloseTo(0.4702, 4);
+  }
+
+});
+
 test('parallelPath3D', () => {
 
   const path = [
