@@ -1626,11 +1626,6 @@ Add a "jot" or small mark near the end of the path. The offset
 distance from the end of the path, the length of the mark,
 and a rotation range can be set.
 
-To Do:
-------
-
- - Improve or remove circleInterceptPoints
-
 License
 -------
 
