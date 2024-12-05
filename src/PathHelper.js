@@ -3281,6 +3281,79 @@ class PathHelper {
   }
 
   /**
+   * Apply a filter function to the points in a path to remove points that fail the function
+   * parameters
+   * @param {array} path - A Path array
+   * @param {function} func - A callback function that receives the
+   * "this" context and the arguments of the point and its index, i.e. (point, i) => {}.
+   * It should return true if the point should be included in the output and false if it should not.
+   * @param {boolean} [split=true] - Split the path into new paths when points are removed with a "true" value.
+   * Set to "false" to remove the points without starting a new path.
+   * @returns {array} An array of Paths
+   **/
+  filterPath(path, func, split = true) {
+
+    // Check that 2nd argument is a function
+    if (typeof func != 'function') {
+      throw "Argument 2 is not a function in PathHelper.filterPath()"
+    }
+
+    // Return array
+    let paths = [];
+
+    // Temp array for building a single path
+    let new_path = [];
+
+    // Loop through each point of path
+    // for (let point of path) {
+    for (let i = 0; i < path.length; i++) {
+
+      const point = path[i];
+
+      // Evaluate point using callback function
+      if (func.call(this, point, i)) {
+
+        // Add point to current path if function evaluated true
+        new_path.push(point);
+
+      } else if (split) {
+
+        // If the point failed evaluation then add any path
+        // with at least 2 points to the output. Start a new path.
+        if (new_path.length > 1) {
+          paths.push(new_path);
+          new_path = [];
+        }
+      }
+    }
+
+    // Add any final path to the output
+    if (new_path.length > 1) {
+      paths.push(new_path);
+    }
+
+    return paths;
+  }
+
+  /**
+   * Filter the points in multiple paths
+   * @param {array} paths - An array of Path arrays
+   * @param {function} func - A callback function that receives the
+   * "this" context and the arguments of the point and its index, i.e. (point, i) => {}.
+   * It should return true if the point should be included in the output and false if it should not.
+   * @param {boolean} [split=true] - Split the path into new paths when points are removed with a "true" value.
+   * Set to "false" to remove the points without starting a new path.
+   * @returns {array} An array of Paths
+   **/
+  filterPaths(paths, func, split=true) {
+    let new_paths = [];
+    for (let path of paths) {
+      new_paths = new_paths.concat(this.filterPath(path, func, split))
+    }
+    return new_paths;
+  }
+
+  /**
    * Turn a solid line/path into a dashed line
    * @todo This currently calculates dashes and gaps. This could probably be
    * optimized to only calculate one as necessary based on the value of "return_gaps"

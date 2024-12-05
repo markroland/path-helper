@@ -1432,6 +1432,18 @@ result in a slightly different path than the origanl path - i.e.
 sharp corners will not be preserved unless the sampling value is
 sufficiently high.
 
+### filterPath
+
+Apply a filter function to the points in a path to remove points that fail
+the function parameters. For example, a filter function could remove
+every-other point, or points outside of a certain coordinate range or
+distance from another point. An optional parameter allows the result to be
+split into multiple paths or to retain the original path with the points removed.
+
+### filterPaths
+
+This is a helper function that puts multiple paths through the filterPath
+method.
 
 ### dashPath
 
