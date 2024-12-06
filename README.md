@@ -28,7 +28,7 @@ Open http://localhost:8000 in your browser.
 Formatting
 -------
 
-Use [JSHint](https://jshint.com/) to check code formatting. Run with:
+Use [ESLint](https://eslint.org) to check code formatting. Run with:
 
 ```sh
 npm run lint
