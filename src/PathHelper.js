@@ -194,6 +194,35 @@ class PathHelper {
   }
 
   /**
+   * Find the array index of a sorted array that holds the value less than
+   * a desired value.
+   * @param {array} arr - An array of numeric values sorted in ascending numerical order
+   * @param {number} value - The value to be searched for
+   * @returns {number} - The found index. Return -1 if not found
+   */
+  #findIndexBefore(arr, value) {
+    // Value is before the first element, so no index before it
+    if (value <= arr[0]) {
+      return -1;
+    }
+
+    // Return the index *before*
+    for (let i = 0; i < arr.length - 1; i++) {
+      if (value > arr[i] && value <= arr[i + 1]) {
+        return i;
+      }
+    }
+
+    // Target is larger than all elements in the array.
+    if(value > arr[arr.length - 1]) {
+        return arr.length - 1;
+    }
+
+    // Return -1 if not found within the array's range
+    return -1;
+  }
+
+  /**
    * Get a Random Integer (whole number) between two values (inclusive)
    * Reference: https://www.w3schools.com/js/js_random.asp
    * @param {number} min - The lower bound of acceptable values
@@ -2237,6 +2266,43 @@ class PathHelper {
   }
 
   /**
+   * Create a new path that is a morphology of Paths A and B, at a certain
+   * percentage.
+   * @param {array} pathA - A Path array
+   * @param {array} pathB - A Path array
+   * @param {number} percent - A value between 0 and 1. Path A is at 0 and Path B is at 1.
+   * @returns {array} A Path array
+   **/
+  morph(pathA, pathB, percent) {
+
+    if (percent < 0 || percent > 1) {
+      throw 'percent argument must be between 0.0 and 1.0 in PathHelper.morph()'
+    }
+
+    const PathHelp = new PathHelper();
+
+    const resample_points = 10 * Math.max(pathA.length, pathB.length);
+
+    let new_pathA = this.resamplePath(pathA, resample_points);
+    let new_pathB = this.resamplePath(pathB, resample_points);
+
+    if (new_pathA.length != new_pathB.length) {
+      throw 'Paths are not the same length in PathHelper.morph()'
+    }
+
+    let morph = [];
+    const i_max = new_pathA.length;
+    for (let i = 0; i < i_max; i++) {
+      morph.push([
+        PathHelp.lerp(new_pathA[i][0], new_pathB[i][0], percent),
+        PathHelp.lerp(new_pathA[i][1], new_pathB[i][1], percent)
+      ]);
+    }
+
+    return morph;
+  }
+
+  /**
    * Remove parts of a path where it intersects with itself creating a loop/knot.
    * @param {array} path - An array of points. Must contain at least 3 points.
    * @returns {array} A Path array
@@ -3157,6 +3223,42 @@ class PathHelper {
     divided_path.push(path[path.length-1]);
 
     return divided_path;
+  }
+
+  /**
+   * Resample a path to contain a certain number of points
+   * @param {array} path - A Path array
+   * @param {number} samples - The number of desired points. Must be greater than two.
+   * @returns {array} A Path array
+   */
+  resamplePath(path, samples) {
+
+    // For each point of the path, determin
+    let positions = [0];
+    let total_distance = this.pathLength(path);
+    for (let i = 1; i < path.length - 1; i++) {
+      positions.push(this.pathLength(path.slice(0, i+1)) / total_distance);
+    }
+    positions.push(1);
+
+    // Create a new line
+    let new_path = [path[0]]
+    let i_max = samples - 1;
+    for (let i = 1; i < i_max; i++) {
+      let percent = i / i_max;
+      let bottom_index = this.#findIndexBefore(positions, percent);
+
+      let new_percent = (percent - positions[bottom_index]) / (positions[bottom_index + 1] - positions[bottom_index]);
+
+      let new_point = [
+        this.lerp(path[bottom_index][0], path[bottom_index + 1][0], new_percent),
+        this.lerp(path[bottom_index][1], path[bottom_index + 1][1], new_percent)
+      ];
+
+      new_path.push(new_point);
+    }
+    new_path.push(path[path.length - 1]);
+    return new_path;
   }
 
   /**
