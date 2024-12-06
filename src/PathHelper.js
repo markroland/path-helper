@@ -1678,7 +1678,7 @@ class PathHelper {
    * @param {array} p2 - Ending point of Line A
    * @param {array} p3 - Starting point of Line B
    * @param {array} p4 - Ending point of Line B
-   * @return {array} - An array defining a point of intersection
+   * @return {array} - An array defining a point of intersection. Return null if not found
    **/
   intersect_point(p1, p2, p3, p4) {
     const ua = ((p4[0] - p3[0]) * (p1[1] - p3[1]) -
@@ -1691,6 +1691,10 @@ class PathHelper {
       ((p4[1] - p3[1]) * (p2[0] - p1[0]) -
       (p4[0] - p3[0]) * (p2[1] - p1[1]));
 
+    if (ua < 0 || ua > 1 || ub < 0 || ub > 1) {
+      return null;
+    }
+
     const x = p1[0] + ua * (p2[0] - p1[0]);
     const y = p1[1] + ua * (p2[1] - p1[1]);
 
@@ -1699,7 +1703,7 @@ class PathHelper {
 
   /**
    * Calculate if and where two finite line segments intersect
-   * From https://stackoverflow.com/a/30159167
+   * This is kept here for legacy support
    * @param {array} p0 - A point array containing two values for x and y. Start Point of Line A
    * @param {array} p1 - A point array containing two values for x and y. End Point of Line A
    * @param {array} p2 - A point array containing two values for x and y. Start Point of Line B
@@ -1707,47 +1711,20 @@ class PathHelper {
    * @returns {} An intersection point object {x,y} if an intersection is found. False otherwise.
    */
   getLineLineCollision(p0, p1, p2, p3) {
-
-    var s1, s2;
-    s1 = {x: p1.x - p0.x, y: p1.y - p0.y};
-    s2 = {x: p3.x - p2.x, y: p3.y - p2.y};
-
-    var s10_x = p1.x - p0.x;
-    var s10_y = p1.y - p0.y;
-    var s32_x = p3.x - p2.x;
-    var s32_y = p3.y - p2.y;
-
-    var denom = s10_x * s32_y - s32_x * s10_y;
-
-    if(denom === 0) {
-        return false;
+    const result = this.intersect_point(
+      [p0.x, p0.y],
+      [p1.x, p1.y],
+      [p2.x, p2.y],
+      [p3.x, p3.y]
+    )
+    if (!result) {
+      return false;
+    } else {
+      return {
+        x: result[0],
+        y: result[1]
+      }
     }
-
-    var denom_positive = denom > 0;
-
-    var s02_x = p0.x - p2.x;
-    var s02_y = p0.y - p2.y;
-
-    var s_numer = s10_x * s02_y - s10_y * s02_x;
-
-    if((s_numer < 0) == denom_positive) {
-        return false;
-    }
-
-    var t_numer = s32_x * s02_y - s32_y * s02_x;
-
-    if((t_numer < 0) == denom_positive) {
-        return false;
-    }
-
-    if((s_numer > denom) == denom_positive || (t_numer > denom) == denom_positive) {
-        return false;
-    }
-
-    var t = t_numer / denom;
-
-    var p = {x: p0.x + (t * s10_x), y: p0.y + (t * s10_y)};
-    return p;
   }
 
   /**
