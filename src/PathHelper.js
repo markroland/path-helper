@@ -662,8 +662,8 @@ class PathHelper {
     let path = [];
     for (let i = 0; i <= segments; i++) {
       let theta = (i / segments) * 2 * Math.PI;
-      x = Math.pow(Math.abs(Math.cos(theta)), (2/segments)) * a * this.sign(Math.cos(theta));
-      y = Math.pow(Math.abs(Math.sin(theta)), (2/segments)) * b * this.sign(Math.sin(theta));
+      let x = Math.pow(Math.abs(Math.cos(theta)), (2/segments)) * width * this.sign(Math.cos(theta));
+      let y = Math.pow(Math.abs(Math.sin(theta)), (2/segments)) * height * this.sign(Math.sin(theta));
       path.push([x,y]);
     }
     return path;
@@ -3502,7 +3502,7 @@ class PathHelper {
 
     // Subsequent positions must greater than the minimum distance to be added
     let self = this;
-    path.forEach(function(point, index) {
+    path.forEach(function(point) {
       var last_point = cleanedPath[cleanedPath.length - 1];
       var step_distance = self.distance(point, last_point);
       if (step_distance > threshold) {
@@ -4406,7 +4406,7 @@ class PathHelper {
   layeredPaths(paths, join = false, offset = 0, continuous = false, use_bbox = false) {
 
     // Start performance timer
-    const t0 = performance.now();
+    // const t0 = performance.now();
 
     // Final paths for plotting
     let final_paths = [];
@@ -4438,7 +4438,6 @@ class PathHelper {
 
       // Expand Shape
       if (offset > 0) {
-        let offset_paths = [];
         for (let c = 0; c < comparison_shapes.length; c++) {
           comparison_shapes[c] = this.offsetPath(comparison_shapes[c], offset);
         }
@@ -4534,7 +4533,7 @@ class PathHelper {
     }
 
     // Stop performance timer and display results
-    const t1 = performance.now();
+    // const t1 = performance.now();
 
     // console.log('layeredPaths took ' + (t1 - t0).toFixed(1) +  ' milliseconds');
 
@@ -4819,7 +4818,7 @@ class PathHelper {
   projectShapeShadow(path, translation) {
 
     // Translate the input path
-    let path_B = this.translatePath(path, translation);
+    // let path_B = this.translatePath(path, translation);
 
     let projections = [];
     let perimeter = [];
