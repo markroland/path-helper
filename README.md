@@ -1420,6 +1420,15 @@ a maximum distance. This can be used to "upsample" a path so that
 smoothing, adding noise, or other follow-up transformations may
 be applied in a more uniform manner.
 
+### resamplePath
+
+Resample a path to contain a certain number of points. The new path
+will have points that are equidistant along the original path. This will
+result in a slightly different path than the origanl path - i.e.
+sharp corners will not be preserved unless the sampling value is
+sufficiently high.
+
+
 ### dashPath
 
 Turn a solid line/path into a dashed line. A distance can be specified
@@ -1452,6 +1461,10 @@ Output: -------- -------- --
 This applies the same logic as `decimatePath` to multiple Path arrays.
 
 ### morph
+
+Create a new path that is a morphology of Paths A and B. Paths A and B
+are upsampled so that they are composed of an equal number of points and
+can interpolated.
 
 ### joinPaths
 
