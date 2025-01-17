@@ -9,6 +9,9 @@
     "test": "jest",
     "demo": "node ./demo/index.js"
   },
+  "files": [
+    "src"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/markroland/path-helper.git"
@@ -32,5 +35,9 @@
     "globals": "^15.13.0",
     "jest": "^27.5.1",
     "jsdoc": "^4.0.2"
+  },
+  "engines": {
+    "node": "22.12.0",
+    "npm": "10.9.0"
   }
 }
