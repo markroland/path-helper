@@ -3688,7 +3688,7 @@ class PathHelper {
   }
 
   /**
-   * Combine points within a threhold distance of each other into a Path
+   * Combine points within a threshold distance of each other into a Path
    * @param {array} points - An array of Points
    * @param {number} threshold - A maximum value for the distance between
    * two points where they can be considered as part of the same path.
