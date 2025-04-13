@@ -11,7 +11,7 @@ class PathHelper {
 
   /**
    * Class constructor
-   * @param {function} prng - A Psuedo-Random Number Generator (PRNG).
+   * @param {function} prng - A Pseudo-Random Number Generator (PRNG).
    * This can be set to use a different random number generator than
    * Math.random(). This is very useful for creating consistent,
    * deterministic results from a PRNG that uses an initial seed value.
@@ -110,7 +110,7 @@ class PathHelper {
   }
 
   /**
-   * Get the minimum value from each coordinate compononent of a path
+   * Get the minimum value from each coordinate component of a path
    * Supports 2D and 3D.
    * @param {array} path - A Path array
    * @returns {array} An array with the minimum value for each dimension
@@ -133,7 +133,7 @@ class PathHelper {
   }
 
   /**
-   * Get the maximum value from each coordinate compononent of a path
+   * Get the maximum value from each coordinate component of a path
    * Supports 2D and 3D.
    * @param {array} path - A Path array
    * @returns {array} An array with the maximum value for each dimension
@@ -2629,7 +2629,7 @@ class PathHelper {
       // Get distance of current segment
       let segment_distance = Math.hypot(path[i][0] - path[i-1][0], path[i][1] - path[i-1][1]);
 
-      // If the total distance is below the threshold, then and the point (segment)
+      // If the total distance is below the threshold, then add the point (segment)
       // Otherwise, if it goes over determine by how much and shorten that segment
       // so that it meets the maximum distance
       if (total_distance + segment_distance < maximum_distance) {
