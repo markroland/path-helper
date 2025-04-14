@@ -1,6 +1,6 @@
 {
   "name": "@markroland/path-helper",
-  "version": "1.34.0",
+  "version": "1.34.1",
   "description": "Utility functions for working with points, paths and geometry.",
   "main": "src/PathHelper.js",
   "scripts": {
@@ -37,7 +37,7 @@
     "jsdoc": "^4.0.2"
   },
   "engines": {
-    "node": "22.12.0",
-    "npm": "10.9.0"
+    "node": ">=22.x",
+    "npm": ">=10.x"
   }
 }

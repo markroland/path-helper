@@ -17,7 +17,7 @@ npm run docs
 Demo (BETA)
 -----------
 
-This is a new expiremental feature. This will start a local web server where class methods can be demonstrated.
+This is a new experimental feature. This will start a local web server where class methods can be demonstrated.
 
 ```sh
 npm run demo
@@ -26,7 +26,7 @@ npm run demo
 Open http://localhost:8000 in your browser.
 
 Formatting
--------
+----------
 
 Use [ESLint](https://eslint.org) to check code formatting. Run with:
 
@@ -1185,9 +1185,13 @@ PH.expandPath([[0, 0], [0, 1]], 0.2, 0.2, "open");
 
 ### varyPath
 
-Vary the width (stroke) of a path. This works by applying a noisy offset to the
-path to create an envelope and then increasing the path offset incrementally to fill in
-the envelope.
+Vary the width (stroke) of a path. A 2D or 3D input Path can be provided. If
+a Path of 2D Points is provided, then the width "envelope" will be created at
+random using a smoothed noise function. If 3D Points are provided the 3rd Point
+array value will be used as the envelope distance at that point. The output path
+is created by increasing the path offset incrementally to fill in the envelope.
+If a 3D Path is provided, then max_offset, period and smoothing_window are not
+required.
 
 ```js
 PathHelp.varyPath([[0, 0], [1, 0]], 0.003, 0.050, 0.010)
