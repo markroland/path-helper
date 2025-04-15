@@ -3245,6 +3245,22 @@ class PathHelper {
   }
 
   /**
+   * Break apart a single path into segments
+   * @param {array} path - A Path array
+   * @returns {array} An array of Path arrays
+   */
+  explodePath(path) {
+    if (path.length < 2) {
+      throw "Path must have at least 2 points.";
+    }
+    let paths = [];
+    for (let i = 0; i < path.length - 1; i++) {
+      paths.push([path[i], path[i + 1]]);
+    }
+    return paths;
+  }
+
+  /**
    * Resample a path to contain a certain number of points
    * @param {array} path - A Path array
    * @param {number} samples - The number of desired points. Must be greater than two.

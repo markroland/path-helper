@@ -1424,6 +1424,12 @@ a maximum distance. This can be used to "upsample" a path so that
 smoothing, adding noise, or other follow-up transformations may
 be applied in a more uniform manner.
 
+### explodePath
+
+Break apart a Path into an array of Paths composed of each segment
+of the path. For example, if a Path has points A,B,C,D, then explodePath
+returns a series of Paths with points: AB, BC, CD.
+
 ### resamplePath
 
 Resample a path to contain a certain number of points. The new path
