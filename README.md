@@ -4,6 +4,26 @@ Path Helper
 The PathHelper class contains a variety of methods to assist with performing operations
 on multi-point paths (polylines).
 
+Usage
+-----
+
+Install using Node Package Manager:
+
+```
+npm install @markroland/path-helper
+```
+
+Include in your project using Common JS or ES Modules:
+
+```
+const PathHelper = require('@markroland/path-helper');
+```
+
+```
+import PathHelper from '@markroland/path-helper';
+```
+
+
 Documentation
 -------------
 

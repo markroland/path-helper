@@ -5202,7 +5202,10 @@ class PathHelper {
   }
 }
 
-// Add module support for CommonJS format in Node (via `require`)
-if (typeof exports === "object") {
+// Add module support for CommonJS format in Node
+if (typeof module !== 'undefined' && module.exports) {
   module.exports = PathHelper;
+
+  // Add ES Module compatibility
+  module.exports.default = PathHelper;
 }
