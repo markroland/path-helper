@@ -2074,6 +2074,8 @@ class PathHelper {
 
   /**
    * Vary the width of an input path.
+   * @todo - Consider adding path end formatting for butt, round and square caps
+   * @todo - Check on last point not going to end of path, but stopping early
    * @param {array} path - A path array. This can be a Path made of 2D (x,y) or 3D (x,y,z) Points.
    * If a 3D path, the z value is used as the stroke "envelope" to set the width at that given x,y point.
    * @param {number} stroke_width - The stroke width
@@ -2091,26 +2093,22 @@ class PathHelper {
     // Start output path with input path
     let output_path = path;
 
-    // Subdivide the path into smaller segments
-    const segment_length = stroke_width;
-    let dividedPath = this.dividePathComplete(path, segment_length);
-
+    // Compose an envelope from a third path point (in available);
     let envelope = [];
     if (path[0].length == 3) {
       const i_max = path.length - 1;
-      for (let i = 0; i < path.length; i++) {
+      for (let i = 0; i <= i_max; i++) {
         envelope.push([
           i / i_max,
           path[i][2]
         ]);
       }
-      envelope = this.dividePathComplete(envelope, segment_length);
     }
 
     // Create an offset envelope to vary the width different amounts throughout the length
     // of the path. This uses an input path of a straight line 1 unit long in the x direction.
     if ( !envelope.length ) {
-      let envelope = this.noisify(
+      envelope = this.noisify(
         [[0,0], [1, 0]],
         period,
         max_offset,
@@ -2158,28 +2156,38 @@ class PathHelper {
       let offset_factor = i / requiredIterations;
 
       // Create offset line above input path
-      let top_path = this.offsetPath(dividedPath, function(x) {
-        let i = Math.floor(x * (envelope.length - 1));
-        return offset_factor * envelope[i][1];
-      });
-      top_path.pop();
-      top_path = top_path.reverse();
-      output_path = output_path.concat(top_path);
+      try {
+        let top_path = this.offsetPath(path, function(x) {
+          let i = Math.floor(x * (envelope.length - 1));
+          return offset_factor * envelope[i][1];
+        });
+        top_path.pop();
+        top_path = top_path.reverse();
+        output_path = output_path.concat(top_path);
+      } catch (e) {
+        console.log("Error in PathHelper.varyPath() offsetPath()");
+        console.log(e);
+      }
 
       // Create offset line below input path
-      let bottom_path = this.offsetPath(dividedPath, function(x) {
-        let i = Math.floor(x * (envelope.length - 1));
-        return -(offset_factor * envelope[i][1]);
-      });
-      bottom_path.pop();
-      output_path = output_path.concat(bottom_path);
+      try {
+        let bottom_path = this.offsetPath(path, function(x) {
+          let i = Math.floor(x * (envelope.length - 1));
+          return -(offset_factor * envelope[i][1]);
+        });
+        bottom_path.pop();
+        output_path = output_path.concat(bottom_path);
+      } catch (e) {
+        console.log("Error in PathHelper.varyPath() offsetPath()");
+        console.log(e);
+      }
     }
 
     // TODO: Consider applying this on top_path and bottom_path inside the loop
     // so that end endpoints are not moved. Doing this here on the output_path
     // can cause points at the start/end of the line to be moved, creating a
     // ragged edge.
-    if (simplify_distance > 0) {
+    if (simplify_distance > 0 && output_path.length) {
       output_path = this.simplify(output_path, simplify_distance);
     }
 
