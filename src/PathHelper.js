@@ -3729,6 +3729,94 @@ class PathHelper {
   }
 
   /**
+   * Order an array of Paths so that the distance between
+   * consecutive paths is minimized. The left-most path is taken
+   * as the first path
+   * @param {array} paths - An array of Paths
+   * @param {boolean} allow_reversing - If true, the path can be reversed
+   * in the case that the endpoint of a path is closer to the next path
+   * @returns {array} An array of Paths
+   */
+  sortPathsByProximity(paths, allow_reversing = true) {
+
+    // Find the left-most path
+    let leftMostPathX = Infinity;
+    let leftMostPathIndex = null;
+    for (let i = 0; i < paths.length; i++) {
+      let leftMostPointX = paths[i][0][0];
+      if (paths[i][paths[i].length - 1][0] < leftMostPointX) {
+        leftMostPointX = paths[i][paths.length - 1][0];
+      }
+      if (leftMostPointX < leftMostPathX) {
+        leftMostPathX = leftMostPointX;
+        leftMostPathIndex = i;
+      }
+    }
+
+    /**
+     * Given an array of Paths, find the path that has the closest
+     * starting or ending point (if reversing is allowed) to the given point.
+     * @TODO: Consider using a k-d tree or R-tree for nearest neighbor search
+     * @param {array} paths - An array of Paths
+     * @param {array} point - A point in the form of [x, y]
+     * @param {boolean} allow_reversing - If true, the path can be reversed
+     * @returns {object} An object with the path index and a boolean indicating if the path should be reversed
+     */
+    const closestPathToPoint = (paths, point, allow_reversing = true) => {
+      const PathHelp = new PathHelper();
+
+      let minDistance = Infinity;
+      let nearestPointIndex = null;
+      let reverse = false;
+
+      for (let i = 0; i < paths.length; i++) {
+        let startDistance = PathHelp.distance(paths[i][0], point);
+        if (startDistance < minDistance) {
+          nearestPointIndex = i;
+          minDistance = startDistance;
+        }
+        if (allow_reversing) {
+          let endDistance = PathHelp.distance(paths[i][paths[i].length - 1], point);
+          if (endDistance < minDistance) {
+            nearestPointIndex = i;
+            minDistance = endDistance;
+          }
+        }
+      }
+
+      if (allow_reversing) {
+        if (
+          PathHelp.distance(paths[nearestPointIndex][paths[nearestPointIndex].length - 1], point) < PathHelp.distance(paths[nearestPointIndex][0], point)
+        ) {
+          reverse = true;
+        }
+      }
+
+      return { id: nearestPointIndex, reverse: reverse };
+    }
+
+    // Construct new paths
+    let new_paths = [
+      paths.splice(leftMostPathIndex, 1)[0]
+    ];
+    let count = 0;
+    while (paths.length > 1) {
+      count++;
+      const lastNewPath = new_paths[new_paths.length - 1];
+      const lastNewPoint = lastNewPath[lastNewPath.length - 1];
+      let closestPath = closestPathToPoint(paths, lastNewPoint, allow_reversing);
+      let next_path = paths.splice(closestPath.id, 1)[0];
+      if (closestPath.reverse) {
+        next_path.reverse();
+      }
+      new_paths.push(next_path);
+    }
+    new_paths.concat(paths);
+
+    return new_paths;
+  }
+
+  /**
    * Shuffle Paths using the Fisher-Yates algorithm
    * From https://dev.to/codebubb/how-to-shuffle-an-array-in-javascript-2ikj
    * @param {array} paths - An array of Path arrays

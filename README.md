@@ -1558,11 +1558,12 @@ Sort Path arrays by start point from left to right, top to bottom.
 This is primarily useful for plotting optimization in order to reduce the
 distance traveled for non-drawing movements.
 
-*Note:* This is a simple algorithm and could be improved for greater
-efficiency in the future. For example, rather than sorting every path by
-the starting point, the end point of the previous path could be used as
-the position by which to find the next closest path. This could be further
-optimized by optionally allowing paths to be plotted in reverse.
+### sortPathsByProximity
+
+Sort Path arrays so that the distance between the end of one path and
+the start of the next paths is minimized. The left-most starting point
+is taken as the first path. Paths may optionally be reversed if the
+endpoint of a path is the closest next point.
 
 ### shufflePaths
 
