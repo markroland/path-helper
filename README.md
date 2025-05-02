@@ -1444,6 +1444,13 @@ a maximum distance. This can be used to "upsample" a path so that
 smoothing, adding noise, or other follow-up transformations may
 be applied in a more uniform manner.
 
+### splitPathByDistance
+
+This method maintains the original footprint of the path, however the path
+is split at regular distance intervals. If the distance is reached in the
+middle of a path segment, then the exact distance is calculated and the segment
+is split at that point. This is a recursive method
+
 ### explodePath
 
 Break apart a Path into an array of Paths composed of each segment

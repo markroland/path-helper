@@ -294,3 +294,28 @@ test('parallelPath2D', () => {
   expect(distance).toBeCloseTo(1, 2);
 });
 
+test('splitPathByDistance', () => {
+
+  const path = [
+    [-1, 0],
+    [ 1, 0]
+  ];
+
+  const distance = 0.091;
+
+  const paths = PH.splitPathByDistance(path, distance);
+
+  // Expect a set number of paths based on the overall path
+  // length and the max distance
+  expect(paths.length).toStrictEqual(
+    Math.ceil(PH.pathLength(path) / distance)
+  );
+
+  // Expect each path to be of the requested distance (except for the last one)
+  for (let i = 0; i < paths.length - 1; i++) {
+    expect(PH.pathLength(paths[i])).toBeCloseTo(distance, 5);
+  }
+
+  // Expect the last segment to be less than the requested distance
+  expect(PH.pathLength(paths[paths.length-1])).toBeLessThan(distance);
+});
