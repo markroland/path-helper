@@ -3255,20 +3255,12 @@ class PathHelper {
   /**
    * Split a path into segments of a maximum distance
    * @param {array} path - A Path array
-   * @param {number} maximum_distance - The maximum distance, or physical length, of the path
+   * @param {number} distance - The maximum distance, or physical length, of the path
    * @returns {array} An array of Path arrays.
    **/
-  splitPathByDistance(path, maximum_distance, depth = 0) {
+  splitPathByDistance(path, distance) {
 
-    // console.log("Depth: " + depth);
-    // console.log("path length: " + path.length);
-
-    // if (depth > 100) {
-    //   console.log("Recursion depth exceeded");
-    //   return [];
-    // }
-
-    if (!path || path.length < 2 || maximum_distance <= 0) {
+    if (!path || path.length < 2 || distance <= 0) {
       throw 'Invalid input';
     }
 
@@ -3286,11 +3278,6 @@ class PathHelper {
     // original path will be modified by reference
     let remaining_path = this.deepCopy(path);
 
-    // console.log("------");
-    // console.log("Remaining Path");
-    // console.log(remaining_path);
-    // console.log("------");
-
     for (let i = 1; i < path.length; i++) {
 
       // Get distance of current segment
@@ -3299,7 +3286,7 @@ class PathHelper {
       // If the total distance is below the threshold, then add the point (segment)
       // Otherwise, if it goes over determine by how much and shorten that segment
       // so that it meets the maximum distance
-      if (total_distance + segment_distance < maximum_distance) {
+      if (total_distance + segment_distance < distance) {
 
         // Add point to new path
         new_path.push(path[i]);
@@ -3313,7 +3300,7 @@ class PathHelper {
       } else {
 
         // Find the point of exact maximum distance
-        const subtraction_amount = (total_distance + segment_distance) - maximum_distance;
+        const subtraction_amount = (total_distance + segment_distance) - distance;
         const new_segment = this.extendLine(path[i-1], path[i], 0, -subtraction_amount);
 
         // Add that new point to the new path
@@ -3331,13 +3318,8 @@ class PathHelper {
       paths.push(new_path);
     }
 
-    // Debugging only
-    // if (depth == 0) {
-    //   return paths;
-    // }
-
     if (remaining_path.length > 1) {
-      let r1 = this.splitPathByDistance(remaining_path, maximum_distance, depth + 1);
+      let r1 = this.splitPathByDistance(remaining_path, distance);
       paths = paths.concat(r1);
     }
 

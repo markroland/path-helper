@@ -301,9 +301,21 @@ test('splitPathByDistance', () => {
     [ 1, 0]
   ];
 
-  const max_distance = 0.1;
+  const distance = 0.091;
 
-  const paths = PH.splitPathByDistance(path, max_distance);
+  const paths = PH.splitPathByDistance(path, distance);
 
-  console.log(paths);
+  // Expect a set number of paths based on the overall path
+  // length and the max distance
+  expect(paths.length).toStrictEqual(
+    Math.ceil(PH.pathLength(path) / distance)
+  );
+
+  // Expect each path to be of the requested distance (except for the last one)
+  for (let i = 0; i < paths.length - 1; i++) {
+    expect(PH.pathLength(paths[i])).toBeCloseTo(distance, 5);
+  }
+
+  // Expect the last segment to be less than the requested distance
+  expect(PH.pathLength(paths[paths.length-1])).toBeLessThan(distance);
 });
