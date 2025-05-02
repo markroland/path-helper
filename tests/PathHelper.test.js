@@ -294,3 +294,16 @@ test('parallelPath2D', () => {
   expect(distance).toBeCloseTo(1, 2);
 });
 
+test('splitPathByDistance', () => {
+
+  const path = [
+    [-1, 0],
+    [ 1, 0]
+  ];
+
+  const max_distance = 0.1;
+
+  const paths = PH.splitPathByDistance(path, max_distance);
+
+  console.log(paths);
+});
