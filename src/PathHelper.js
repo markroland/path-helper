@@ -569,7 +569,7 @@ class PathHelper {
    * @param {array} p1 - Point 1. Endpoint "A"
    * @param {array} p2 - Point 2. Midpoint/Vertex "C"
    * @param {array} p3 - Point 3. Endpoint "B"
-   * @returns {number} - The angle in radians
+   * @returns {number} - The angle in radians, ranging from 0 to PI
    */
   angle(p1, p2, p3) {
 
@@ -588,9 +588,9 @@ class PathHelper {
     // Round to a high, but reasonable level of precision
     // to avoid errors at very obtuse angles (nearing 180 degrees)
     acos_arg = acos_arg.toFixed(8);
-    if (Math.abs(acos_arg) > 1) {
+    if (Math.abs(acos_arg) >= 1) {
       console.log("Invalid acos() argument: " + acos_arg + ". Points may be collinear.");
-      return 0;
+      return acos_arg > 0 ? 0 : Math.PI;
     }
 
     // Gamma angle in radians. This is the angle of ACB
@@ -2240,9 +2240,14 @@ class PathHelper {
           offset_dist = offset;
         }
 
-        let offset_angle = this.offsetAngle(source_path[i], source_path[j], source_path[k], -offset_dist);
-
-        offset_path.push(offset_angle[1]);
+        // Catch any errors in the offset calculation, most probably due to collinear points
+        // This could be avoided by pre-checking for collinearity (especially any 0-degree angle point sets)
+        try {
+          let offset_angle = this.offsetAngle(source_path[i], source_path[j], source_path[k], -offset_dist);
+          offset_path.push(offset_angle[1]);
+        } catch (e) {
+          console.log("Error in PathHelper.offsetPath(): " + e);
+        }
       }
 
       // Close path by adding first point
@@ -2265,16 +2270,19 @@ class PathHelper {
           offset_dist = offset;
         }
 
-        let offset_angle = this.offsetAngle(source_path[i], source_path[j], source_path[k], -offset_dist);
-
-        if (i === 0) {
-          offset_path.push(offset_angle[0]);
-          offset_path.push(offset_angle[1]);
-        } else if (i === i_max) {
-          offset_path.push(offset_angle[1]);
-          offset_path.push(offset_angle[2]);
-        } else {
-          offset_path.push(offset_angle[1]);
+        try {
+          let offset_angle = this.offsetAngle(source_path[i], source_path[j], source_path[k], -offset_dist);
+          if (i === 0) {
+            offset_path.push(offset_angle[0]);
+            offset_path.push(offset_angle[1]);
+          } else if (i === i_max) {
+            offset_path.push(offset_angle[1]);
+            offset_path.push(offset_angle[2]);
+          } else {
+            offset_path.push(offset_angle[1]);
+          }
+        } catch (e) {
+          console.log("Error in PathHelper.offsetPath(): " + e);
         }
       }
     }
@@ -2438,6 +2446,12 @@ class PathHelper {
 
     // Gamma angle in radians. This is the angle of ACB
     let gamma = this.angle(p1, p2, p3);
+
+    if (gamma < 0.00001) {
+      // console.log("Warning angle (gamma) too small in PathHelper.offsetAngle(): " + gamma);
+      // console.log(p1, p2, p3, offset);
+      throw "Angle too small to offset in PathHelper.offsetAngle()";
+    }
 
     // Calculate the distance that the side AC (or CB)
     // must be extended (or subtracted) in order to turn
