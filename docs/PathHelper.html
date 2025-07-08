@@ -1670,7 +1670,7 @@ number cfeates a smoother path</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1162">line 1162</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1240">line 1240</a>
     </li></ul></dd>
     
 
@@ -1853,7 +1853,7 @@ If Shape B does not overlap Shape A, then Shape A will be returned unchanged.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1197">line 1197</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1275">line 1275</a>
     </li></ul></dd>
     
 
@@ -2036,7 +2036,7 @@ that are outside of Shape B
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1343">line 1343</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1421">line 1421</a>
     </li></ul></dd>
     
 
@@ -2220,7 +2220,7 @@ shape should be returned
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1378">line 1378</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1456">line 1456</a>
     </li></ul></dd>
     
 
@@ -2403,7 +2403,7 @@ that are outside of Shape B
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1239">line 1239</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1317">line 1317</a>
     </li></ul></dd>
     
 
@@ -2586,7 +2586,7 @@ If Shape B does not overlap Shape A, then Shape A will be returned unchanged.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1274">line 1274</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1352">line 1352</a>
     </li></ul></dd>
     
 
@@ -2905,7 +2905,7 @@ that are outside of Shape B
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line851">line 851</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line929">line 929</a>
     </li></ul></dd>
     
 
@@ -2935,6 +2935,384 @@ that are outside of Shape B
         
 <div class="param-desc">
     An array of Path arrays centered at the origin
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">array</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="chaikin"><span class="type-signature"></span>chaikin<span class="signature">(arr, num)</span><span class="type-signature"> &rarr; {array}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Chaikin Algorithm for curve generation
+Invented by George Chaikin. Written by Paul Chaikin
+Source: https://observablehq.com/@pamacha/chaikins-algorithm
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>arr</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">An array of Points</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>num</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Number of recursive calls</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line902">line 902</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    A Path array
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">array</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="chaikinCurve"><span class="type-signature"></span>chaikinCurve<span class="signature">(path, iterations)</span><span class="type-signature"> &rarr; {array}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Wrapper for Chaikin Algorithm, which handles open/closed
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>path</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">array</span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">An array of Points</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>iterations</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                    1
+                
+                </td>
+            
+
+            <td class="description last">Number of recursive calls</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line848">line 848</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    A Path array
 </div>
 
 
@@ -3183,7 +3561,7 @@ See alternate implementation: https://gist.github.com/jupdike/bfe5eb23d1c395d8a0
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1823">line 1823</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1901">line 1901</a>
     </li></ul></dd>
     
 
@@ -3607,7 +3985,7 @@ be considered coincident</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3780">line 3780</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3858">line 3858</a>
     </li></ul></dd>
     
 
@@ -3821,7 +4199,7 @@ be considered coincident</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1540">line 1540</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1618">line 1618</a>
     </li></ul></dd>
     
 
@@ -3982,7 +4360,7 @@ intersects itself.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1625">line 1625</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1703">line 1703</a>
     </li></ul></dd>
     
 
@@ -4141,7 +4519,7 @@ intersects itself.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1699">line 1699</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1777">line 1777</a>
     </li></ul></dd>
     
 
@@ -4300,7 +4678,7 @@ intersects itself.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1640">line 1640</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1718">line 1718</a>
     </li></ul></dd>
     
 
@@ -4556,7 +4934,7 @@ This works, but hasn't been rigorously tested on edge cases
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line4339">line 4339</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line4417">line 4417</a>
     </li></ul></dd>
     
 
@@ -4814,7 +5192,7 @@ Note: This has not been performance optimized.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line4445">line 4445</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line4523">line 4523</a>
     </li></ul></dd>
     
 
@@ -5065,7 +5443,7 @@ a path as intersecting with another.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line4134">line 4134</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line4212">line 4212</a>
     </li></ul></dd>
     
 
@@ -5991,7 +6369,7 @@ receive the gaps instead of dashes as the output</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3480">line 3480</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3558">line 3558</a>
     </li></ul></dd>
     
 
@@ -6195,7 +6573,7 @@ and establishing a new path with the next point</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3601">line 3601</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3679">line 3679</a>
     </li></ul></dd>
     
 
@@ -6418,7 +6796,7 @@ and establishing a new path with the next point</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3630">line 3630</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3708">line 3708</a>
     </li></ul></dd>
     
 
@@ -7123,7 +7501,7 @@ A ------ B
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1077">line 1077</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1155">line 1155</a>
     </li></ul></dd>
     
 
@@ -7305,7 +7683,7 @@ A ------ B
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3225">line 3225</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3303">line 3303</a>
     </li></ul></dd>
     
 
@@ -7490,7 +7868,7 @@ into equal segments that are below this value.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3250">line 3250</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3328">line 3328</a>
     </li></ul></dd>
     
 
@@ -8178,7 +8556,7 @@ into equal segments that are below this value.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1995">line 1995</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line2073">line 2073</a>
     </li></ul></dd>
     
 
@@ -8339,7 +8717,7 @@ existing points.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3349">line 3349</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3427">line 3427</a>
     </li></ul></dd>
     
 
@@ -8567,7 +8945,7 @@ existing points.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line2504">line 2504</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line2582">line 2582</a>
     </li></ul></dd>
     
 
@@ -8785,7 +9163,7 @@ curvature).</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line2583">line 2583</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line2661">line 2661</a>
     </li></ul></dd>
     
 
@@ -9101,7 +9479,7 @@ over several points</li>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line4624">line 4624</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line4702">line 4702</a>
     </li></ul></dd>
     
 
@@ -9354,7 +9732,7 @@ Set to "false" to remove the points without starting a new path.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3407">line 3407</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3485">line 3485</a>
     </li></ul></dd>
     
 
@@ -9606,7 +9984,7 @@ Set to "false" to remove the points without starting a new path.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3461">line 3461</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3539">line 3539</a>
     </li></ul></dd>
     
 
@@ -10093,7 +10471,7 @@ This is kept here for legacy support
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1742">line 1742</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1820">line 1820</a>
     </li></ul></dd>
     
 
@@ -11448,7 +11826,7 @@ Copied from https://editor.p5js.org/mwburke/sketches/h1ec1s6LG
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1712">line 1712</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1790">line 1790</a>
     </li></ul></dd>
     
 
@@ -11740,7 +12118,7 @@ Copied from https://editor.p5js.org/mwburke/sketches/h1ec1s6LG
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3649">line 3649</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3727">line 3727</a>
     </li></ul></dd>
     
 
@@ -11989,7 +12367,7 @@ either a positive or negative direction (i.e. rotation range is twice this value
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line5336">line 5336</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line5414">line 5414</a>
     </li></ul></dd>
     
 
@@ -12172,7 +12550,7 @@ This may also be considered a Boolean Exclusive Or (XOR)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line4594">line 4594</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line4672">line 4672</a>
     </li></ul></dd>
     
 
@@ -12518,7 +12896,7 @@ intersection prior to testing every segment</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line4778">line 4778</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line4856">line 4856</a>
     </li></ul></dd>
     
 
@@ -12905,7 +13283,7 @@ intersection prior to testing every segment</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line2658">line 2658</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line2736">line 2736</a>
     </li></ul></dd>
     
 
@@ -13113,7 +13491,7 @@ parameter should be the circle's radius.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1769">line 1769</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1847">line 1847</a>
     </li></ul></dd>
     
 
@@ -13363,7 +13741,7 @@ locations of intersections.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1511">line 1511</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1589">line 1589</a>
     </li></ul></dd>
     
 
@@ -13617,7 +13995,7 @@ should be considered coincident and not intersecting.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line5003">line 5003</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line5081">line 5081</a>
     </li></ul></dd>
     
 
@@ -13804,7 +14182,7 @@ shape.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line5121">line 5121</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line5199">line 5199</a>
     </li></ul></dd>
     
 
@@ -14901,7 +15279,7 @@ percentage.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line2311">line 2311</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line2389">line 2389</a>
     </li></ul></dd>
     
 
@@ -15418,7 +15796,7 @@ smoothing window more times keeps sharper angles while still smoothing straight 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line2765">line 2765</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line2843">line 2843</a>
     </li></ul></dd>
     
 
@@ -15633,7 +16011,7 @@ represents an "inside" offset for an acute angle ACB</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line2445">line 2445</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line2523">line 2523</a>
     </li></ul></dd>
     
 
@@ -15889,7 +16267,7 @@ intersect with themselve in order to support wider offset values</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line2208">line 2208</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line2286">line 2286</a>
     </li></ul></dd>
     
 
@@ -16307,7 +16685,7 @@ parallel path</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1952">line 1952</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line2030">line 2030</a>
     </li></ul></dd>
     
 
@@ -16466,7 +16844,7 @@ parallel path</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1496">line 1496</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1574">line 1574</a>
     </li></ul></dd>
     
 
@@ -17196,7 +17574,7 @@ as the x component and second element as the y component
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1525">line 1525</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1603">line 1603</a>
     </li></ul></dd>
     
 
@@ -17483,7 +17861,7 @@ inside or outside.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1886">line 1886</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1964">line 1964</a>
     </li></ul></dd>
     
 
@@ -17742,7 +18120,7 @@ and still be considered as "on" the line segment.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1865">line 1865</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1943">line 1943</a>
     </li></ul></dd>
     
 
@@ -17998,7 +18376,7 @@ two points where they can be considered as part of the same path.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line4067">line 4067</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line4145">line 4145</a>
     </li></ul></dd>
     
 
@@ -18181,7 +18559,7 @@ two points where they can be considered as part of the same path.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3990">line 3990</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line4068">line 4068</a>
     </li></ul></dd>
     
 
@@ -18801,7 +19179,7 @@ the shadow will fall</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line5190">line 5190</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line5268">line 5268</a>
     </li></ul></dd>
     
 
@@ -19441,7 +19819,7 @@ higher number will create a smoother, high-resolution curve</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3101">line 3101</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3179">line 3179</a>
     </li></ul></dd>
     
 
@@ -20063,7 +20441,7 @@ counterintuitively the first time, so an adjustment was made to the variable nam
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line992">line 992</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1070">line 1070</a>
     </li></ul></dd>
     
 
@@ -20222,7 +20600,7 @@ counterintuitively the first time, so an adjustment was made to the variable nam
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line2345">line 2345</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line2423">line 2423</a>
     </li></ul></dd>
     
 
@@ -20437,7 +20815,7 @@ a path should be removed from the input paths.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3931">line 3931</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line4009">line 4009</a>
     </li></ul></dd>
     
 
@@ -20619,7 +20997,7 @@ a path should be removed from the input paths.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3366">line 3366</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3444">line 3444</a>
     </li></ul></dd>
     
 
@@ -20825,7 +21203,7 @@ rotate the path. Positive rotation is clockwise.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line959">line 959</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1037">line 1037</a>
     </li></ul></dd>
     
 
@@ -21032,7 +21410,7 @@ rotate the path. Positive rotation is clockwise.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line974">line 974</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1052">line 1052</a>
     </li></ul></dd>
     
 
@@ -21219,7 +21597,7 @@ or a value can be provided for each dimension</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line914">line 914</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line992">line 992</a>
     </li></ul></dd>
     
 
@@ -21380,7 +21758,7 @@ points are coincident - are not considered to be self-interesecting.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1557">line 1557</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1635">line 1635</a>
     </li></ul></dd>
     
 
@@ -21563,7 +21941,7 @@ and insert these intersection points in Shape A (in order)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1429">line 1429</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1507">line 1507</a>
     </li></ul></dd>
     
 
@@ -21851,7 +22229,7 @@ in the path maintains its position</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1019">line 1019</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1097">line 1097</a>
     </li></ul></dd>
     
 
@@ -22034,7 +22412,7 @@ https://javascript.plainenglish.io/algorithms-101-rotate-array-in-javascript-thr
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3179">line 3179</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3257">line 3257</a>
     </li></ul></dd>
     
 
@@ -22190,7 +22568,7 @@ From https://dev.to/codebubb/how-to-shuffle-an-array-in-javascript-2ikj
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3914">line 3914</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3992">line 3992</a>
     </li></ul></dd>
     
 
@@ -22510,7 +22888,7 @@ does not intersect itself.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1603">line 1603</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1681">line 1681</a>
     </li></ul></dd>
     
 
@@ -22769,7 +23147,7 @@ this value (in Radians) then it will be added to the new path.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3954">line 3954</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line4032">line 4032</a>
     </li></ul></dd>
     
 
@@ -23019,7 +23397,7 @@ possible between adjacent points. A sharpness of 1 represents no change</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3004">line 3004</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3082">line 3082</a>
     </li></ul></dd>
     
 
@@ -23279,7 +23657,7 @@ flat ending segemnts of the "preserve" method.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line2858">line 2858</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line2936">line 2936</a>
     </li></ul></dd>
     
 
@@ -23646,7 +24024,7 @@ and empty array for non-real solutions of x
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3805">line 3805</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3883">line 3883</a>
     </li></ul></dd>
     
 
@@ -23843,7 +24221,7 @@ in the case that the endpoint of a path is closer to the next path</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3829">line 3829</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3907">line 3907</a>
     </li></ul></dd>
     
 
@@ -24025,7 +24403,7 @@ in the case that the endpoint of a path is closer to the next path</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3275">line 3275</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3353">line 3353</a>
     </li></ul></dd>
     
 
@@ -24442,7 +24820,7 @@ and last points will overlap to create a closed path.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3197">line 3197</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line3275">line 3275</a>
     </li></ul></dd>
     
 
@@ -24610,7 +24988,7 @@ removing it as in layeredPaths).
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line4935">line 4935</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line5013">line 5013</a>
     </li></ul></dd>
     
 
@@ -25076,7 +25454,7 @@ The Squircle is a special case when width == height
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line2696">line 2696</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line2774">line 2774</a>
     </li></ul></dd>
     
 
@@ -25259,7 +25637,7 @@ the path in each dimension</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line942">line 942</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line1020">line 1020</a>
     </li></ul></dd>
     
 
@@ -25667,7 +26045,7 @@ A greater distance may decrease smoothness of output. A recommended value is a s
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line2091">line 2091</a>
+        <a href="PathHelper.js.html">PathHelper.js</a>, <a href="PathHelper.js.html#line2169">line 2169</a>
     </li></ul></dd>
     
 
@@ -25750,7 +26128,7 @@ A greater distance may decrease smoothness of output. A recommended value is a s
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Thu May 08 2025 20:15:39 GMT-0700 (Pacific Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Jul 08 2025 11:57:21 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>
