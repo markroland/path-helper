@@ -771,6 +771,18 @@ PH.cubicBezierPath(
 ]
 ```
 
+### chaikinCurve
+
+Create an open or closed smooth curve using Chaikin's corner cutting algorithm.
+This method preserves endpoints.
+
+
+### chaikin
+
+The [Chaikin Algorithm](https://observablehq.com/@pamacha/chaikins-algorithm) as implemented
+by Paul Chaikin. This can be used directly, but the [chaikinCurve](#chaikinCurve) method
+can be used instead to preserve endpoints.
+
 ---------------------------------------------------------------------------------------
 ### Linear Transformations
 *The following methods perform standard linear transformations*
