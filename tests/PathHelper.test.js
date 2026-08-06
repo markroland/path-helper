@@ -152,6 +152,21 @@ test('reflectPath', () => {
   expect(reflection_F).toStrictEqual([ [ 0.5, 0.5 ], [ 1.0, 0.0 ] ]);
 });
 
+test('splitPath', () => {
+
+  let path = [
+    [0, 0],
+    [1, 0],
+    [2, 0],
+    [3, 0]
+  ];
+
+  let paths = PH.splitPath(path);
+
+  expect(paths.length).toEqual(path.length-1);
+  expect(paths).toStrictEqual([[[0, 0],[1, 0]], [[1, 0],[2, 0]], [[2, 0],[3, 0]]]);
+});
+
 test('shearPath', () => {
 
   let path = [

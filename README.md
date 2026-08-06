@@ -1400,6 +1400,38 @@ PH.shiftPath(path, 2);
 ]
 ```
 
+### splitPath
+
+Split a multi-point path array into an array of path segments.
+
+```js
+let path = [
+    [0, 0],
+    [1, 0],
+    [2, 0],
+    [3, 0]
+];
+PH.splitPath(path);
+```
+
+**Expected Output:**
+```js
+[
+    [
+        [0, 0],
+        [1, 0]
+    ],
+    [
+        [1, 0],
+        [2, 0]
+    ],
+    [
+        [2, 0],
+        [3, 0]
+    ]
+]
+```
+
 ### subdividePath
 
 Divide each segment of a multi-point Path array into

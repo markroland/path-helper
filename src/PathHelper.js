@@ -3268,6 +3268,19 @@ class PathHelper {
   }
 
   /**
+   * Split a path into an array of paths for each segment in the path
+   * @param {array} path - A Path array
+   * @returns {array} An array of paths
+   **/
+  splitPath(path) {
+    let paths = [];
+    for (let i = 0; i < path.length - 1; i++) {
+      paths.push([path[i], path[i+1]]);
+    }
+    return paths;
+  }
+
+  /**
    * Split each segment of the source path into 2 parts and return the result
    * @param {array} path - The source path
    * @returns {array} - The input path with each segment divided into two segments
