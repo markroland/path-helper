@@ -589,7 +589,8 @@ class PathHelper {
     // to avoid errors at very obtuse angles (nearing 180 degrees)
     acos_arg = acos_arg.toFixed(8);
     if (Math.abs(acos_arg) >= 1) {
-      console.log("Invalid acos() argument: " + acos_arg + ". Points may be collinear.");
+      // console.warn("Invalid acos() argument: " + acos_arg + ". Points may be collinear.");
+      // console.trace();
       return acos_arg > 0 ? 0 : Math.PI;
     }
 
