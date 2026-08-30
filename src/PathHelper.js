@@ -3926,7 +3926,7 @@ class PathHelper {
     for (let i = 0; i < paths.length; i++) {
       let leftMostPointX = paths[i][0][0];
       if (paths[i][paths[i].length - 1][0] < leftMostPointX) {
-        leftMostPointX = paths[i][paths.length - 1][0];
+        leftMostPointX = paths[i][paths[i].length - 1][0];
       }
       if (leftMostPointX < leftMostPathX) {
         leftMostPathX = leftMostPointX;
