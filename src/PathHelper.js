@@ -3745,143 +3745,148 @@ class PathHelper {
 
     let debug = false;
 
-    // Bail if iterations exceeded
-    iteration++;
-    if (debug) { console.log('---------------------'); }
-    if (debug) { console.log('Iteration:', iteration); }
+    // Iterative rather than recursive: with large numbers of paths, recursing once
+    // per path index advance can exceed the JS call stack (RangeError: Maximum call
+    // stack size exceeded). The loop below preserves the original step-by-step logic
+    // without growing the stack.
+    while (true) {
 
-    let path_index = active_path_index;
-    let distance;
+      // Bail if iterations exceeded
+      iteration++;
+      if (debug) { console.log('---------------------'); }
+      if (debug) { console.log('Iteration:', iteration); }
 
-    // Check for completion of multiple closed loops
-    for (let i = path_index; i < paths.length; i++) {
-      let path_closed = false;
-      if (debug) { console.log('path_index:', path_index); }
+      let path_index = active_path_index;
+      let distance;
 
-      // Calculate distance between first and last point of target path
-      distance = this.distance(paths[path_index][0], paths[path_index][paths[path_index].length-1]);
+      // Check for completion of multiple closed loops
+      for (let i = path_index; i < paths.length; i++) {
+        let path_closed = false;
+        if (debug) { console.log('path_index:', path_index); }
 
-      // If distance is below threshold, then the path should be considered a closed loop
-      if (distance < threshold) {
-        path_closed = true;
-      }
+        // Calculate distance between first and last point of target path
+        distance = this.distance(paths[path_index][0], paths[path_index][paths[path_index].length-1]);
 
-      // If the path is a closed loop, then increment the index to look at the next path
-      // as the target path
-      if (path_closed) {
-        if (debug) { console.log('Path ' + path_index + ' closed.'); }
-        path_index++;
-        if (debug) { console.log('New Path Index: ' + path_index); }
-        continue;
-      }
-      break;
-    }
+        // If distance is below threshold, then the path should be considered a closed loop
+        if (distance < threshold) {
+          path_closed = true;
+        }
 
-    if (debug) { console.log('selected path_index:', path_index); }
-    if (debug) { console.log('paths.length:', paths.length); }
-
-    // Exit function if the last path is closed
-    if (path_index == paths.length) {
-      return paths;
-    }
-
-    // Last point of the target path on which to join other paths
-    let last_point = paths[path_index][paths[path_index].length - 1];
-
-    // Check remaining paths
-    // console.log('paths.length', paths.length)
-    let overlap_count = 0;
-    for (let i = 0; i < paths.length; i++) {
-
-      // Skip self
-      if (i == path_index) {
-        continue;
-      }
-
-      // Check last point of target path against first point of other paths
-      distance = this.distance(last_point, paths[i][0]);
-
-      if (
-        distance < threshold &&
-        this.#withinJoinAngle(
-          paths[path_index][paths[path_index].length-2], last_point, paths[i][1],
-          angle_threshold
-        )
-      ) {
-        // console.log(last_point, paths[i][0], distance, paths[i]);
-        overlap_count++;
-        // console.log('before:', paths[0])
-        paths[path_index] = paths[path_index].concat(paths[i].slice(1));
-        // console.log('after:', paths[0])
-
-        // remove from paths
-        paths.splice(i, 1);
+        // If the path is a closed loop, then increment the index to look at the next path
+        // as the target path
+        if (path_closed) {
+          if (debug) { console.log('Path ' + path_index + ' closed.'); }
+          path_index++;
+          if (debug) { console.log('New Path Index: ' + path_index); }
+          continue;
+        }
         break;
       }
 
-      // Check last point of target path against last point of other paths
-      distance = this.distance(last_point, paths[i][paths[i].length-1]);
-      if (
-        distance < threshold &&
-        this.#withinJoinAngle(
-          paths[path_index][paths[path_index].length-2], last_point, paths[i][paths[i].length-2],
-          angle_threshold
-        )
-      ) {
-        // console.log(last_point, paths[i][0], distance);
-        overlap_count++;
-        paths[path_index] = paths[path_index].concat(paths[i].reverse().slice(1));
+      if (debug) { console.log('selected path_index:', path_index); }
+      if (debug) { console.log('paths.length:', paths.length); }
 
-        // remove from paths
-        paths.splice(i, 1);
+      // Exit loop if the last path is closed
+      if (path_index == paths.length) {
         break;
       }
 
-      // Check first point of target path against first point of other paths
-      distance = this.distance(paths[path_index][0], paths[i][0]);
-      if (
-        distance < threshold &&
-        this.#withinJoinAngle(
-          paths[i][1], paths[path_index][0], paths[path_index][1],
-          angle_threshold
-        )
-      ) {
-        overlap_count++;
-        paths[path_index] = paths[i].reverse().concat(paths[path_index]);
-        paths.splice(i, 1);
+      // Last point of the target path on which to join other paths
+      let last_point = paths[path_index][paths[path_index].length - 1];
+
+      // Check remaining paths
+      // console.log('paths.length', paths.length)
+      let overlap_count = 0;
+      for (let i = 0; i < paths.length; i++) {
+
+        // Skip self
+        if (i == path_index) {
+          continue;
+        }
+
+        // Check last point of target path against first point of other paths
+        distance = this.distance(last_point, paths[i][0]);
+
+        if (
+          distance < threshold &&
+          this.#withinJoinAngle(
+            paths[path_index][paths[path_index].length-2], last_point, paths[i][1],
+            angle_threshold
+          )
+        ) {
+          // console.log(last_point, paths[i][0], distance, paths[i]);
+          overlap_count++;
+          // console.log('before:', paths[0])
+          paths[path_index] = paths[path_index].concat(paths[i].slice(1));
+          // console.log('after:', paths[0])
+
+          // remove from paths
+          paths.splice(i, 1);
+          break;
+        }
+
+        // Check last point of target path against last point of other paths
+        distance = this.distance(last_point, paths[i][paths[i].length-1]);
+        if (
+          distance < threshold &&
+          this.#withinJoinAngle(
+            paths[path_index][paths[path_index].length-2], last_point, paths[i][paths[i].length-2],
+            angle_threshold
+          )
+        ) {
+          // console.log(last_point, paths[i][0], distance);
+          overlap_count++;
+          paths[path_index] = paths[path_index].concat(paths[i].reverse().slice(1));
+
+          // remove from paths
+          paths.splice(i, 1);
+          break;
+        }
+
+        // Check first point of target path against first point of other paths
+        distance = this.distance(paths[path_index][0], paths[i][0]);
+        if (
+          distance < threshold &&
+          this.#withinJoinAngle(
+            paths[i][1], paths[path_index][0], paths[path_index][1],
+            angle_threshold
+          )
+        ) {
+          overlap_count++;
+          paths[path_index] = paths[i].reverse().concat(paths[path_index]);
+          paths.splice(i, 1);
+          break;
+        }
+
+        // Check first point of target path against last point of other paths
+        distance = this.distance(paths[path_index][0], paths[i][paths[i].length-1]);
+        if (
+          distance < threshold &&
+          this.#withinJoinAngle(
+            paths[i][paths[i].length-2], paths[path_index][0], paths[path_index][1],
+            angle_threshold
+          )
+        ) {
+          overlap_count++;
+          paths[path_index] = paths[i].concat(paths[path_index]);
+          paths.splice(i, 1);
+          break;
+        }
+
+      }
+
+      if (debug) { console.log("Overlap Count", overlap_count); }
+
+      // Exit loop if the last path is closed
+      if (path_index == paths.length) {
         break;
       }
 
-      // Check first point of target path against last point of other paths
-      distance = this.distance(paths[path_index][0], paths[i][paths[i].length-1]);
-      if (
-        distance < threshold &&
-        this.#withinJoinAngle(
-          paths[i][paths[i].length-2], paths[path_index][0], paths[path_index][1],
-          angle_threshold
-        )
-      ) {
-        overlap_count++;
-        paths[path_index] = paths[i].concat(paths[path_index]);
-        paths.splice(i, 1);
-        break;
+      // If the target path is closed or on the border go to next path
+      if (overlap_count === 0) {
+        active_path_index++;
       }
-
     }
-
-    if (debug) { console.log("Overlap Count", overlap_count); }
-
-    // Exit function if the last path is closed
-    if (path_index == paths.length) {
-      return paths;
-    }
-
-    // If the target path is closed or on the border go to next path
-    if (overlap_count === 0) {
-      active_path_index++;
-    }
-
-    paths = this.joinPaths(paths, threshold, active_path_index, iteration, angle_threshold);
 
     // Remove consecutive duplicate points (within a threshold of distance)
     paths[0] = this.cleanPath(paths[0], 0.0001);
