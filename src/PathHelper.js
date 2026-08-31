@@ -3736,9 +3736,12 @@ class PathHelper {
    * @param {number} [threshold=0.01] - The distance threshold below which points should be considered the same location.
    * @param {number} [active_path_index=0] - The index position of the paths input that is being analyzed
    * @param {number} [iteration=0] - A counter of function call iterations. Useful for debugging and stopping the recursion
+   * @param {number} [angle_threshold=Math.PI] - The maximum allowed change in direction (in radians) at the joint
+   * between two paths. A value of 0 only allows perfectly straight joins; the default of Math.PI allows any join,
+   * including a path that doubles back on itself.
    * @returns {array} An array of paths
    **/
-  joinPaths(paths, threshold = 0.01, active_path_index = 0, iteration = 0) {
+  joinPaths(paths, threshold = 0.01, active_path_index = 0, iteration = 0, angle_threshold = Math.PI) {
 
     let debug = false;
 
@@ -3798,7 +3801,13 @@ class PathHelper {
       // Check last point of target path against first point of other paths
       distance = this.distance(last_point, paths[i][0]);
 
-      if (distance < threshold) {
+      if (
+        distance < threshold &&
+        this.#withinJoinAngle(
+          paths[path_index][paths[path_index].length-2], last_point, paths[i][1],
+          angle_threshold
+        )
+      ) {
         // console.log(last_point, paths[i][0], distance, paths[i]);
         overlap_count++;
         // console.log('before:', paths[0])
@@ -3812,7 +3821,13 @@ class PathHelper {
 
       // Check last point of target path against last point of other paths
       distance = this.distance(last_point, paths[i][paths[i].length-1]);
-      if (distance < threshold) {
+      if (
+        distance < threshold &&
+        this.#withinJoinAngle(
+          paths[path_index][paths[path_index].length-2], last_point, paths[i][paths[i].length-2],
+          angle_threshold
+        )
+      ) {
         // console.log(last_point, paths[i][0], distance);
         overlap_count++;
         paths[path_index] = paths[path_index].concat(paths[i].reverse().slice(1));
@@ -3824,7 +3839,13 @@ class PathHelper {
 
       // Check first point of target path against first point of other paths
       distance = this.distance(paths[path_index][0], paths[i][0]);
-      if (distance < threshold) {
+      if (
+        distance < threshold &&
+        this.#withinJoinAngle(
+          paths[i][1], paths[path_index][0], paths[path_index][1],
+          angle_threshold
+        )
+      ) {
         overlap_count++;
         paths[path_index] = paths[i].reverse().concat(paths[path_index]);
         paths.splice(i, 1);
@@ -3833,7 +3854,13 @@ class PathHelper {
 
       // Check first point of target path against last point of other paths
       distance = this.distance(paths[path_index][0], paths[i][paths[i].length-1]);
-      if (distance < threshold) {
+      if (
+        distance < threshold &&
+        this.#withinJoinAngle(
+          paths[i][paths[i].length-2], paths[path_index][0], paths[path_index][1],
+          angle_threshold
+        )
+      ) {
         overlap_count++;
         paths[path_index] = paths[i].concat(paths[path_index]);
         paths.splice(i, 1);
@@ -3854,12 +3881,38 @@ class PathHelper {
       active_path_index++;
     }
 
-    paths = this.joinPaths(paths, threshold, active_path_index, iteration);
+    paths = this.joinPaths(paths, threshold, active_path_index, iteration, angle_threshold);
 
     // Remove consecutive duplicate points (within a threshold of distance)
     paths[0] = this.cleanPath(paths[0], 0.0001);
 
     return paths;
+  }
+
+  /**
+   * Determine whether joining two path segments at a shared vertex stays within an
+   * allowed change in direction.
+   *
+   * @param {array} p1 - The point preceding the joint on one segment
+   * @param {array} vertex - The shared point at which the two segments would be joined
+   * @param {array} p3 - The point following the joint on the other segment
+   * @param {number} angle_threshold - The maximum allowed change in direction (in radians).
+   * A value of Math.PI allows any join; a value of 0 only allows a perfectly straight join.
+   * @returns {boolean} - True if the join is within the allowed angle threshold
+   **/
+  #withinJoinAngle(p1, vertex, p3, angle_threshold) {
+
+    // No restriction requested
+    if (angle_threshold >= Math.PI) {
+      return true;
+    }
+
+    // The change in direction ("turn") at the joint is the supplement of the
+    // interior angle formed by p1, vertex, and p3. A straight continuation
+    // (no turn) yields an interior angle of PI (turn of 0).
+    let turn = Math.PI - this.angle(p1, vertex, p3);
+
+    return turn <= angle_threshold;
   }
 
   /**
