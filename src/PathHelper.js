@@ -3980,9 +3980,7 @@ class PathHelper {
     let new_paths = [
       paths.splice(leftMostPathIndex, 1)[0]
     ];
-    let count = 0;
-    while (paths.length > 1) {
-      count++;
+    while (paths.length > 0) {
       const lastNewPath = new_paths[new_paths.length - 1];
       const lastNewPoint = lastNewPath[lastNewPath.length - 1];
       let closestPath = closestPathToPoint(paths, lastNewPoint, allow_reversing);
@@ -3992,7 +3990,6 @@ class PathHelper {
       }
       new_paths.push(next_path);
     }
-    new_paths.concat(paths);
 
     return new_paths;
   }
