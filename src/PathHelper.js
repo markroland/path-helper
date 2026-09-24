@@ -3457,9 +3457,21 @@ class PathHelper {
    */
   resamplePath(path, samples) {
 
+    if (path.length < 2) {
+      throw "Path must have at least 2 points.";
+    }
+
     // For each point of the path, determin
     let positions = [0];
     let total_distance = this.pathLength(path);
+
+    // A zero-length path (e.g. all points coincide) has no meaningful
+    // positions to resample. Return an array of the first (representative)
+    // point repeated the number of requested samples.
+    if (total_distance === 0) {
+      return Array(samples).fill(path[0]);
+    }
+
     for (let i = 1; i < path.length - 1; i++) {
       positions.push(this.pathLength(path.slice(0, i+1)) / total_distance);
     }
