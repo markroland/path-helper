@@ -5408,59 +5408,83 @@ class PathHelper {
    **/
   linePathsSplit(line, paths) {
 
-    let segments = [];
+    // Iterative rather than recursive: when a line is split into two
+    // segments, both need to be evaluated against the whole "paths" list
+    // again, and each of those can split again. For a line crossing many
+    // overlapping shapes (e.g. a flower with several overlapping petals)
+    // this recursion tree can get deep enough to exceed the JS call stack
+    // (RangeError: Maximum call stack size exceeded). This explicit stack
+    // preserves the original depth-first splitting logic and result order
+    // without growing the native call stack.
+    const results = [];
+    const stack = [line];
 
-    // Loop through all of the paths
-    for (let i = 0; i < paths.length; i++) {
+    while (stack.length > 0) {
 
-      // Calculate the intersection(s) between the line
-      // and the current path. This will produce 0, 1 or 2
-      // intersections for convex polygons
-      try {
-        segments = this.linePathSplit(line, paths[i]);
-      } catch(e) {
-        console.log(e);
-        return segments;
-      }
+      let current_line = stack.pop();
+      let segments = [];
+      let terminal = true;
 
-      // Initialize an empty array to store subsegments of the
-      // segments.
-      let sub_segments = [];
+      // Loop through all of the paths
+      for (let i = 0; i < paths.length; i++) {
 
-      if (typeof segments === "undefined") {
-        console.log("segments is undefined");
-        continue;
-      }
-
-      if (segments.length > 1) {
-
-        // If there are two segments (max for a convex polygon "path")
-        // then they should each be evaluated against the other paths.
-        // This is where the recursive magic happens.
-        for (let j = 0; j < segments.length; j++) {
-          sub_segments = sub_segments.concat(
-            this.linePathsSplit(segments[j], paths)
-          );
+        // Calculate the intersection(s) between the line
+        // and the current path. This will produce 0, 1 or 2
+        // intersections for convex polygons
+        try {
+          segments = this.linePathSplit(current_line, paths[i]);
+        } catch(e) {
+          console.log(e);
+          // Matches the original's `return segments`: on failure, whatever
+          // "segments" held from the last successful path test (or the
+          // initial empty array) is this line's result, so `terminal`
+          // stays true and it flows into the push below.
+          break;
         }
 
-        return sub_segments;
+        if (typeof segments === "undefined") {
+          console.log("segments is undefined");
+          continue;
+        }
 
-      } else if (segments.length == 1) {
+        if (segments.length > 1) {
 
-        // If there was one intersection, creating a truncated line,
-        // which should become the new line to be evaluated against
-        // the rest of the "paths"
-        line = segments[0];
+          // If there are two segments (max for a convex polygon "path")
+          // then they should each be evaluated against the other paths.
+          // Push them in reverse so the stack pops them in the same
+          // left-to-right order the original recursion produced.
+          for (let j = segments.length - 1; j >= 0; j--) {
+            stack.push(segments[j]);
+          }
+          terminal = false;
+          break;
 
-      } else {
+        } else if (segments.length == 1) {
 
-        // If segments is empty then the endpoints were completely
-        // contained within a shape (overlapped and hidden from view)
-        return segments;
+          // If there was one intersection, creating a truncated line,
+          // which should become the new line to be evaluated against
+          // the rest of the "paths"
+          current_line = segments[0];
+
+        } else {
+
+          // If segments is empty then the endpoints were completely
+          // contained within a shape (overlapped and hidden from view).
+          // Nothing to contribute to the result.
+          terminal = false;
+          break;
+        }
+      }
+
+      // Ran through every path without being split or hidden: whatever
+      // "segments" holds from the last path tested is the fully-resolved
+      // result for this line.
+      if (terminal) {
+        results.push(...segments);
       }
     }
 
-    return segments;
+    return results;
   }
 
   /**
