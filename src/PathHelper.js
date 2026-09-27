@@ -535,13 +535,17 @@ class PathHelper {
    */
   distance(p1, p2) {
 
+    const dx = p2[0] - p1[0];
+    const dy = p2[1] - p1[1];
+
     // 3D Distance calculation
     if (p1.length == 3 && p2.length == 3) {
-      return Math.sqrt(Math.pow(p2[0] - p1[0], 2) + Math.pow(p2[1] - p1[1], 2) + Math.pow(p2[2] - p1[2], 2));
+      const dz = p2[2] - p1[2];
+      return Math.sqrt(dx * dx + dy * dy + dz * dz);
     }
 
     // 2D Distance calculation
-    return Math.sqrt(Math.pow(p2[0] - p1[0], 2) + Math.pow(p2[1] - p1[1], 2));
+    return Math.sqrt(dx * dx + dy * dy);
   }
 
   /**
@@ -1547,12 +1551,15 @@ class PathHelper {
 
       // Sort segment_intersections and insert in Shape A
       if (segment_intersections.length > 0) {
-        let self = this;
-        // Note: Refactor this to pass in 'this' as second parameter to sort()
-        segment_intersections.sort(function(a, b) {
-          return (self.distance(shapeA[i], a) > self.distance(shapeA[i], b) ? 1 : -1);
+        // Precompute each candidate's distance once, rather than
+        // recomputing it on every comparator call during the sort
+        const origin = shapeA[i];
+        const decorated = segment_intersections.map((point) => {
+          return { point: point, dist: this.distance(origin, point) };
         });
-        newA = newA.concat(segment_intersections);
+        decorated.sort((a, b) => a.dist - b.dist);
+        segment_intersections = decorated.map((entry) => entry.point);
+        newA.push(...segment_intersections);
       }
     }
 
@@ -4320,21 +4327,40 @@ class PathHelper {
     // Reformat vertices of cropShape for use with pointInPolygon()
     let vertices = this.#formatVertices(cropShape);
 
+    // Compute cropShape's bounding box once, rather than per path below
+    const cropShape_bbox = this.boundingBox(cropShape);
+
     // Loop through all paths
     for (let i = 0; i < candidate_paths.length; i++) {
 
+      // A path whose bounding box doesn't overlap cropShape's bounding box
+      // has no points inside cropShape, so it can be dropped entirely
+      // without any per-point pointInPolygon calls.
+      const path_bbox = this.boundingBox(candidate_paths[i]);
+      if (!this.#boundingBoxesOverlap(path_bbox, cropShape_bbox)) {
+        continue;
+      }
+
       path = [];
+
+      // Reused across iterations: the "next_point_in_bounds" computed
+      // for point p is the same value as "point_in_bounds" for point
+      // p+1, so it's cached here instead of being recomputed with a
+      // second pointInPolygon call on the same point.
+      let cached_point_in_bounds = null;
 
       // Loop through points/segments of path
       for (let p = 0; p < candidate_paths[i].length-1; p++) {
 
         // Check if point is within bounds
-        let point_in_bounds = this.pointInPolygon(
-          vertices,
-          candidate_paths[i][p][0],
-          candidate_paths[i][p][1],
-          threshold
-        );
+        let point_in_bounds = (cached_point_in_bounds !== null)
+          ? cached_point_in_bounds
+          : this.pointInPolygon(
+            vertices,
+            candidate_paths[i][p][0],
+            candidate_paths[i][p][1],
+            threshold
+          );
 
         // Check if next point is within bounds (if not the last point)
         let next_point_in_bounds = null;
@@ -4346,6 +4372,7 @@ class PathHelper {
             threshold
           );
         }
+        cached_point_in_bounds = next_point_in_bounds;
 
         // Determine if the next point is the end of the candiate path
         let next_point_is_last = false;
@@ -4835,8 +4862,20 @@ class PathHelper {
 
     let new_paths = [];
 
+    // Compute shape's bounding box once, rather than per path below
+    const shape_bbox = this.boundingBox(shape);
+
     // Loop through paths
     for (let i = 0; i < paths.length; i++) {
+
+      // A path whose bounding box doesn't overlap shape's bounding box
+      // cannot have any segment inside shape, so it can't be knocked out.
+      // Skip the expensive segment-intersection work entirely.
+      const path_bbox = this.boundingBox(paths[i]);
+      if (!this.#boundingBoxesOverlap(path_bbox, shape_bbox)) {
+        new_paths.push(paths[i]);
+        continue;
+      }
 
       // Get intersections
       let new_path = this.shapeIntersections(paths[i], shape);
@@ -4845,10 +4884,27 @@ class PathHelper {
       let knocked_paths = this.booleanSubtractComparison(new_path, shape, false);
 
       // Add to new paths
-      new_paths = new_paths.concat(knocked_paths);
+      new_paths.push(...knocked_paths);
     }
 
     return new_paths;
+  }
+
+  /**
+   * Determine whether two axis-aligned bounding boxes (as returned by
+   * boundingBox()) overlap at all.
+   * @param {array} bboxA - A bounding box: [[min_x,max_x],[min_y,max_y]]
+   * @param {array} bboxB - A bounding box: [[min_x,max_x],[min_y,max_y]]
+   * @returns {boolean} True if the bounding boxes overlap (including
+   * touching or containment), false if they are entirely disjoint
+   **/
+  #boundingBoxesOverlap(bboxA, bboxB) {
+    return !(
+      bboxA[0][1] < bboxB[0][0] ||
+      bboxA[0][0] > bboxB[0][1] ||
+      bboxA[1][1] < bboxB[1][0] ||
+      bboxA[1][0] > bboxB[1][1]
+    );
   }
 
   /**

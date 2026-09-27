@@ -612,3 +612,72 @@ describe('cropToCircle', () => {
     expectPaths(atCenter, shift(atOrigin, 7, -4));
   });
 });
+
+// Regression tests for knockout() and cropToShape() covering the
+// bounding-box short-circuit added to both functions: a path fully
+// outside the comparison shape's bounding box, fully inside it,
+// crossing its boundary, and touching it at a single point/edge
+// without entering the interior. Expected values were captured from
+// the pre-optimization implementation to confirm the short-circuit
+// does not change output, only which comparisons get skipped.
+const square = [[0,0],[10,0],[10,10],[0,10],[0,0]];
+
+test('knockout_pathOutsideBoundingBox', () => {
+  const path = [[20,20],[30,20]];
+  expect(PH.knockout([path], square)).toStrictEqual([
+    [[20,20],[30,20]]
+  ]);
+});
+
+test('knockout_pathFullyInsideShape', () => {
+  const path = [[2,2],[8,8]];
+  expect(PH.knockout([path], square)).toStrictEqual([]);
+});
+
+test('knockout_pathCrossingShapeBoundary', () => {
+  const path = [[-5,5],[15,5]];
+  expect(PH.knockout([path], square)).toStrictEqual([
+    [[-5,5],[0,5]],
+    [[10,5],[15,5]]
+  ]);
+});
+
+test('knockout_pathTouchingShapeEdge', () => {
+  const path = [[10,5],[15,5]];
+  expect(PH.knockout([path], square)).toStrictEqual([
+    [[10,5],[15,5]]
+  ]);
+});
+
+test('knockout_pathTouchingShapeCorner', () => {
+  const path = [[-5,-5],[0,0]];
+  expect(PH.knockout([path], square)).toStrictEqual([
+    [[-5,-5],[0,0]]
+  ]);
+});
+
+test('cropToShape_pathOutsideBoundingBox', () => {
+  const path = [[20,20],[30,20]];
+  expect(PH.cropToShape([path], square)).toStrictEqual([]);
+});
+
+test('cropToShape_pathFullyInsideShape', () => {
+  const path = [[2,2],[8,8]];
+  expect(PH.cropToShape([path], square)).toStrictEqual([
+    [[2,2],[8,8]]
+  ]);
+});
+
+test('cropToShape_pathCrossingShapeBoundary', () => {
+  const path = [[-5,5],[15,5]];
+  expect(PH.cropToShape([path], square)).toStrictEqual([
+    [[0,5],[10,5]]
+  ]);
+});
+
+test('cropToShape_pathTouchingShapeEdge', () => {
+  const path = [[10,5],[15,5]];
+  expect(PH.cropToShape([path], square)).toStrictEqual([
+    [[10,5],[10,5]]
+  ]);
+});
