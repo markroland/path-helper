@@ -334,3 +334,56 @@ test('splitPathByDistance', () => {
   // Expect the last segment to be less than the requested distance
   expect(PH.pathLength(paths[paths.length-1])).toBeLessThan(distance);
 });
+
+describe('intersect_point', () => {
+
+  test('returns the intersection of crossing segments', () => {
+    expect(PH.intersect_point([0, 0], [2, 2], [0, 2], [2, 0])).toEqual([1, 1]);
+  });
+
+  test('returns the intersection when segments meet at an endpoint', () => {
+    expect(PH.intersect_point([0, 0], [1, 1], [1, 1], [2, 0])).toEqual([1, 1]);
+  });
+
+  test('returns null when the lines would intersect beyond the segments', () => {
+    expect(PH.intersect_point([0, 0], [1, 1], [0, 3], [3, 0])).toBeNull();
+  });
+
+  test('returns null for parallel segments', () => {
+    expect(PH.intersect_point([0, 0], [1, 0], [0, 1], [1, 1])).toBeNull();
+  });
+
+  test('returns null for collinear segments (zero denominator)', () => {
+    // Both ua and ub evaluate to NaN (0/0) here, which must not be treated as an intersection
+    expect(PH.intersect_point([0, 0], [1, 0], [2, 0], [3, 0])).toBeNull();
+  });
+
+  test('returns null for collinear overlapping segments', () => {
+    expect(PH.intersect_point([0, 0], [2, 0], [1, 0], [3, 0])).toBeNull();
+  });
+
+  test('returns null for a zero-length segment', () => {
+    expect(PH.intersect_point([1, 1], [1, 1], [0, 0], [2, 2])).toBeNull();
+  });
+});
+
+describe('getLineLineCollision', () => {
+
+  const pt = (x, y) => ({x, y});
+
+  test('returns the intersection of crossing segments as an {x,y} object', () => {
+    expect(PH.getLineLineCollision(pt(0, 0), pt(2, 2), pt(0, 2), pt(2, 0))).toEqual({x: 1, y: 1});
+  });
+
+  test('returns false when the segments do not intersect', () => {
+    expect(PH.getLineLineCollision(pt(0, 0), pt(1, 1), pt(0, 3), pt(3, 0))).toBe(false);
+  });
+
+  test('returns false for parallel segments', () => {
+    expect(PH.getLineLineCollision(pt(0, 0), pt(1, 0), pt(0, 1), pt(1, 1))).toBe(false);
+  });
+
+  test('returns false for collinear segments rather than an {x: NaN, y: NaN} object', () => {
+    expect(PH.getLineLineCollision(pt(0, 0), pt(1, 0), pt(2, 0), pt(3, 0))).toBe(false);
+  });
+});

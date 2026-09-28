@@ -1786,18 +1786,24 @@ class PathHelper {
    * @param {array} p2 - Ending point of Line A
    * @param {array} p3 - Starting point of Line B
    * @param {array} p4 - Ending point of Line B
-   * @return {array} - An array defining a point of intersection. Return null if not found
+   * @return {array} - An array defining a point of intersection. Return null if not found, or if the lines are parallel or collinear
    **/
   intersect_point(p1, p2, p3, p4) {
+    const denominator = (p4[1] - p3[1]) * (p2[0] - p1[0]) -
+      (p4[0] - p3[0]) * (p2[1] - p1[1]);
+
+    // Parallel, collinear or zero-length segments have no single point of
+    // intersection. Without this check a collinear pair yields 0/0 = NaN,
+    // which passes the range check below and returns a NaN point.
+    if (denominator === 0) {
+      return null;
+    }
+
     const ua = ((p4[0] - p3[0]) * (p1[1] - p3[1]) -
-      (p4[1] - p3[1]) * (p1[0] - p3[0])) /
-      ((p4[1] - p3[1]) * (p2[0] - p1[0]) -
-      (p4[0] - p3[0]) * (p2[1] - p1[1]));
+      (p4[1] - p3[1]) * (p1[0] - p3[0])) / denominator;
 
     const ub = ((p2[0] - p1[0]) * (p1[1] - p3[1]) -
-      (p2[1] - p1[1]) * (p1[0] - p3[0])) /
-      ((p4[1] - p3[1]) * (p2[0] - p1[0]) -
-      (p4[0] - p3[0]) * (p2[1] - p1[1]));
+      (p2[1] - p1[1]) * (p1[0] - p3[0])) / denominator;
 
     if (ua < 0 || ua > 1 || ub < 0 || ub > 1) {
       return null;
