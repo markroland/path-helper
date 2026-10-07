@@ -3907,7 +3907,10 @@ class PathHelper {
     }
 
     // Remove consecutive duplicate points (within a threshold of distance)
-    paths[0] = this.cleanPath(paths[0], 0.0001);
+    // (No-op if there are no paths, e.g. a shape that is entirely hidden)
+    for (let i = 0; i < paths.length; i++) {
+      paths[i] = this.cleanPath(paths[i], 0.0001);
+    }
 
     return paths;
   }
