@@ -29,11 +29,11 @@
   },
   "homepage": "https://github.com/markroland/path-helper#readme",
   "devDependencies": {
-    "@eslint/js": "^9",
-    "eslint": "^9",
-    "express": "^4",
-    "globals": "^15",
-    "jest": "^27",
+    "@eslint/js": "^10",
+    "eslint": "^10",
+    "express": "^5",
+    "globals": "^17",
+    "jest": "^30",
     "jsdoc": "^4"
   },
   "engines": {
