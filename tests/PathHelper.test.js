@@ -447,3 +447,116 @@ test('offsetPath with a miter limit keeps a noisy line bounded', () => {
   // The line spans 0 to about 1.8; without a limit it ends up hundreds of units wide
   expect(Math.max(...xs) - Math.min(...xs)).toBeLessThan(5);
 });
+
+
+describe('cropToShape: segments crossing the crop border', () => {
+
+  // Crop shapes are closed paths (first point repeated as the last point)
+  const square = [[0,0],[10,0],[10,10],[0,10],[0,0]];
+  const big = [[0,0],[100,0],[100,100],[0,100],[0,0]];
+
+  // Compare cropped paths allowing for floating point noise in computed intersections
+  const expectPaths = (actual, expected) => {
+    expect(actual.length).toBe(expected.length);
+    actual.forEach((path, i) => {
+      expect(path.length).toBe(expected[i].length);
+      path.forEach((point, j) => {
+        expect(point[0]).toBeCloseTo(expected[i][j][0], 9);
+        expect(point[1]).toBeCloseTo(expected[i][j][1], 9);
+      });
+    });
+  };
+
+  // ---- Exiting: start point inside (or on) the border, end point outside ----
+
+  test('exit: start well inside the shape', () => {
+    expectPaths(PH.cropToShape([[[5,5],[5,20]]], square), [
+      [[5,5],[5,10]]
+    ]);
+  });
+
+  test('exit: start 0.3 inside an edge that the segment does not cross', () => {
+    expectPaths(PH.cropToShape([[[5,0.3],[5,20]]], square), [
+      [[5,0.3],[5,10]]
+    ]);
+  });
+
+  test('exit: start 0.1 inside an edge that the segment does not cross', () => {
+    // The segment leaves through the top edge. The bottom edge is only nearby.
+    expectPaths(PH.cropToShape([[[5,0.1],[5,20]]], square), [
+      [[5,0.1],[5,10]]
+    ]);
+  });
+
+  test('exit: start 0.005 inside an edge that the segment does not cross', () => {
+    expectPaths(PH.cropToShape([[[5,0.005],[5,20]]], square), [
+      [[5,0.005],[5,10]]
+    ]);
+  });
+
+  test('exit: nearby-edge tolerance does not grow with edge length', () => {
+    // 100-unit edges; start is 0.5 inside the bottom edge
+    expectPaths(PH.cropToShape([[[50,0.5],[50,200]]], big), [
+      [[50,0.5],[50,100]]
+    ]);
+  });
+
+  test('exit: start exactly on the bottom edge, crossing to the top edge', () => {
+    expectPaths(PH.cropToShape([[[5,0],[5,20]]], square), [
+      [[5,0],[5,10]]
+    ]);
+  });
+
+  test('exit: start exactly on the right edge, crossing to the left edge', () => {
+    expectPaths(PH.cropToShape([[[10,5],[-5,5]]], square), [
+      [[10,5],[0,5]]
+    ]);
+  });
+
+  test('exit: start on the border and moving outward keeps the touch point', () => {
+    // Legacy behavior: a degenerate zero-length segment at the border
+    expectPaths(PH.cropToShape([[[10,5],[15,5]]], square), [
+      [[10,5],[10,5]]
+    ]);
+  });
+
+  // ---- Exiting, with points inside the border tolerance ----
+
+  test('exit: start slightly outside the border (within tolerance) but crossing through the shape', () => {
+    // 0.005 outside the right edge, which is close enough to count as inside.
+    // The segment passes through the shape and leaves by the left edge, so it
+    // should not be cut off at the right edge that it starts beside.
+    expectPaths(PH.cropToShape([[[10.005,5],[-5,5]]], square), [
+      [[10.005,5],[0,5]]
+    ]);
+  });
+
+  test('exit: end slightly outside the border, within the tolerance of the crossing', () => {
+    // The end is 0.03 past the left edge. The stretch beyond the crossing is
+    // still within tolerance of the border, but the segment does leave.
+    expectPaths(PH.cropToShape([[[5,5],[-0.03,5]]], square), [
+      [[5,5],[0,5]]
+    ]);
+  });
+
+  // ---- Entering: start point outside, end point inside ----
+
+  test('enter: start well outside the shape', () => {
+    expectPaths(PH.cropToShape([[[5,-5],[5,5]]], square), [
+      [[5,0],[5,5]]
+    ]);
+  });
+
+  test('enter: start 0.1 outside the shape', () => {
+    expectPaths(PH.cropToShape([[[5,-0.1],[5,5]]], square), [
+      [[5,0],[5,5]]
+    ]);
+  });
+
+  test('enter: start on the border but classified outside (negative threshold)', () => {
+    expectPaths(PH.cropToShape([[[5,0],[5,5]]], square, -0.0001), [
+      [[5,0],[5,5]]
+    ]);
+  });
+
+});

@@ -4374,50 +4374,29 @@ class PathHelper {
 
             // The next point is not inside the bounds so the point at which the segment crosses the border
             // must be calculated
+            let crossing = this.#findBorderCrossing(
+              candidate_paths[i][p],
+              candidate_paths[i][p+1],
+              cropShape,
+              vertices,
+              threshold,
+              true
+            );
 
-            // Determine which side the next point intersects with. Stop testing after the first
-            // is found.
-            for (let pt = 0; pt < cropShape.length; pt++) {
-
-              let intersection_point = this.getLineLineCollision(
-                {"x": candidate_paths[i][p][0], "y": candidate_paths[i][p][1]},
-                {"x": candidate_paths[i][p+1][0], "y": candidate_paths[i][p+1][1]},
-                {"x": cropShape[pt][0], "y": cropShape[pt][1]},
-                {"x": cropShape[(pt+1) % cropShape.length][0], "y": cropShape[(pt+1) % cropShape.length][1]}
-              );
-
-              // Note: Could/Should this use this.pointEquals() instead?
-              let on_line = this.pointOnLineSegment(
+            // Add the border crossing point to the path if one is found
+            if (crossing !== false) {
+              path.push(
                 candidate_paths[i][p],
-                [cropShape[pt], cropShape[(pt+1) % cropShape.length]],
-                0.011 // Math.abs(threshold)
+                [crossing.x, crossing.y]
               );
 
-              if (on_line && intersection_point == false) {
-                intersection_point = {
-                  "x": candidate_paths[i][p][0],
-                  "y": candidate_paths[i][p][1]
-                };
+              // Save path if it contains at least one line segment (2 points)
+              if (path.length >= 2) {
+                paths.push(path);
               }
 
-              // Add the intersection point to the path if one is found
-              if (intersection_point !== false) {
-                path.push(
-                  candidate_paths[i][p],
-                  [intersection_point.x, intersection_point.y]
-                );
-
-                // Save path if it contains at least one line segment (2 points)
-                if (path.length >= 2) {
-                  paths.push(path);
-                }
-
-                // Reset the path since the path hit the border
-                path = [];
-
-                // Break the for-loop. No need to calculate any other intersections
-                break;
-              }
+              // Reset the path since the path hit the border
+              path = [];
             }
           }
         } else {
@@ -4428,39 +4407,20 @@ class PathHelper {
 
             // The next point is inside the bounds so the point at which the segment crosses the border
             // must be calculated
+            let crossing = this.#findBorderCrossing(
+              candidate_paths[i][p],
+              candidate_paths[i][p+1],
+              cropShape,
+              vertices,
+              threshold,
+              false
+            );
 
-            // Determine which side the next point intersects with. Stop testing after the first
-            // is found.
-            for (let pt = 0; pt < cropShape.length; pt++) {
-
-              let intersection_point = this.getLineLineCollision(
-                {"x": candidate_paths[i][p][0], "y": candidate_paths[i][p][1]},
-                {"x": candidate_paths[i][p+1][0], "y": candidate_paths[i][p+1][1]},
-                {"x": cropShape[pt][0], "y": cropShape[pt][1]},
-                {"x": cropShape[(pt+1) % cropShape.length][0], "y": cropShape[(pt+1) % cropShape.length][1]}
+            if (crossing !== false) {
+              path.push(
+                [crossing.x, crossing.y],
+                candidate_paths[i][p+1]
               );
-
-              // Note: Could/Should this use this.pointEquals() instead?
-              let on_line = this.pointOnLineSegment(
-                candidate_paths[i][p],
-                [cropShape[pt], cropShape[(pt+1) % cropShape.length]],
-                Math.abs(threshold)
-              );
-
-              if (on_line) {
-                intersection_point = {
-                  "x": candidate_paths[i][p][0],
-                  "y": candidate_paths[i][p][1]
-                };
-              }
-
-              if (intersection_point !== false) {
-                path.push(
-                  [intersection_point.x, intersection_point.y],
-                  candidate_paths[i][p+1]
-                );
-                break;
-              }
             }
           } else {
 
@@ -4512,6 +4472,105 @@ class PathHelper {
     }
 
     return paths;
+  }
+
+  /**
+   * Find where a segment that starts on one side of a crop shape's border
+   * meets that border. Used by cropToShape().
+   *
+   * Every edge of the crop shape is tested for a real crossing, and the
+   * crossings are ordered along the segment.
+   *
+   * When the segment is entering the shape, the first crossing is used.
+   *
+   * When the segment is leaving the shape, the first crossing after which
+   * the segment is actually outside the shape is used. Earlier crossings are
+   * skipped. This includes a crossing at the start point itself when the start
+   * lies on an edge but the segment heads into the shape, and a crossing
+   * just beside the start when the start is slightly outside the border but
+   * close enough to be treated as inside.
+   *
+   * The start point is used as the border point only as a fallback, when it
+   * lies on the border and the segment has no crossings.
+   * @param {array} start - A Point array. The start of the segment
+   * @param {array} end - A Point array. The end of the segment
+   * @param {array} cropShape - A closed Path array defining the crop shape
+   * @param {array} vertices - The crop shape formatted by #formatVertices()
+   * @param {number} threshold - The cropToShape() threshold. Its magnitude is
+   * the tolerance for treating a point as lying on an edge
+   * @param {boolean} leaving - True if the segment goes from inside to outside
+   * the shape, false if it goes from outside to inside
+   * @returns {object|boolean} A point object {x,y}, or false if the segment
+   * does not meet the border
+   **/
+  #findBorderCrossing(start, end, cropShape, vertices, threshold, leaving) {
+
+    const buffer = Math.abs(threshold);
+    const start_point = {"x": start[0], "y": start[1]};
+    const end_point = {"x": end[0], "y": end[1]};
+
+    let crossings = [];
+    let start_on_border = false;
+
+    for (let pt = 0; pt < cropShape.length; pt++) {
+
+      const edge_start = cropShape[pt];
+      const edge_end = cropShape[(pt+1) % cropShape.length];
+
+      const crossing = this.getLineLineCollision(
+        start_point,
+        end_point,
+        {"x": edge_start[0], "y": edge_start[1]},
+        {"x": edge_end[0], "y": edge_end[1]}
+      );
+
+      if (crossing !== false) {
+        crossings.push({
+          "point": crossing,
+          "distance": this.distance(start, [crossing.x, crossing.y])
+        });
+      }
+
+      if (!start_on_border && this.pointOnLineSegment(start, [edge_start, edge_end], buffer)) {
+        start_on_border = true;
+      }
+    }
+
+    // Nearest crossing first, which is where the segment first meets the border
+    crossings.sort((a, b) => a.distance - b.distance);
+
+    if (leaving) {
+      for (let c = 0; c < crossings.length; c++) {
+
+        // Look at the stretch of the segment just after this crossing: from
+        // here to the next crossing, or to the end of the segment
+        const here = crossings[c].point;
+        const beyond = (c + 1 < crossings.length) ? crossings[c + 1].point : end_point;
+        const midpoint_in_bounds = this.pointInPolygon(
+          vertices,
+          (here.x + beyond.x) / 2,
+          (here.y + beyond.y) / 2,
+          threshold
+        );
+
+        if (!midpoint_in_bounds) {
+          return here;
+        }
+      }
+
+      // The end of the segment is outside the shape, but every stretch after
+      // a crossing was still within tolerance of the border (counted as
+      // inside). The last crossing is the best estimate of where it leaves.
+      if (crossings.length > 0) {
+        return crossings[crossings.length - 1].point;
+      }
+      return start_on_border ? start_point : false;
+    }
+
+    if (crossings.length > 0) {
+      return crossings[0].point;
+    }
+    return start_on_border ? start_point : false;
   }
 
   /**
