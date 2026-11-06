@@ -628,9 +628,8 @@ class PathHelper {
    **/
   polygon(sides, radius, rotation = 0) {
     let polygon = [];
-    let polygon_theta = 0.0;
     for (let a = 0; a <= sides; a++) {
-      polygon_theta = (a/sides) * (2 * Math.PI);
+      const polygon_theta = (a/sides) * (2 * Math.PI);
       polygon.push([
         radius * Math.cos(polygon_theta + rotation),
         radius * Math.sin(polygon_theta + rotation)
@@ -1723,7 +1722,7 @@ class PathHelper {
       throw 'The Path is not a simple polygon.';
     }
 
-    let this_sign = 0;
+    let this_sign;
     let last_sign = 0;
     for (let i = 1; i < path.length; i++) {
 
@@ -1974,7 +1973,7 @@ class PathHelper {
 
     // go through each of the vertices, plus
     // the next vertex in the list
-    let next = 0;
+    let next;
     for (let current=0; current<vertices.length; current++) {
 
       // get next vertex in list
@@ -2080,9 +2079,9 @@ class PathHelper {
   expandPath(path, offset_start, offset_end, capStyle = 'open') {
 
     let parallels = [];
-    let parallel = [];
+    let parallel;
     let parallel_segment;
-    let offset = offset_start;
+    let offset;
     let i_max = path.length-1;
 
     // Outer
@@ -2502,9 +2501,6 @@ class PathHelper {
       // intersection, so it carries on to its end point
       final_path.push(path[i+1]);
 
-      // Set index for next loop. This may not be necessary
-      last_intersect_index = i + 1;
-
       // Add the remainder of the original path to the cleaned path
       final_path = final_path.concat(path.slice(i+2));
 
@@ -2905,8 +2901,6 @@ class PathHelper {
       newpath.push(path2[path2.length-1]);
     } else {
 
-      let new_point = path2[path2.length-1];
-
       let noise;
 
       if (gaussian) {
@@ -2919,7 +2913,7 @@ class PathHelper {
       let delta_y = path2[i][1] - path2[i-2][1];
       let delta_x = path2[i][0] - path2[i-2][0];
       let theta = Math.atan2(delta_y, delta_x);
-      new_point = [
+      const new_point = [
         path2[i][0] + noise * Math.cos(theta + Math.PI/2),
         path2[i][1] + noise * Math.sin(theta + Math.PI/2)
       ];
@@ -4321,7 +4315,7 @@ class PathHelper {
   cropToShape(candidate_paths, cropShape, threshold = 0.0001) {
 
     let paths = [];
-    let path = [];
+    let path;
 
     // Reformat vertices of cropShape for use with pointInPolygon()
     let vertices = this.#formatVertices(cropShape);
@@ -4692,7 +4686,7 @@ class PathHelper {
 
     let paths = [];
 
-    let path = [];
+    let path;
 
     // Define the crop shape using the function input
     let cropShape = [
@@ -5062,7 +5056,6 @@ class PathHelper {
       }
 
       // Use path bounding boxes to rule out non-intersecting shapes
-      let bbox_ignore_count = 0;
       if (use_bbox) {
 
         // Get bounding box of path under investigation
@@ -5098,8 +5091,6 @@ class PathHelper {
           // Use the comparison_shape if intersections have been detected
           if (bbox_intersections.length != path_i_bbox_path.length) {
             filtered_shapes.push(comparison_shape);
-          } else {
-            bbox_ignore_count++;
           }
         }
 
@@ -5123,13 +5114,8 @@ class PathHelper {
           continue;
         }
 
-        // Initialize the segment as the full side of the path
-        let new_segments = [
-          [paths[i][point], paths[i][point+1]]
-        ];
-
-        // Split the path using any shapes that overlap it
-        new_segments = this.linePathsSplit(
+        // Split the side of the path using any shapes that overlap it
+        const new_segments = this.linePathsSplit(
           [paths[i][point], paths[i][point+1]],
           comparison_shapes
         );
@@ -5496,7 +5482,6 @@ class PathHelper {
       // against all points in the same path except the points
       // directly proceeding it and following it, which
       // will by their nature have coincident points
-      loop2:
       for (let j = 0; j < test_path.length - 2; j++) {
 
         // Identify the next segment to analyze. Use the
