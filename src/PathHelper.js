@@ -4330,6 +4330,11 @@ class PathHelper {
     // Compute cropShape's bounding box once, rather than per path below
     const cropShape_bbox = this.boundingBox(cropShape);
 
+    // Points within |threshold| of an edge are treated as being on it
+    // (see pointInPolygon() and #findBorderCrossing()), which can reach
+    // slightly outside the bounding box
+    const cropShape_margin = this.#edgeToleranceMargin(cropShape, Math.abs(threshold));
+
     // Loop through all paths
     for (let i = 0; i < candidate_paths.length; i++) {
 
@@ -4337,7 +4342,7 @@ class PathHelper {
       // has no points inside cropShape, so it can be dropped entirely
       // without any per-point pointInPolygon calls.
       const path_bbox = this.boundingBox(candidate_paths[i]);
-      if (!this.#boundingBoxesOverlap(path_bbox, cropShape_bbox)) {
+      if (!this.#boundingBoxesOverlap(path_bbox, cropShape_bbox, cropShape_margin)) {
         continue;
       }
 
@@ -4865,6 +4870,11 @@ class PathHelper {
     // Compute shape's bounding box once, rather than per path below
     const shape_bbox = this.boundingBox(shape);
 
+    // booleanSubtractComparison() classifies points within 0.00001 of an
+    // edge as on it. Use 0.0001 (the closure tolerance it also uses) so
+    // culling is never stricter than that.
+    const shape_margin = this.#edgeToleranceMargin(shape, 0.0001);
+
     // Loop through paths
     for (let i = 0; i < paths.length; i++) {
 
@@ -4872,7 +4882,7 @@ class PathHelper {
       // cannot have any segment inside shape, so it can't be knocked out.
       // Skip the expensive segment-intersection work entirely.
       const path_bbox = this.boundingBox(paths[i]);
-      if (!this.#boundingBoxesOverlap(path_bbox, shape_bbox)) {
+      if (!this.#boundingBoxesOverlap(path_bbox, shape_bbox, shape_margin)) {
         new_paths.push(paths[i]);
         continue;
       }
@@ -4895,16 +4905,40 @@ class PathHelper {
    * boundingBox()) overlap at all.
    * @param {array} bboxA - A bounding box: [[min_x,max_x],[min_y,max_y]]
    * @param {array} bboxB - A bounding box: [[min_x,max_x],[min_y,max_y]]
+   * @param {number} [margin=0] - Distance to grow bboxB by in every direction
+   * before testing
    * @returns {boolean} True if the bounding boxes overlap (including
    * touching or containment), false if they are entirely disjoint
    **/
-  #boundingBoxesOverlap(bboxA, bboxB) {
+  #boundingBoxesOverlap(bboxA, bboxB, margin = 0) {
     return !(
-      bboxA[0][1] < bboxB[0][0] ||
-      bboxA[0][0] > bboxB[0][1] ||
-      bboxA[1][1] < bboxB[1][0] ||
-      bboxA[1][0] > bboxB[1][1]
+      bboxA[0][1] < bboxB[0][0] - margin ||
+      bboxA[0][0] > bboxB[0][1] + margin ||
+      bboxA[1][1] < bboxB[1][0] - margin ||
+      bboxA[1][0] > bboxB[1][1] + margin
     );
+  }
+
+  /**
+   * Maximum distance outside of a shape's bounding box at which a point can
+   * still be accepted by pointOnLineSegment() as lying on one of the shape's
+   * edges, so that bounding box culling is never stricter than the
+   * tolerance used by the functions it short-circuits.
+   *
+   * pointOnLineSegment() is an ellipse test (d1+d2 <= length+buffer). The
+   * ellipse reaches furthest past an edge's bounding box perpendicular to the
+   * edge, by 0.5*sqrt(2*L*buffer + buffer^2) for an edge of length L. That
+   * reach grows with edge length, so it is computed from the longest edge.
+   * @param {array} shape - A Path array
+   * @param {number} buffer - The pointOnLineSegment() buffer
+   * @returns {number} Margin to pad around the shape's bounding box
+   **/
+  #edgeToleranceMargin(shape, buffer) {
+    let longest = 0;
+    for (let i = 0; i < shape.length; i++) {
+      longest = Math.max(longest, this.distance(shape[i], shape[(i + 1) % shape.length]));
+    }
+    return 0.5 * Math.sqrt(2 * longest * buffer + buffer * buffer);
   }
 
   /**

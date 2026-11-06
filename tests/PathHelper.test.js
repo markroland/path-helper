@@ -681,3 +681,31 @@ test('cropToShape_pathTouchingShapeEdge', () => {
     [[10,5],[10,5]]
   ]);
 });
+
+// Bounding-box culling must not be stricter than the edge tolerance of the
+// functions it short-circuits. That tolerance is an ellipse around each edge,
+// so it reaches further outside a long edge than outside a short one.
+describe('bounding-box culling respects edge tolerance', () => {
+
+  const sq = [[0,0],[10,0],[10,10],[0,10],[0,0]];
+
+  test('cropToShape keeps a path outside the bounding box but within the edge tolerance', () => {
+    // Default threshold 0.0001 reaches about 0.022 outside a 10-unit edge
+    const path = [[10.015,3],[10.015,7]];
+    expect(PH.cropToShape([path], sq)).toStrictEqual([path]);
+  });
+
+  test('cropToShape drops a path outside the bounding box and beyond the edge tolerance', () => {
+    expect(PH.cropToShape([[[10.03,3],[10.03,7]]], sq)).toStrictEqual([]);
+  });
+
+  test('knockout removes a path outside the bounding box but within the edge tolerance', () => {
+    // booleanSubtractComparison() treats this 0.005 offset as on the edge
+    expect(PH.knockout([[[10.005,3],[10.005,7]]], sq)).toStrictEqual([]);
+  });
+
+  test('knockout keeps a path outside the bounding box and beyond the edge tolerance', () => {
+    const path = [[10.01,3],[10.01,7]];
+    expect(PH.knockout([path], sq)).toStrictEqual([path]);
+  });
+});

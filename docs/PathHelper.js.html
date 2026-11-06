@@ -563,13 +563,17 @@ class PathHelper {
    */
   distance(p1, p2) {
 
+    const dx = p2[0] - p1[0];
+    const dy = p2[1] - p1[1];
+
     // 3D Distance calculation
     if (p1.length == 3 &amp;&amp; p2.length == 3) {
-      return Math.sqrt(Math.pow(p2[0] - p1[0], 2) + Math.pow(p2[1] - p1[1], 2) + Math.pow(p2[2] - p1[2], 2));
+      const dz = p2[2] - p1[2];
+      return Math.sqrt(dx * dx + dy * dy + dz * dz);
     }
 
     // 2D Distance calculation
-    return Math.sqrt(Math.pow(p2[0] - p1[0], 2) + Math.pow(p2[1] - p1[1], 2));
+    return Math.sqrt(dx * dx + dy * dy);
   }
 
   /**
@@ -656,9 +660,8 @@ class PathHelper {
    **/
   polygon(sides, radius, rotation = 0) {
     let polygon = [];
-    let polygon_theta = 0.0;
     for (let a = 0; a &lt;= sides; a++) {
-      polygon_theta = (a/sides) * (2 * Math.PI);
+      const polygon_theta = (a/sides) * (2 * Math.PI);
       polygon.push([
         radius * Math.cos(polygon_theta + rotation),
         radius * Math.sin(polygon_theta + rotation)
@@ -1576,12 +1579,15 @@ class PathHelper {
 
       // Sort segment_intersections and insert in Shape A
       if (segment_intersections.length > 0) {
-        let self = this;
-        // Note: Refactor this to pass in 'this' as second parameter to sort()
-        segment_intersections.sort(function(a, b) {
-          return (self.distance(shapeA[i], a) > self.distance(shapeA[i], b) ? 1 : -1);
+        // Precompute each candidate's distance once, rather than
+        // recomputing it on every comparator call during the sort
+        const origin = shapeA[i];
+        const decorated = segment_intersections.map((point) => {
+          return { point: point, dist: this.distance(origin, point) };
         });
-        newA = newA.concat(segment_intersections);
+        decorated.sort((a, b) => a.dist - b.dist);
+        segment_intersections = decorated.map((entry) => entry.point);
+        newA.push(...segment_intersections);
       }
     }
 
@@ -1751,7 +1757,7 @@ class PathHelper {
       throw 'The Path is not a simple polygon.';
     }
 
-    let this_sign = 0;
+    let this_sign;
     let last_sign = 0;
     for (let i = 1; i &lt; path.length; i++) {
 
@@ -2002,7 +2008,7 @@ class PathHelper {
 
     // go through each of the vertices, plus
     // the next vertex in the list
-    let next = 0;
+    let next;
     for (let current=0; current&lt;vertices.length; current++) {
 
       // get next vertex in list
@@ -2108,9 +2114,9 @@ class PathHelper {
   expandPath(path, offset_start, offset_end, capStyle = 'open') {
 
     let parallels = [];
-    let parallel = [];
+    let parallel;
     let parallel_segment;
-    let offset = offset_start;
+    let offset;
     let i_max = path.length-1;
 
     // Outer
@@ -2530,9 +2536,6 @@ class PathHelper {
       // intersection, so it carries on to its end point
       final_path.push(path[i+1]);
 
-      // Set index for next loop. This may not be necessary
-      last_intersect_index = i + 1;
-
       // Add the remainder of the original path to the cleaned path
       final_path = final_path.concat(path.slice(i+2));
 
@@ -2933,8 +2936,6 @@ class PathHelper {
       newpath.push(path2[path2.length-1]);
     } else {
 
-      let new_point = path2[path2.length-1];
-
       let noise;
 
       if (gaussian) {
@@ -2947,7 +2948,7 @@ class PathHelper {
       let delta_y = path2[i][1] - path2[i-2][1];
       let delta_x = path2[i][0] - path2[i-2][0];
       let theta = Math.atan2(delta_y, delta_x);
-      new_point = [
+      const new_point = [
         path2[i][0] + noise * Math.cos(theta + Math.PI/2),
         path2[i][1] + noise * Math.sin(theta + Math.PI/2)
       ];
@@ -4349,26 +4350,50 @@ class PathHelper {
   cropToShape(candidate_paths, cropShape, threshold = 0.0001) {
 
     let paths = [];
-    let path = [];
+    let path;
 
     // Reformat vertices of cropShape for use with pointInPolygon()
     let vertices = this.#formatVertices(cropShape);
 
+    // Compute cropShape's bounding box once, rather than per path below
+    const cropShape_bbox = this.boundingBox(cropShape);
+
+    // Points within |threshold| of an edge are treated as being on it
+    // (see pointInPolygon() and #findBorderCrossing()), which can reach
+    // slightly outside the bounding box
+    const cropShape_margin = this.#edgeToleranceMargin(cropShape, Math.abs(threshold));
+
     // Loop through all paths
     for (let i = 0; i &lt; candidate_paths.length; i++) {
 
+      // A path whose bounding box doesn't overlap cropShape's bounding box
+      // has no points inside cropShape, so it can be dropped entirely
+      // without any per-point pointInPolygon calls.
+      const path_bbox = this.boundingBox(candidate_paths[i]);
+      if (!this.#boundingBoxesOverlap(path_bbox, cropShape_bbox, cropShape_margin)) {
+        continue;
+      }
+
       path = [];
+
+      // Reused across iterations: the "next_point_in_bounds" computed
+      // for point p is the same value as "point_in_bounds" for point
+      // p+1, so it's cached here instead of being recomputed with a
+      // second pointInPolygon call on the same point.
+      let cached_point_in_bounds = null;
 
       // Loop through points/segments of path
       for (let p = 0; p &lt; candidate_paths[i].length-1; p++) {
 
         // Check if point is within bounds
-        let point_in_bounds = this.pointInPolygon(
-          vertices,
-          candidate_paths[i][p][0],
-          candidate_paths[i][p][1],
-          threshold
-        );
+        let point_in_bounds = (cached_point_in_bounds !== null)
+          ? cached_point_in_bounds
+          : this.pointInPolygon(
+            vertices,
+            candidate_paths[i][p][0],
+            candidate_paths[i][p][1],
+            threshold
+          );
 
         // Check if next point is within bounds (if not the last point)
         let next_point_in_bounds = null;
@@ -4380,6 +4405,7 @@ class PathHelper {
             threshold
           );
         }
+        cached_point_in_bounds = next_point_in_bounds;
 
         // Determine if the next point is the end of the candiate path
         let next_point_is_last = false;
@@ -4402,50 +4428,29 @@ class PathHelper {
 
             // The next point is not inside the bounds so the point at which the segment crosses the border
             // must be calculated
+            let crossing = this.#findBorderCrossing(
+              candidate_paths[i][p],
+              candidate_paths[i][p+1],
+              cropShape,
+              vertices,
+              threshold,
+              true
+            );
 
-            // Determine which side the next point intersects with. Stop testing after the first
-            // is found.
-            for (let pt = 0; pt &lt; cropShape.length; pt++) {
-
-              let intersection_point = this.getLineLineCollision(
-                {"x": candidate_paths[i][p][0], "y": candidate_paths[i][p][1]},
-                {"x": candidate_paths[i][p+1][0], "y": candidate_paths[i][p+1][1]},
-                {"x": cropShape[pt][0], "y": cropShape[pt][1]},
-                {"x": cropShape[(pt+1) % cropShape.length][0], "y": cropShape[(pt+1) % cropShape.length][1]}
-              );
-
-              // Note: Could/Should this use this.pointEquals() instead?
-              let on_line = this.pointOnLineSegment(
+            // Add the border crossing point to the path if one is found
+            if (crossing !== false) {
+              path.push(
                 candidate_paths[i][p],
-                [cropShape[pt], cropShape[(pt+1) % cropShape.length]],
-                0.011 // Math.abs(threshold)
+                [crossing.x, crossing.y]
               );
 
-              if (on_line &amp;&amp; intersection_point == false) {
-                intersection_point = {
-                  "x": candidate_paths[i][p][0],
-                  "y": candidate_paths[i][p][1]
-                };
+              // Save path if it contains at least one line segment (2 points)
+              if (path.length >= 2) {
+                paths.push(path);
               }
 
-              // Add the intersection point to the path if one is found
-              if (intersection_point !== false) {
-                path.push(
-                  candidate_paths[i][p],
-                  [intersection_point.x, intersection_point.y]
-                );
-
-                // Save path if it contains at least one line segment (2 points)
-                if (path.length >= 2) {
-                  paths.push(path);
-                }
-
-                // Reset the path since the path hit the border
-                path = [];
-
-                // Break the for-loop. No need to calculate any other intersections
-                break;
-              }
+              // Reset the path since the path hit the border
+              path = [];
             }
           }
         } else {
@@ -4456,39 +4461,20 @@ class PathHelper {
 
             // The next point is inside the bounds so the point at which the segment crosses the border
             // must be calculated
+            let crossing = this.#findBorderCrossing(
+              candidate_paths[i][p],
+              candidate_paths[i][p+1],
+              cropShape,
+              vertices,
+              threshold,
+              false
+            );
 
-            // Determine which side the next point intersects with. Stop testing after the first
-            // is found.
-            for (let pt = 0; pt &lt; cropShape.length; pt++) {
-
-              let intersection_point = this.getLineLineCollision(
-                {"x": candidate_paths[i][p][0], "y": candidate_paths[i][p][1]},
-                {"x": candidate_paths[i][p+1][0], "y": candidate_paths[i][p+1][1]},
-                {"x": cropShape[pt][0], "y": cropShape[pt][1]},
-                {"x": cropShape[(pt+1) % cropShape.length][0], "y": cropShape[(pt+1) % cropShape.length][1]}
+            if (crossing !== false) {
+              path.push(
+                [crossing.x, crossing.y],
+                candidate_paths[i][p+1]
               );
-
-              // Note: Could/Should this use this.pointEquals() instead?
-              let on_line = this.pointOnLineSegment(
-                candidate_paths[i][p],
-                [cropShape[pt], cropShape[(pt+1) % cropShape.length]],
-                Math.abs(threshold)
-              );
-
-              if (on_line) {
-                intersection_point = {
-                  "x": candidate_paths[i][p][0],
-                  "y": candidate_paths[i][p][1]
-                };
-              }
-
-              if (intersection_point !== false) {
-                path.push(
-                  [intersection_point.x, intersection_point.y],
-                  candidate_paths[i][p+1]
-                );
-                break;
-              }
             }
           } else {
 
@@ -4543,6 +4529,105 @@ class PathHelper {
   }
 
   /**
+   * Find where a segment that starts on one side of a crop shape's border
+   * meets that border. Used by cropToShape().
+   *
+   * Every edge of the crop shape is tested for a real crossing, and the
+   * crossings are ordered along the segment.
+   *
+   * When the segment is entering the shape, the first crossing is used.
+   *
+   * When the segment is leaving the shape, the first crossing after which
+   * the segment is actually outside the shape is used. Earlier crossings are
+   * skipped. This includes a crossing at the start point itself when the start
+   * lies on an edge but the segment heads into the shape, and a crossing
+   * just beside the start when the start is slightly outside the border but
+   * close enough to be treated as inside.
+   *
+   * The start point is used as the border point only as a fallback, when it
+   * lies on the border and the segment has no crossings.
+   * @param {array} start - A Point array. The start of the segment
+   * @param {array} end - A Point array. The end of the segment
+   * @param {array} cropShape - A closed Path array defining the crop shape
+   * @param {array} vertices - The crop shape formatted by #formatVertices()
+   * @param {number} threshold - The cropToShape() threshold. Its magnitude is
+   * the tolerance for treating a point as lying on an edge
+   * @param {boolean} leaving - True if the segment goes from inside to outside
+   * the shape, false if it goes from outside to inside
+   * @returns {object|boolean} A point object {x,y}, or false if the segment
+   * does not meet the border
+   **/
+  #findBorderCrossing(start, end, cropShape, vertices, threshold, leaving) {
+
+    const buffer = Math.abs(threshold);
+    const start_point = {"x": start[0], "y": start[1]};
+    const end_point = {"x": end[0], "y": end[1]};
+
+    let crossings = [];
+    let start_on_border = false;
+
+    for (let pt = 0; pt &lt; cropShape.length; pt++) {
+
+      const edge_start = cropShape[pt];
+      const edge_end = cropShape[(pt+1) % cropShape.length];
+
+      const crossing = this.getLineLineCollision(
+        start_point,
+        end_point,
+        {"x": edge_start[0], "y": edge_start[1]},
+        {"x": edge_end[0], "y": edge_end[1]}
+      );
+
+      if (crossing !== false) {
+        crossings.push({
+          "point": crossing,
+          "distance": this.distance(start, [crossing.x, crossing.y])
+        });
+      }
+
+      if (!start_on_border &amp;&amp; this.pointOnLineSegment(start, [edge_start, edge_end], buffer)) {
+        start_on_border = true;
+      }
+    }
+
+    // Nearest crossing first, which is where the segment first meets the border
+    crossings.sort((a, b) => a.distance - b.distance);
+
+    if (leaving) {
+      for (let c = 0; c &lt; crossings.length; c++) {
+
+        // Look at the stretch of the segment just after this crossing: from
+        // here to the next crossing, or to the end of the segment
+        const here = crossings[c].point;
+        const beyond = (c + 1 &lt; crossings.length) ? crossings[c + 1].point : end_point;
+        const midpoint_in_bounds = this.pointInPolygon(
+          vertices,
+          (here.x + beyond.x) / 2,
+          (here.y + beyond.y) / 2,
+          threshold
+        );
+
+        if (!midpoint_in_bounds) {
+          return here;
+        }
+      }
+
+      // The end of the segment is outside the shape, but every stretch after
+      // a crossing was still within tolerance of the border (counted as
+      // inside). The last crossing is the best estimate of where it leaves.
+      if (crossings.length > 0) {
+        return crossings[crossings.length - 1].point;
+      }
+      return start_on_border ? start_point : false;
+    }
+
+    if (crossings.length > 0) {
+      return crossings[0].point;
+    }
+    return start_on_border ? start_point : false;
+  }
+
+  /**
    * Take a path and crop it to a circle
    * This works, but hasn't been rigorously tested on edge cases
    * @deprecated Try cropToShape() instead
@@ -4562,13 +4647,13 @@ class PathHelper {
       // Loop through points/segments of path
       for (let p = 0; p &lt; candidate_paths[i].length; p++) {
 
-        // Calculate distance of point from center
-        let d1 = this.distance([0,0], candidate_paths[i][p]);
+        // Calculate distance of point from the center of the crop circle
+        let d1 = this.distance(center, candidate_paths[i][p]);
 
         // Calculate distance from next point (if it exists) to the center
         let d2 = null;
         if (p+1 &lt; candidate_paths[i].length) {
-          d2 = this.distance([0,0], candidate_paths[i][p+1]);
+          d2 = this.distance(center, candidate_paths[i][p+1]);
         }
 
         if (d1 &lt; crop_radius) {
@@ -4582,7 +4667,7 @@ class PathHelper {
             let intersections = this.lineCircleIntersect(
               candidate_paths[i][p],
               candidate_paths[i][p+1],
-              [[0,0], crop_radius]
+              [center, crop_radius]
             );
 
             // Assuming these are short line segments
@@ -4615,7 +4700,7 @@ class PathHelper {
           let intersections = this.lineCircleIntersect(
             candidate_paths[i][p],
             candidate_paths[i][p+1],
-            [[0,0], crop_radius]
+            [center, crop_radius]
           );
 
           // Assuming these are short line segments
@@ -4661,7 +4746,7 @@ class PathHelper {
 
     let paths = [];
 
-    let path = [];
+    let path;
 
     // Define the crop shape using the function input
     let cropShape = [
@@ -4810,8 +4895,25 @@ class PathHelper {
 
     let new_paths = [];
 
+    // Compute shape's bounding box once, rather than per path below
+    const shape_bbox = this.boundingBox(shape);
+
+    // booleanSubtractComparison() classifies points within 0.00001 of an
+    // edge as on it. Use 0.0001 (the closure tolerance it also uses) so
+    // culling is never stricter than that.
+    const shape_margin = this.#edgeToleranceMargin(shape, 0.0001);
+
     // Loop through paths
     for (let i = 0; i &lt; paths.length; i++) {
+
+      // A path whose bounding box doesn't overlap shape's bounding box
+      // cannot have any segment inside shape, so it can't be knocked out.
+      // Skip the expensive segment-intersection work entirely.
+      const path_bbox = this.boundingBox(paths[i]);
+      if (!this.#boundingBoxesOverlap(path_bbox, shape_bbox, shape_margin)) {
+        new_paths.push(paths[i]);
+        continue;
+      }
 
       // Get intersections
       let new_path = this.shapeIntersections(paths[i], shape);
@@ -4820,10 +4922,51 @@ class PathHelper {
       let knocked_paths = this.booleanSubtractComparison(new_path, shape, false);
 
       // Add to new paths
-      new_paths = new_paths.concat(knocked_paths);
+      new_paths.push(...knocked_paths);
     }
 
     return new_paths;
+  }
+
+  /**
+   * Determine whether two axis-aligned bounding boxes (as returned by
+   * boundingBox()) overlap at all.
+   * @param {array} bboxA - A bounding box: [[min_x,max_x],[min_y,max_y]]
+   * @param {array} bboxB - A bounding box: [[min_x,max_x],[min_y,max_y]]
+   * @param {number} [margin=0] - Distance to grow bboxB by in every direction
+   * before testing
+   * @returns {boolean} True if the bounding boxes overlap (including
+   * touching or containment), false if they are entirely disjoint
+   **/
+  #boundingBoxesOverlap(bboxA, bboxB, margin = 0) {
+    return !(
+      bboxA[0][1] &lt; bboxB[0][0] - margin ||
+      bboxA[0][0] > bboxB[0][1] + margin ||
+      bboxA[1][1] &lt; bboxB[1][0] - margin ||
+      bboxA[1][0] > bboxB[1][1] + margin
+    );
+  }
+
+  /**
+   * Maximum distance outside of a shape's bounding box at which a point can
+   * still be accepted by pointOnLineSegment() as lying on one of the shape's
+   * edges, so that bounding box culling is never stricter than the
+   * tolerance used by the functions it short-circuits.
+   *
+   * pointOnLineSegment() is an ellipse test (d1+d2 &lt;= length+buffer). The
+   * ellipse reaches furthest past an edge's bounding box perpendicular to the
+   * edge, by 0.5*sqrt(2*L*buffer + buffer^2) for an edge of length L. That
+   * reach grows with edge length, so it is computed from the longest edge.
+   * @param {array} shape - A Path array
+   * @param {number} buffer - The pointOnLineSegment() buffer
+   * @returns {number} Margin to pad around the shape's bounding box
+   **/
+  #edgeToleranceMargin(shape, buffer) {
+    let longest = 0;
+    for (let i = 0; i &lt; shape.length; i++) {
+      longest = Math.max(longest, this.distance(shape[i], shape[(i + 1) % shape.length]));
+    }
+    return 0.5 * Math.sqrt(2 * longest * buffer + buffer * buffer);
   }
 
   /**
@@ -5031,7 +5174,6 @@ class PathHelper {
       }
 
       // Use path bounding boxes to rule out non-intersecting shapes
-      let bbox_ignore_count = 0;
       if (use_bbox) {
 
         // Get bounding box of path under investigation
@@ -5067,8 +5209,6 @@ class PathHelper {
           // Use the comparison_shape if intersections have been detected
           if (bbox_intersections.length != path_i_bbox_path.length) {
             filtered_shapes.push(comparison_shape);
-          } else {
-            bbox_ignore_count++;
           }
         }
 
@@ -5092,13 +5232,8 @@ class PathHelper {
           continue;
         }
 
-        // Initialize the segment as the full side of the path
-        let new_segments = [
-          [paths[i][point], paths[i][point+1]]
-        ];
-
-        // Split the path using any shapes that overlap it
-        new_segments = this.linePathsSplit(
+        // Split the side of the path using any shapes that overlap it
+        const new_segments = this.linePathsSplit(
           [paths[i][point], paths[i][point+1]],
           comparison_shapes
         );
@@ -5335,59 +5470,83 @@ class PathHelper {
    **/
   linePathsSplit(line, paths) {
 
-    let segments = [];
+    // Iterative rather than recursive: when a line is split into two
+    // segments, both need to be evaluated against the whole "paths" list
+    // again, and each of those can split again. For a line crossing many
+    // overlapping shapes (e.g. a flower with several overlapping petals)
+    // this recursion tree can get deep enough to exceed the JS call stack
+    // (RangeError: Maximum call stack size exceeded). This explicit stack
+    // preserves the original depth-first splitting logic and result order
+    // without growing the native call stack.
+    const results = [];
+    const stack = [line];
 
-    // Loop through all of the paths
-    for (let i = 0; i &lt; paths.length; i++) {
+    while (stack.length > 0) {
 
-      // Calculate the intersection(s) between the line
-      // and the current path. This will produce 0, 1 or 2
-      // intersections for convex polygons
-      try {
-        segments = this.linePathSplit(line, paths[i]);
-      } catch(e) {
-        console.log(e);
-        return segments;
-      }
+      let current_line = stack.pop();
+      let segments = [];
+      let terminal = true;
 
-      // Initialize an empty array to store subsegments of the
-      // segments.
-      let sub_segments = [];
+      // Loop through all of the paths
+      for (let i = 0; i &lt; paths.length; i++) {
 
-      if (typeof segments === "undefined") {
-        console.log("segments is undefined");
-        continue;
-      }
-
-      if (segments.length > 1) {
-
-        // If there are two segments (max for a convex polygon "path")
-        // then they should each be evaluated against the other paths.
-        // This is where the recursive magic happens.
-        for (let j = 0; j &lt; segments.length; j++) {
-          sub_segments = sub_segments.concat(
-            this.linePathsSplit(segments[j], paths)
-          );
+        // Calculate the intersection(s) between the line
+        // and the current path. This will produce 0, 1 or 2
+        // intersections for convex polygons
+        try {
+          segments = this.linePathSplit(current_line, paths[i]);
+        } catch(e) {
+          console.log(e);
+          // Matches the original's `return segments`: on failure, whatever
+          // "segments" held from the last successful path test (or the
+          // initial empty array) is this line's result, so `terminal`
+          // stays true and it flows into the push below.
+          break;
         }
 
-        return sub_segments;
+        if (typeof segments === "undefined") {
+          console.log("segments is undefined");
+          continue;
+        }
 
-      } else if (segments.length == 1) {
+        if (segments.length > 1) {
 
-        // If there was one intersection, creating a truncated line,
-        // which should become the new line to be evaluated against
-        // the rest of the "paths"
-        line = segments[0];
+          // If there are two segments (max for a convex polygon "path")
+          // then they should each be evaluated against the other paths.
+          // Push them in reverse so the stack pops them in the same
+          // left-to-right order the original recursion produced.
+          for (let j = segments.length - 1; j >= 0; j--) {
+            stack.push(segments[j]);
+          }
+          terminal = false;
+          break;
 
-      } else {
+        } else if (segments.length == 1) {
 
-        // If segments is empty then the endpoints were completely
-        // contained within a shape (overlapped and hidden from view)
-        return segments;
+          // If there was one intersection, creating a truncated line,
+          // which should become the new line to be evaluated against
+          // the rest of the "paths"
+          current_line = segments[0];
+
+        } else {
+
+          // If segments is empty then the endpoints were completely
+          // contained within a shape (overlapped and hidden from view).
+          // Nothing to contribute to the result.
+          terminal = false;
+          break;
+        }
+      }
+
+      // Ran through every path without being split or hidden: whatever
+      // "segments" holds from the last path tested is the fully-resolved
+      // result for this line.
+      if (terminal) {
+        results.push(...segments);
       }
     }
 
-    return segments;
+    return results;
   }
 
   /**
@@ -5465,7 +5624,6 @@ class PathHelper {
       // against all points in the same path except the points
       // directly proceeding it and following it, which
       // will by their nature have coincident points
-      loop2:
       for (let j = 0; j &lt; test_path.length - 2; j++) {
 
         // Identify the next segment to analyze. Use the
@@ -5624,7 +5782,7 @@ if (typeof module !== 'undefined' &amp;&amp; module.exports) {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Fri Nov 06 2026 15:20:48 GMT-0800 (Pacific Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Fri Nov 06 2026 16:08:38 GMT-0800 (Pacific Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>
