@@ -2288,9 +2288,15 @@ class PathHelper {
    * array index as a percentage. The output of the function is a numerical offset value.
    * @param {boolean} [prevent_knots=false] - Remove segments of the offset that
    * intersect with themselve in order to support wider offset values
+   * @param {number|null} [miter_limit=null] - The farthest a corner point may be from its
+   * original vertex, as a multiple of the offset distance (SVG's stroke-miterlimit).
+   * A sharp corner puts its offset point at offset / sin(angle / 2) from the vertex,
+   * which grows without bound as the corner approaches a hairpin. A corner beyond the
+   * limit is "beveled" instead: the point is replaced by the two points offset
+   * perpendicular to each side of the vertex. Must be greater than 1. Null for no limit.
    * @returns {array} A multidimensional path array of points
    **/
-  offsetPath(path, offset, prevent_knots = false) {
+  offsetPath(path, offset, prevent_knots = false, miter_limit = null) {
 
     if (path.length < 3) {
       throw 'Input path must contain 3 or more points';
@@ -2328,8 +2334,8 @@ class PathHelper {
         // Catch any errors in the offset calculation, most probably due to collinear points
         // This could be avoided by pre-checking for collinearity (especially any 0-degree angle point sets)
         try {
-          let offset_angle = this.offsetAngle(source_path[i], source_path[j], source_path[k], -offset_dist);
-          offset_path.push(offset_angle[1]);
+          let offset_angle = this.offsetAngle(source_path[i], source_path[j], source_path[k], -offset_dist, miter_limit);
+          offset_path.push(...offset_angle.slice(1, -1));
         } catch (e) {
           console.log("Error in PathHelper.offsetPath(): " + e);
         }
@@ -2356,15 +2362,17 @@ class PathHelper {
         }
 
         try {
-          let offset_angle = this.offsetAngle(source_path[i], source_path[j], source_path[k], -offset_dist);
+          let offset_angle = this.offsetAngle(source_path[i], source_path[j], source_path[k], -offset_dist, miter_limit);
+
+          // The points between the first and last are the vertex's corner: one point,
+          // or two if it was beveled
+          const corner = offset_angle.slice(1, -1);
           if (i === 0) {
             offset_path.push(offset_angle[0]);
-            offset_path.push(offset_angle[1]);
-          } else if (i === i_max) {
-            offset_path.push(offset_angle[1]);
-            offset_path.push(offset_angle[2]);
-          } else {
-            offset_path.push(offset_angle[1]);
+          }
+          offset_path.push(...corner);
+          if (i === i_max) {
+            offset_path.push(offset_angle[offset_angle.length - 1]);
           }
         } catch (e) {
           console.log("Error in PathHelper.offsetPath(): " + e);
@@ -2452,57 +2460,61 @@ class PathHelper {
       let previous_path = path.slice(last_intersect_index, i);
       const segment = [path[i], path[i+1]];
 
-      for (let j = last_intersect_index; j < previous_path.length - 1; j++) {
+      // Find the first segment of the previous path that the segment crosses
+      let intersection = false;
+      let j = last_intersect_index;
+      for (; j < previous_path.length - 1; j++) {
 
         // Check for an intersection between the segment being analyzed
         // and each segment of the previous path
-        let intersection = this.getLineLineCollision(
+        intersection = this.getLineLineCollision(
           {"x": segment[0][0], "y": segment[0][1]},
           {"x": segment[1][0], "y": segment[1][1]},
           {"x": previous_path[j][0], "y": previous_path[j][1]},
           {"x": previous_path[j+1][0], "y": previous_path[j+1][1]}
         );
 
-        if (intersection == false) {
-
-          // No intersection, so add point
-          final_path.push(path[i]);
-          continue;
-
-        } else {
-
-          // Intersection found
-
-          // Reset final paths to go up to the point previous
-          // to the intersection
-          final_path = previous_path.slice(0, j+1);
-
-          // Add intersection point
-          final_path.push([
-            intersection.x,
-            intersection.y
-          ]);
-
-          // Add end of segment
-          if (i+2 < path.length) {
-            final_path.push(path[i+2]);
-          }
-
-          // Set index for next loop. This may not be necessary
-          last_intersect_index = i + 1;
-
-          // Add the remainder of the original path to the cleaned path
-          final_path = final_path.concat(path.slice(i+3));
-
-          // Analyze this new path for knots.
-          // TODO: I believe This could be made more efficient by passing in an
-          // position index of where to start further intersection analyze.
-          // Without this the analysis starts over from the beginning of the path
-          final_path = this.removeKnots(final_path);
-
-          return final_path;
+        if (intersection != false) {
+          break;
         }
       }
+
+      if (intersection == false) {
+
+        // No intersection with any earlier segment, so keep the end of this segment
+        final_path.push(path[i+1]);
+        continue;
+      }
+
+      // Intersection found
+
+      // Reset final paths to go up to the point previous
+      // to the intersection
+      final_path = previous_path.slice(0, j+1);
+
+      // Add intersection point
+      final_path.push([
+        intersection.x,
+        intersection.y
+      ]);
+
+      // Add end of segment. The segment crosses back over the path at the
+      // intersection, so it carries on to its end point
+      final_path.push(path[i+1]);
+
+      // Set index for next loop. This may not be necessary
+      last_intersect_index = i + 1;
+
+      // Add the remainder of the original path to the cleaned path
+      final_path = final_path.concat(path.slice(i+2));
+
+      // Analyze this new path for knots.
+      // TODO: I believe This could be made more efficient by passing in an
+      // position index of where to start further intersection analyze.
+      // Without this the analysis starts over from the beginning of the path
+      final_path = this.removeKnots(final_path);
+
+      return final_path;
     }
 
     // Return the original path if no intersections were found
@@ -2525,9 +2537,11 @@ class PathHelper {
    * @param {array} p3 - Point 3. Endpoint "B"
    * @param {number} offset - the offset distance of the path. A negative number
    * represents an "inside" offset for an acute angle ACB
-   * @returns {array} A path array of 3 points
+   * @param {number|null} [miter_limit=null] - See offsetPath(). A corner beyond the limit
+   * returns 4 points, with the beveled corner's two points in the middle
+   * @returns {array} A path array of 3 points (or 4, if the corner was beveled)
    **/
-  offsetAngle(p1, p2, p3, offset) {
+  offsetAngle(p1, p2, p3, offset, miter_limit = null) {
 
     // Gamma angle in radians. This is the angle of ACB
     let gamma = this.angle(p1, p2, p3);
@@ -2545,6 +2559,14 @@ class PathHelper {
 
     // Calculate the parallel offset path from point 1 to 2 (Side AC)
     let AC_offset = this.parallelPath(p1, p2, offset);
+
+    // Calculate the parallel offset path from point 2 to 3 (Side CB)
+    let CB_offset = this.parallelPath(p2, p3, offset);
+
+    // Distance from the vertex to the corner point, as a multiple of the offset
+    if (miter_limit !== null && Math.hypot(offset, corner_offset) > miter_limit * Math.abs(offset)) {
+      return [AC_offset[0], AC_offset[1], CB_offset[0], CB_offset[1]];
+    }
 
     // Compute the Cross Product of the vector CA with vector CB
     // to determine if the parallel path is on the interior or
@@ -2567,9 +2589,6 @@ class PathHelper {
 
     // Extend/Reduce the line by the Corner Offset distance
     AC_offset = this.extendLine(AC_offset[0], AC_offset[1], 0, corner_offset);
-
-    // Calculate the parallel offset path from point 2 to 3 (Side CB)
-    let CB_offset = this.parallelPath(p2, p3, offset);
 
     // Combine the 2 offset sides to get the new path
     let expanded_path = AC_offset;

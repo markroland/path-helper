@@ -387,3 +387,63 @@ describe('getLineLineCollision', () => {
     expect(PH.getLineLineCollision(pt(0, 0), pt(1, 0), pt(2, 0), pt(3, 0))).toBe(false);
   });
 });
+
+test('removeKnots keeps a path without knots unchanged', () => {
+  const path = [[0, 0], [1, 0.1], [2, 0], [3, 0.1], [4, 0]];
+  expect(PH.removeKnots(path)).toStrictEqual(path);
+});
+
+test('removeKnots cuts out a loop at the intersection', () => {
+  // The last segment crosses the first one at [2, 0]
+  const path = [[0, 0], [4, 0], [4, 1], [2, 1], [2, -1], [3, -1]];
+  const result = PH.removeKnots(path);
+  // The loop is cut out, and the crossing segment still runs to its end point
+  expect(result).toStrictEqual([[0, 0], [2, 0], [2, -1], [3, -1]]);
+});
+
+test('offsetPath with prevent_knots does not add points', () => {
+  const path = [];
+  for (let i = 0; i < 200; i++) {
+    path.push([i * 0.01, 0.003 * Math.sin(i * 0.7)]);
+  }
+  const offset = PH.offsetPath(path, 0.01, true);
+  expect(offset.length).toBeLessThanOrEqual(path.length);
+});
+
+test('offsetAngle without a miter limit is unchanged', () => {
+  const result = PH.offsetAngle([0, 0], [1, 0], [2, 0], 0.1);
+  expect(result.length).toBe(3);
+  expect(result[1][0]).toBeCloseTo(1);
+  expect(Math.abs(result[1][1])).toBeCloseTo(0.1);
+});
+
+test('offsetAngle bevels a corner beyond the miter limit', () => {
+  // A hairpin: A and B are both almost straight back along the same line from C
+  const A = [0, 0], C = [1, 0], B = [0, 0.01];
+  const unlimited = PH.offsetAngle(A, C, B, 0.1);
+  expect(Math.hypot(unlimited[1][0] - C[0], unlimited[1][1] - C[1])).toBeGreaterThan(1);
+
+  const beveled = PH.offsetAngle(A, C, B, 0.1, 3);
+  expect(beveled.length).toBe(4);
+  // Both corner points are the offset distance from the vertex
+  expect(Math.hypot(beveled[1][0] - C[0], beveled[1][1] - C[1])).toBeCloseTo(0.1);
+  expect(Math.hypot(beveled[2][0] - C[0], beveled[2][1] - C[1])).toBeCloseTo(0.1);
+});
+
+test('offsetAngle keeps a corner within the miter limit', () => {
+  const result = PH.offsetAngle([0, 0], [1, 0], [2, 1], 0.1, 3);
+  expect(result.length).toBe(3);
+});
+
+test('offsetPath with a miter limit keeps a noisy line bounded', () => {
+  let path = [];
+  for (let i = 0; i < 300; i++) {
+    path.push([i * 0.006, 0.003 * Math.sin(i * 1.3) + 0.002 * Math.cos(i * 0.4)]);
+  }
+  for (let j = 0; j < 60; j++) {
+    path = PH.offsetPath(path, -0.003, true, 4);
+  }
+  const xs = path.map((p) => p[0]);
+  // The line spans 0 to about 1.8; without a limit it ends up hundreds of units wide
+  expect(Math.max(...xs) - Math.min(...xs)).toBeLessThan(5);
+});
