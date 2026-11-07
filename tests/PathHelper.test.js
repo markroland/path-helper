@@ -560,3 +560,55 @@ describe('cropToShape: segments crossing the crop border', () => {
   });
 
 });
+
+
+describe('cropToCircle', () => {
+
+  const shift = (paths, dx, dy) => paths.map((path) => path.map((p) => [p[0] + dx, p[1] + dy]));
+
+  const expectPaths = (actual, expected) => {
+    expect(actual.length).toBe(expected.length);
+    actual.forEach((path, i) => {
+      expect(path.length).toBe(expected[i].length);
+      path.forEach((point, j) => {
+        expect(point[0]).toBeCloseTo(expected[i][j][0], 9);
+        expect(point[1]).toBeCloseTo(expected[i][j][1], 9);
+      });
+    });
+  };
+
+  test('crops around the origin when no center is given', () => {
+    expectPaths(PH.cropToCircle([[[-5,0],[0,0],[1,0]]], undefined, 2), [
+      [[-2,0],[0,0],[1,0]]
+    ]);
+  });
+
+  test('crops where a path enters a circle that is not centered on the origin', () => {
+    expectPaths(PH.cropToCircle([[[0,5],[10,5],[11,5]]], [10,5], 3), [
+      [[7,5],[10,5],[11,5]]
+    ]);
+  });
+
+  test('stops where a path leaves a circle that is not centered on the origin', () => {
+    const center = [10,0];
+    const result = PH.cropToCircle([[[9.5,0],[9,0],[10,0],[14,0]]], center, 2);
+    expect(result.length).toBe(1);
+    expectPaths([[result[0][0], result[0][result[0].length - 1]]], [[[9.5,0],[12,0]]]);
+    result[0].forEach((point) => {
+      expect(PH.distance(point, center)).toBeLessThanOrEqual(2 + 1e-9);
+    });
+  });
+
+  test('a path entirely outside a circle that is not centered on the origin is removed', () => {
+    // These points are all within 3 of the origin, but far from the center
+    expect(PH.cropToCircle([[[1,1],[2,1],[2,2]]], [20,20], 3)).toStrictEqual([]);
+  });
+
+  test('cropping around a center matches cropping around the origin on shifted data', () => {
+    const path = [[-1,-1],[0,0.5],[1,1],[3,2]];
+    const atOrigin = PH.cropToCircle([path], [0,0], 1.5);
+    const atCenter = PH.cropToCircle(shift([path], 7, -4), [7,-4], 1.5);
+    expect(atOrigin.length).toBeGreaterThan(0);
+    expectPaths(atCenter, shift(atOrigin, 7, -4));
+  });
+});

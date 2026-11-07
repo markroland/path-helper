@@ -4587,13 +4587,13 @@ class PathHelper {
       // Loop through points/segments of path
       for (let p = 0; p < candidate_paths[i].length; p++) {
 
-        // Calculate distance of point from center
-        let d1 = this.distance([0,0], candidate_paths[i][p]);
+        // Calculate distance of point from the center of the crop circle
+        let d1 = this.distance(center, candidate_paths[i][p]);
 
         // Calculate distance from next point (if it exists) to the center
         let d2 = null;
         if (p+1 < candidate_paths[i].length) {
-          d2 = this.distance([0,0], candidate_paths[i][p+1]);
+          d2 = this.distance(center, candidate_paths[i][p+1]);
         }
 
         if (d1 < crop_radius) {
@@ -4607,7 +4607,7 @@ class PathHelper {
             let intersections = this.lineCircleIntersect(
               candidate_paths[i][p],
               candidate_paths[i][p+1],
-              [[0,0], crop_radius]
+              [center, crop_radius]
             );
 
             // Assuming these are short line segments
@@ -4640,7 +4640,7 @@ class PathHelper {
           let intersections = this.lineCircleIntersect(
             candidate_paths[i][p],
             candidate_paths[i][p+1],
-            [[0,0], crop_radius]
+            [center, crop_radius]
           );
 
           // Assuming these are short line segments
